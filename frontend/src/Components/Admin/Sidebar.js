@@ -1,0 +1,64 @@
+import React from 'react';
+import { RiHome2Line, RiArrowRightSLine } from 'react-icons/ri';
+import { BsFillPersonFill, BsListUl, BsArchive, BsBell, BsEnvelope } from 'react-icons/bs';
+import { IoIosSchool } from 'react-icons/io';
+import { Link } from 'react-router-dom';
+
+
+const Sidebar = () => {
+  return (
+    <div className="fixed left-0 top-0 w-64 h-full bg-[#f8f4f3] p-4 z-50 sidebar-menu transition-transform">
+      <span className="flex items-center pb-4 border-b border-b-gray-800">
+        <h2 className="font-bold text-2xl">
+          Skill <span className="bg-[#f97316] text-white px-3 rounded-md py-1">Bridge</span>
+        </h2>
+      </span>
+      <ul className="mt-4">
+        <span className="text-gray-400 font-bold">ADMIN</span>
+        <Link to='/admin'>
+        <li className="mb-1 group">
+          <span className="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
+          <RiHome2Line className="mr-3 text-lg" />
+            <span className="text-sm">Dashboard</span>
+            <RiArrowRightSLine className="ml-auto group-[.selected]:rotate-90" />
+
+          </span>
+        </li>
+        </Link>
+
+
+        <Link to='/admin/user_list'>
+        <li className="mb-1 group">
+          <span className="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100 sidebar-dropdown-toggle">
+          <BsFillPersonFill className='mr-3 text-lg' />
+            <span className="text-sm">Users</span>
+            <RiArrowRightSLine className="ml-auto group-[.selected]:rotate-90" />
+          </span>
+          
+          <ul className="pl-7 mt-2 hidden group-[.selected]:block">
+            <li className="mb-4">
+              <span className="text-gray-900 text-sm flex items-center hover:text-[#f84525] before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3">All</span>
+            </li>
+            <li className="mb-4">
+              <span className="text-gray-900 text-sm flex items-center hover:text-[#f84525] before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3">Roles</span>
+            </li>
+          </ul>
+        </li>
+        </Link>
+
+
+        <Link to='/admin/teacher_list'>
+        <li className="mb-1 group">
+          <span className="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
+          <IoIosSchool  className='mr-3 text-lg' />
+            <span className="text-sm">Tecaher</span>
+            <RiArrowRightSLine className="ml-auto group-[.selected]:rotate-90" />
+          </span>
+        </li>
+        </Link>
+      </ul>
+    </div>
+  );
+};
+
+export default Sidebar;
