@@ -27,6 +27,7 @@ urlpatterns = [
     path('teacher/teacher_signup/', TeacherRegisterView.as_view(), name='teacher_signup'),
     path('teacher/teacher_login/', TeacherLoginView.as_view(), name='teacher_login'),
     path('teacher/teacher_details/', TeacherDetailsView.as_view(), name='teacher_details'),
+    path('teacher/teacher_documents/', TeacherDocumentView.as_view(), name='teacher_documents'),
 
 
 

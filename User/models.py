@@ -58,6 +58,18 @@ class User(AbstractBaseUser):
     
     def has_module_perms(self,add_label):
         return True
+    
+
+class UserProfile(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,related_name="User_Profile")
+    profile_pic=models.ImageField(upload_to='profile_pic')
+    phone=models.CharField(max_length=250,blank=True,null=True)
+    social_link1=models.CharField(max_length=250,blank=True,null=True)
+    social_link2=models.CharField(max_length=250,blank=True,null=True)
+    about=models.TextField()
+    current_role=models.CharField(max_length=250,blank=True,null=True)
+    def __str__(self):
+        return f"profile of {self.user.username}" 
         
 
 class TeacherDetails(models.Model):
@@ -66,16 +78,38 @@ class TeacherDetails(models.Model):
     age = models.PositiveIntegerField()
     experience = models.PositiveIntegerField()
     address = models.TextField()
-    # documents = models.FileField(upload_to='teacher_documents/', blank=True, null=True)
-
     def __str__(self):
         return self.user.username if self.user else 'TeacherDetails'
     
 
-class Document(models.Model):
-    teacher = models.ForeignKey(TeacherDetails, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='teacher_documents/')
-    is_verified=models.BooleanField(default=False)
-    is_blocked=models.BooleanField(default=False)
+class TeacherDocument(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    id_proof = models.FileField(upload_to='teacher_documents/id')
+    id_verify=models.BooleanField(default=False)
+    id_block=models.BooleanField(default=False)
+
+    photo_proof = models.FileField(upload_to='teacher_documents/photo')
+    photo_verify=models.BooleanField(default=False)
+    photo_block=models.BooleanField(default=False)
+
+    tenth_proof = models.FileField(upload_to='teacher_documents/tenth_proof')
+    tenth_verify=models.BooleanField(default=False)
+    tenth_block=models.BooleanField(default=False)
+
+    plustwo_proof = models.FileField(upload_to='teacher_documents/plustwo_proof')
+    plustwo_verify=models.BooleanField(default=False)
+    plustwo_block=models.BooleanField(default=False)
+
+    experience_proof = models.FileField(upload_to='teacher_documents/experience_proof')
+    experience_verify=models.BooleanField(default=False)
+    experience_block=models.BooleanField(default=False)
+
+    graduation_proof = models.FileField(upload_to='teacher_documents/graduation_proof')
+    graduation_verify=models.BooleanField(default=False)
+    graduation_block=models.BooleanField(default=False)
+    
+    is_document_verified=models.BooleanField(default=False)
+
     def __str__(self):
-            return self.TeacherDetails.user.username if self.user else 'Document'
+            return self.user.username if self.user else 'Document'

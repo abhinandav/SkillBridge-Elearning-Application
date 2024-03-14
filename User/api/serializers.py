@@ -60,20 +60,21 @@ class TeacherRegisterSerializer(UserRegisterSerializer):
         return user_instance
 
 
-
-# class TeacherDetailsSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = TeacherDetails
-#         fields = ['number', 'age', 'experience', 'address', 'documents']
-
-
-
-
-
-class DocumentSerializer(serializers.ModelSerializer):
+class TeacherDetailsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Document
-        fields = ['file']
+        model = TeacherDetails
+        fields = ['number', 'age', 'experience', 'address']
+
+
+class TeacherDocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeacherDocument
+        fields = ['id_proof', 'photo_proof','tenth_proof', 'plustwo_proof', 'graduation_proof', 'experience_proof' ]
+
+    def create(self, validated_data):
+        return TeacherDocument.objects.create(**validated_data)
+
+
 
 
 
@@ -94,10 +95,7 @@ class DocumentSerializer(serializers.ModelSerializer):
 #         return teacher_details
 
 
-class TeacherDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TeacherDetails
-        fields = ['number', 'age', 'experience', 'address']
+
 
 
 

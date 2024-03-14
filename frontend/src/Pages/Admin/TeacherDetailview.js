@@ -88,11 +88,14 @@ function TeacherDetailview() {
                             <p className="text-gray-600 mx-10">{userData.teacher_details.address}</p>
                         </div>
 
-                        {userData.teacher_details.documents && (
+                       
+                      
+
+                        {/* {userData.teacher_documents.id_proof && (
                             <div className="flex items-center mx-20 mb-3">
                             <h3 className="text-xl font-semibold mr-2">Documents:</h3>
                             <a
-                                href={`http://localhost:8000${userData.teacher_details.documents}`}
+                                href={`http://localhost:8000${userData.teacher_documents.id_proof}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-blue-500 mx-10"
@@ -100,7 +103,9 @@ function TeacherDetailview() {
                                 View Document
                             </a>
                             </div>
-                        )}
+                        )} */}
+
+
                         </div>
 
                 </div>

@@ -125,6 +125,9 @@ const TeacherSignup = () => {
     userFormData.append('username', event.target.username.value);
     userFormData.append('email', event.target.email.value);
     userFormData.append('password', event.target.password.value);
+
+
+    // details
   
     const teacherDetailsFormData = new FormData();
     teacherDetailsFormData.append('number', event.target.number.value);
@@ -133,45 +136,63 @@ const TeacherSignup = () => {
     teacherDetailsFormData.append('address', event.target.address.value);
 
 
+
+    // documents
+    const teacherDocumentsFormData = new FormData();
+
+    const id_proof = event.target.id_proof.files[0];
+    teacherDocumentsFormData.append('id_proof', id_proof);
+
+    const photo_proof = event.target.photo_proof.files[0];
+    teacherDocumentsFormData.append('photo_proof', photo_proof);
+
+
+
+    const tenth_proof = event.target.tenth_proof.files[0];
+    teacherDocumentsFormData.append('tenth_proof', tenth_proof);
+
+    const plustwo_proof = event.target.plustwo_proof.files[0];
+    teacherDocumentsFormData.append('plustwo_proof', plustwo_proof);
+
+    const graduation_proof = event.target.graduation_proof.files[0];
+    teacherDocumentsFormData.append('graduation_proof', graduation_proof);
+
+    const experience_proof = event.target.experience_proof.files[0];
+    teacherDocumentsFormData.append('experience_proof', experience_proof);
+
     console.log('teacherDetailsFormData:', teacherDetailsFormData);
 
-    // const fileInputs = [];
-    // for (let i = 0; i < documentFields; i++) {
-    //   const fieldName = `document${i + 1}`;
-    //   const files = event.target[fieldName].files;
-    //   console.log(event.target[fieldName].files);
-    //   fileInputs.push({ fieldName, files });
-    // }
-    // console.log(fileInputs);
 
-    // for (let i = 0; i < fileInputs.length; i++) {
-    //   const { fieldName, files } = fileInputs[i];
-    //   for (let j = 0; j < files.length; j++) {
-    //     const fileInput = files[j];
-    //     teacherDetailsFormData.append(`documents[${i}][${fieldName}]`, fileInput);
-    //   }
-    // }
 
 
     
     
     const userRegistrationEndpoint = baseURL + '/api/accounts/teacher/teacher_signup/';
     const teacherDetailsEndpoint = baseURL + '/api/accounts/teacher/teacher_details/';
+    const teacherDocumentsEndpoint = baseURL + '/api/accounts/teacher/teacher_documents/';
+
+
 
     try {
       const userResponse = await axios.post(userRegistrationEndpoint, userFormData);
-      console.log(userFormData);
-      console.log('User Registration Response:', userResponse.data);
 
       const userId = userResponse.data.user_id;
-      console.log('userId', userResponse.data.user_id);
+
 
       teacherDetailsFormData.append('user_id', userId);
-      console.log(teacherDetailsFormData);
-
-      console.log(baseURL + '/api/accounts/teacher/teacher_details/');
-      const teacherDetailsResponse = await axios.post(baseURL + '/api/accounts/teacher/teacher_details/', teacherDetailsFormData);
+      const teacherDetailsResponse = await axios.post(teacherDetailsEndpoint, teacherDetailsFormData);
       console.log('User detail  Registration Response:', teacherDetailsResponse.data);
+
+      
+      teacherDocumentsFormData.append('user_id', userId);
+      const teacherDocumentsResponse = await axios.post(teacherDocumentsEndpoint, teacherDocumentsFormData);
+      console.log('Teacher documents Uploaded:', teacherDocumentsResponse.data);
+
+      
+
+      
+
+
 
       if (teacherDetailsResponse.status === 200) {
         console.log('Teacher Details Response:', teacherDetailsResponse.data);
@@ -274,7 +295,7 @@ const TeacherSignup = () => {
                   <div className="md:col-span-6 mb-3 ">
                     <label htmlFor="soda" className='mr-10 mt-2'>Id Proof (voter id or driving license adhar)</label>
                     <div className="h-10 mt-3 w-150 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                      <input type='file' name="documents" id="documents" className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
+                      <input type='file' name="id_proof"  className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
                     </div>
                     {fileError && <span className="text-red-800 text-sm">{fileError}</span>}
                   </div>
@@ -282,7 +303,7 @@ const TeacherSignup = () => {
                   <div className="md:col-span-6 mb-3 ">
                     <label htmlFor="soda" className='mr-10 mt-2'>Photo (paport size photo of user)</label>
                     <div className="h-10 mt-3 w-150 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                      <input type='file' name="documents" id="documents" className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
+                      <input type='file' name="photo_proof" className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
                     </div>
                     {fileError && <span className="text-red-800 text-sm">{fileError}</span>}
                   </div>
@@ -290,7 +311,7 @@ const TeacherSignup = () => {
                   <div className="md:col-span-6 mb-3 ">
                     <label htmlFor="soda" className='mr-10 mt-2'>10 th Certificate (sslc or cbsce)</label>
                     <div className="h-10 mt-3 w-150 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                      <input type='file' name="documents" id="documents" className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
+                      <input type='file' name="tenth_proof" id="10th-proof" className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
                     </div>
                     {fileError && <span className="text-red-800 text-sm">{fileError}</span>}
                   </div>
@@ -299,7 +320,7 @@ const TeacherSignup = () => {
                   <div className="md:col-span-6 mb-3 ">
                     <label htmlFor="soda" className='mr-10 mt-2'>Plus Two Certificate (front side)</label>
                     <div className="h-10 mt-3 w-150 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                      <input type='file' name="documents" id="documents" className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
+                      <input type='file' name="plustwo_proof"  className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
                     </div>
                     {fileError && <span className="text-red-800 text-sm">{fileError}</span>}
                   </div>
@@ -308,7 +329,7 @@ const TeacherSignup = () => {
                   <div className="md:col-span-6 mb-3 ">
                     <label htmlFor="soda" className='mr-10 mt-2'>Graduuation (any higher study certificate)</label>
                     <div className="h-10 mt-3 w-150 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                      <input type='file' name="documents" id="documents" className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
+                      <input type='file' name="graduation_proof"  className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
                     </div>
                     {fileError && <span className="text-red-800 text-sm">{fileError}</span>}
                   </div>
@@ -316,7 +337,7 @@ const TeacherSignup = () => {
                   <div className="md:col-span-6 mb-3 ">
                     <label htmlFor="soda" className='mr-10 mt-2'>Experience Document (teaching or working  experience  in this field)</label>
                     <div className="h-10 mt-3 w-150 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                      <input type='file' name="documents" id="documents" className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
+                      <input type='file' name="experience_proof"  className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
                     </div>
                     {fileError && <span className="text-red-800 text-sm">{fileError}</span>}
                   </div>

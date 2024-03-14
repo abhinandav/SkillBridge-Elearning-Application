@@ -11,6 +11,7 @@ import { set_authentication } from "../../Redux/autehnticationSlice";
 
 import AdminPrivateRoute from "../PrivateRoutes/AdminPrivateRoute";
 import AdminTecaherRequest from "../../Pages/Admin/AdminTecaherRequest";
+import VerifyDocuments from '../../Pages/Admin/VerifyDocuments'
 
 
  
@@ -57,6 +58,8 @@ function AdminWrapper() {
       <Route path="/teacher_list" element={<AdminPrivateRoute><AdminTeacherList /></AdminPrivateRoute>} />
       <Route path="/teacher_request" element={<AdminPrivateRoute><AdminTecaherRequest /></AdminPrivateRoute>} />
       <Route path="/teacher_detail/:id" element={<AdminPrivateRoute><TeacherDetailview /></AdminPrivateRoute>} />
+      <Route path="/verify_documents/:id" element={<AdminPrivateRoute><VerifyDocuments /></AdminPrivateRoute>} />
+
       </Routes>    
     
     </>

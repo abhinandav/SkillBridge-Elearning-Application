@@ -35,7 +35,7 @@ from rest_framework import status, permissions
 class AdminUserListCreateView(ListCreateAPIView):
     queryset = User.objects.all().order_by('-date_joined')  
    
-    serializer_class = AdminUserSerializer
+    serializer_class = UserSerializer
     filter_backends = [SearchFilter]
     search_fields = ['username',  'email']
 
@@ -56,26 +56,27 @@ class AcceptUserView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
-# class AdminUserRetrieveView(RetrieveAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = AdminUserSerializer
-#     lookup_field = 'id'
 
 
 class AdminUserRetrieveView(RetrieveAPIView):
     queryset = User.objects.all()
-    serializer_class = AdminUserSerializer  
+    serializer_class = UserSerializer  
 
     def retrieve(self, request, *args, **kwargs):
         user_instance = self.get_object()
         teacher_details_instance = TeacherDetails.objects.get(user=user_instance)
+        teacher_documents_instance = TeacherDocument.objects.get(user=user_instance)
         
         user_serializer = self.get_serializer(user_instance)
+
         teacher_details_serializer = TeacherDetailsSerializer(teacher_details_instance)
+        teacher_documents_serializer = TeacherDocumentSerializer(teacher_documents_instance)
 
         data = {
             'user': user_serializer.data,
-            'teacher_details': teacher_details_serializer.data
+            'teacher_details': teacher_details_serializer.data,
+            'teacher_documents': teacher_documents_serializer.data
+
         }
 
         return Response(data, status=status.HTTP_200_OK)

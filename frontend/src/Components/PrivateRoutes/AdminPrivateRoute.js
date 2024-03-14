@@ -34,6 +34,8 @@ function AdminPrivateRoute({ children }) {
   }
 
   console.log('aaaaaaaaaaaaaaaa------',isAuthenticated.is_admin)
+
+  
   if ((!isAuthenticated.is_admin)) {
     return <Navigate to="/admin/login" />;
   }

@@ -6,16 +6,18 @@ import UserLogin from "../../Pages/User/Credentials/UserLogin";
 import UserFooter from "./UserFooter";
 import UserSignUp from '../../Pages/User/Credentials/UserSignUp'
 import UserOTP from "../../Pages/User/Credentials/UserOTP";
-import UserProfile from "../../Pages/User/UserProfile";
+import UserProfile from "../../Pages/User/Profile/UserProfile";
 import CourseList from "../../Pages/User/CourseList";
 import FPEmails from '../../Pages/User/Credentials/FPEmail'
 import FPreset from "../../Pages/User/Credentials/FPreset";
+import ProfileEdit from "../../Pages/User/Profile/ProfileEdit";
 
 
 
 import { useDispatch, useSelector } from "react-redux";
 import isAuthUser from "../../Utils/isAuthUser";
 import { set_authentication } from "../../Redux/autehnticationSlice"; 
+import UserPrivateRoute from '../PrivateRoutes/UserPrivateRoute'
 
 
 function UserWrapper() {
@@ -27,8 +29,6 @@ function UserWrapper() {
   const checkAuth = async () => {
     const isAuthenticated = await isAuthUser();
 
-    console.log('bb-------',isAuthenticated);
-
     dispatch(
       set_authentication({
         name: isAuthenticated.name,
@@ -39,8 +39,6 @@ function UserWrapper() {
     );
   };
 
-  console.log('isAdmin---?',authentication_user.isAdmin);
-  console.log('isteacher-----?',authentication_user.isTeacher);
 
 
 
@@ -50,13 +48,9 @@ function UserWrapper() {
       checkAuth();  
     }
 
-    // if(authentication_user.isAdmin)
-    // {
-    //   localStorage.clear()
-    // }
   }, [])
 
-
+  
 
 
   return (
@@ -68,10 +62,13 @@ function UserWrapper() {
           <Route  path="login" element={<UserLogin/>}></Route>
           <Route  path="signup" element={<UserSignUp/>}></Route>
           <Route  path="userotp" element={<UserOTP/>}></Route>
-          <Route  path="profile" element={<UserProfile/>}></Route>
           <Route  path="course_list" element={<CourseList/>}></Route>
           <Route  path="fpemail" element={<FPEmails/>}></Route>
           <Route  path="change_password/:id" element={<FPreset/>}></Route>
+          <Route  path="profile_edit" element={<ProfileEdit/>}></Route>
+
+
+          <Route  path="profile" element={<UserPrivateRoute><UserProfile/></UserPrivateRoute>}></Route>
       </Routes>    
     <UserFooter/>
     </>

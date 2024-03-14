@@ -2,29 +2,41 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer,Token
 from rest_framework import serializers
 from User.models import User,TeacherDetails
 
-class TeacherDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TeacherDetails
-        fields = ['number', 'age', 'experience', 'address', 'documents']
 
-class AdminUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'username',  'email','password','date_joined','is_active','is_superuser','is_staff', 'is_email_verified']
-        extra_kwargs = {
-            'password':{ 'write_only':True},
-            'username': {'error_messages': {'required': 'Please provide the username.'}},
-            'email': {'error_messages': {'required': 'Please provide the email address.'}},         
-        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# class AdminUserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ['id', 'username',  'email','password','date_joined','is_active','is_superuser','is_staff', 'is_email_verified']
+#         extra_kwargs = {
+#             'password':{ 'write_only':True},
+#             'username': {'error_messages': {'required': 'Please provide the username.'}},
+#             'email': {'error_messages': {'required': 'Please provide the email address.'}},         
+#         }
        
-    def create(self, validated_data):
-        password = validated_data.pop('password',None)
-        user_instance = self.Meta.model(**validated_data)
-        if password is not None:
-            user_instance.set_password(password)
-            user_instance.is_active=True
-            user_instance.save()
-        return user_instance
+#     def create(self, validated_data):
+#         password = validated_data.pop('password',None)
+#         user_instance = self.Meta.model(**validated_data)
+#         if password is not None:
+#             user_instance.set_password(password)
+#             user_instance.is_active=True
+#             user_instance.save()
+#         return user_instance
     
 
     

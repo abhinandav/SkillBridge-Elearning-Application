@@ -160,29 +160,6 @@ class TeacherRegisterView(APIView):
             return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class TeacherLoginView(APIView):
-    def post(self, request):
-        email = request.data['email']
-        password = request.data['password']
-        user=authenticate(username=email,password=password)
-
-        if user is not None and user.is_staff and not user.is_superuser and user.is_active and user.is_email_verified :
-            refresh = RefreshToken.for_user(user)
-            refresh['username'] = str(user.username)
-
-            access_token = refresh.access_token
-            refresh_token = str(refresh)
-
-            content = {
-                'access_token': str(access_token),
-                'refresh_token': refresh_token,
-                'isAdmin': user.is_superuser,
-                'isTeacher': user.is_staff,
-            }
-
-            return Response(content, status=status.HTTP_200_OK)
-        return Response({'error': 'Invalid credentials or user is not a teacher'}, status=status.HTTP_401_UNAUTHORIZED)
-
 
 class TeacherDetailsView(APIView):
     def post(self, request):
@@ -208,6 +185,81 @@ class TeacherDetailsView(APIView):
                 return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response({'error': 'User ID not provided.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TeacherDocumentView(APIView):
+    def post(self, request):
+        user_id = request.data.get('user_id')
+        print(user_id)
+
+        if user_id:
+            try:
+                user = User.objects.get(id=user_id)
+                print(user)
+                serializer = TeacherDocumentSerializer(data=request.data)
+                print(serializer.is_valid())
+                if serializer.is_valid():
+                    serializer.save(user=user)
+                    response_data = {
+                        'message': 'Teacher documents saved successfully.'
+                    }
+                    print(response_data)
+                    return Response(response_data, status=status.HTTP_200_OK)
+                else:
+                    print(serializer.errors)
+                    return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            except User.DoesNotExist:
+                return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+            except Exception as e:
+                return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response({'error': 'User ID not provided.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class TeacherLoginView(APIView):
+    def post(self, request):
+        email = request.data['email']
+        password = request.data['password']
+        user=authenticate(username=email,password=password)
+
+        if user is not None and user.is_staff and not user.is_superuser and user.is_active and user.is_email_verified :
+            refresh = RefreshToken.for_user(user)
+            refresh['username'] = str(user.username)
+
+            access_token = refresh.access_token
+            refresh_token = str(refresh)
+
+            content = {
+                'access_token': str(access_token),
+                'refresh_token': refresh_token,
+                'isAdmin': user.is_superuser,
+                'isTeacher': user.is_staff,
+            }
+
+            return Response(content, status=status.HTTP_200_OK)
+        return Response({'error': 'Invalid credentials or user is not a teacher'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
