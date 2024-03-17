@@ -4,6 +4,8 @@ import TeacherHeader from './TeacherHeader'
 import TeacherHome from "../../Pages/Teacher/TeacherHome";
 import TeacherSignup from "../../Pages/Teacher/Credentials/TeacherSignup";
 import TeacherLogin from "../../Pages/Teacher/Credentials/TeacherLogin";
+import AddCourse from "../../Pages/Teacher/Course/AddCourse";
+import AddVideos from "../../Pages/Teacher/Course/AddVideos";
 
 
 
@@ -50,6 +52,9 @@ function UserWrapper() {
           <Route  path="/" element={<TeacherHome/>}></Route>
           <Route  path="/signup" element={<TeacherSignup/>}></Route>
           <Route  path="/login" element={<TeacherLogin/>}></Route>
+
+          <Route  path="/add_course" element={<AddCourse/>}></Route>
+          <Route  path="/add_videos/:id" element={<AddVideos/>}></Route>
       </Routes>    
     
     </>

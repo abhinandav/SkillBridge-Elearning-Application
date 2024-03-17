@@ -3,9 +3,11 @@ import { RiHome2Line, RiArrowRightSLine } from 'react-icons/ri';
 import { BsFillPersonFill, BsListUl, BsArchive, BsBell, BsEnvelope } from 'react-icons/bs';
 import { IoIosSchool } from 'react-icons/io';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 
 const Sidebar = () => {
+  
   return (
     <div className="fixed left-0 top-0 w-64 h-full bg-[#f8f4f3] p-4 z-50 sidebar-menu transition-transform">
       <span className="flex items-center pb-4 border-b border-b-gray-800">

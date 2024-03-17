@@ -26,6 +26,8 @@ INSTALLED_APPS = [
 
     'User',
     'Adminapp',
+    'TeacherApp',
+    'StudentApp',
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework_simplejwt',
@@ -198,6 +200,9 @@ EMAIL_HOST_PASSWORD = 'yvmy iqzb gsng eqeh'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+FILE_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024  # 50 MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024   # 50 MB
+
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',

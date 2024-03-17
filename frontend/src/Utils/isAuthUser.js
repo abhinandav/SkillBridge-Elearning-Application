@@ -4,8 +4,7 @@ import {jwtDecode} from 'jwt-decode'
 const baseURL = 'http://127.0.0.1:8000';
 const updateToken = async () => {
     const refreshToken = localStorage.getItem('refresh');
-    console.log('refresh--',refreshToken);
-    console.log('updating');
+   
 
     try {
         const res = await axios.post(baseURL + '/api/accounts/token/refresh/', {
@@ -13,9 +12,7 @@ const updateToken = async () => {
         });
 
         if (res.status === 200) {
-            console.log('200');
             localStorage.setItem('access', res.data.access);
-            console.log('new_access',res.data.access);
             localStorage.setItem('refresh', res.data.refresh);
             return true;
             // let decoded = jwtDecode(res.data.access_token);
@@ -65,7 +62,7 @@ const fetchisAdmin = async () => {
             }
         });
   
-         console.log('issuperuser-isauthadmin',res.data.is_superuser);
+        //  console.log('issuperuser-isauthadmin',res.data.is_superuser);
         return res.data.is_staff;
   
     } catch (error) {
@@ -77,7 +74,6 @@ const fetchisAdmin = async () => {
 
 const isAuthUser = async () => {
     const accessToken = localStorage.getItem("access");
-    console.log('access----',accessToken);
 
     if (!accessToken) {
         return { name: null, isAuthenticated: false, isAdmin: false };
@@ -86,13 +82,12 @@ const isAuthUser = async () => {
     const currentTime = Date.now() / 1000;
 
     let decoded = jwtDecode(accessToken);
-    console.log(decoded.exp - currentTime);
 
 
     if (decoded.exp > currentTime) {
             const [checkAdmin, checkTeacher] = await Promise.all([fetchisAdmin(), fetchisTeacher()]);
-            console.log('Admin?', checkAdmin);
-            console.log('Teacher?', checkTeacher);
+            // console.log('Admin?', checkAdmin);
+            // console.log('Teacher?', checkTeacher);
             return { name: decoded.username, isAuthenticated: true, isAdmin: checkAdmin, isTeacher: checkTeacher };
         // let checkAdmin = await fetchisAdmin(); 
         // let checkTeacher = await fetchisTeacher(); 
@@ -105,8 +100,8 @@ const isAuthUser = async () => {
             let decoded = jwtDecode(accessToken);
 
             const [checkAdmin, checkTeacher] = await Promise.all([fetchisAdmin(), fetchisTeacher()]);
-            console.log('Admin2?', checkAdmin);
-            console.log('Teacher2?', checkTeacher);
+            // console.log('Admin2?', checkAdmin);
+            // console.log('Teacher2?', checkTeacher);
             return { name: decoded.username, isAuthenticated: true, isAdmin: checkAdmin, isTeacher: checkTeacher };
 
 
@@ -119,35 +114,6 @@ const isAuthUser = async () => {
         }
     }
 };
-
-
-
-
-
-// const isAuthUser= async()=>{
-//     const accessToken=localStorage.getItem('access')
-
-//     if(!accessToken){
-//         return {
-//             name:null,
-//             isAuthenticated:false
-//         }
-//     }
-
-//         const currentTime=Date.now()/1000
-//         const decoded=jwtDecode(accessToken)
-//         if (decoded.exp>currentTime){
-//             console.log('not expired');
-//             return{name:decoded.username,isAuthenticated:true
-//             }
-//         }
-//         else{
-//             console.log('expired');
-//             const updateSuccess=await updateToken()
-//             return updateSuccess
-//         }
-//     }
-
 
 
 export default isAuthUser ;
