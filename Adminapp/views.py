@@ -82,3 +82,21 @@ class AdminUserRetrieveView(RetrieveAPIView):
 
         return Response(data, status=status.HTTP_200_OK)
     
+
+class UpdateTeacherDocuments(APIView):
+    def put(self, request, id, format=None):
+        print(id)
+        try:
+            teacher_document = TeacherDocument.objects.get(pk=id)
+            print(teacher_document)
+        except TeacherDocument.DoesNotExist:
+            print('404...........')
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = TeacherDocumentSerializer(teacher_document, data=request.data)
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

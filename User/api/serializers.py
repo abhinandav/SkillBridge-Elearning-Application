@@ -71,11 +71,12 @@ class TeacherDetailsSerializer(serializers.ModelSerializer):
 class TeacherDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeacherDocument
+        # fields='__all__'
         fields = ['id_proof', 'photo_proof','tenth_proof', 'plustwo_proof', 'graduation_proof', 'experience_proof' ]
 
     def create(self, validated_data):
         return TeacherDocument.objects.create(**validated_data)
-
+    
 
 
 

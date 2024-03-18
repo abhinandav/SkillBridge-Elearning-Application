@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import Sidebar from '../../Components/Admin/Sidebar'
-import AdminHeader from '../../Components/Admin/AdminHeader'
+import React, { useEffect, useState } from 'react';
+import Sidebar from '../../Components/Admin/Sidebar';
+import AdminHeader from '../../Components/Admin/AdminHeader';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-
 
 function TeacherDetailview() {
     const navigate = useNavigate();
     const baseURL = "http://127.0.0.1:8000";
     const { id } = useParams();
-    console.log('User ID:', id);
 
     const [userData, setUserData] = useState({
         user: {
@@ -17,63 +15,54 @@ function TeacherDetailview() {
             username: '',
             email: '',
         },
-        teacher_details: {
-            number: '',
-            experience: '',
-            age: '',
-            document: '',
-            address: '',
-        },
-
         teacher_documents: {
-            id_proof: '',
-            photo_proof: '',
-            tenth_proof: '',
-            plustwo_proof: '',
-            graduation_proof: '',
-            experience_proof: '',
-        },
-        documentVerificationStatus: {
             id_proof: false,
             photo_proof: false,
             tenth_proof: false,
             plustwo_proof: false,
             graduation_proof: false,
             experience_proof: false,
-        },
-        is_document_verified: false,
+        }
     });
 
     useEffect(() => {
-        console.log(`${baseURL}/adminapp/teacher_detail/${id}/`);
-
         axios.get(`${baseURL}/adminapp/teacher_detail/${id}/`)
             .then(response => {
                 setUserData(response.data);
-                console.log(response.data);
             })
             .catch(error => {
                 console.error('Error fetching user details:', error);
             });
     }, [id]);
 
-    const handleCheckboxChange = (documentType) => {
-        setUserData(prevState => {
-            const newDocumentVerificationStatus = {
-                ...prevState.documentVerificationStatus,
-                [documentType]: !prevState.documentVerificationStatus[documentType],
-            };
+    console.log('userdata',userData.teacher_documents.id);
 
-            // Check if all document verifications are true
-            const allDocumentsVerified = Object.values(newDocumentVerificationStatus).every(status => status);
 
-            return {
-                ...prevState,
-                documentVerificationStatus: newDocumentVerificationStatus,
-                is_document_verified: allDocumentsVerified,
-            };
-        });
+
+    const handleFormSubmit = async (e) => {
+        e.preventDefault()
+        const updatedData = {
+            ...userData,
+            teacher_documents: {
+                ...userData.teacher_documents,
+                id_verify: document.getElementById('id').checked,
+                photo_verify: document.getElementById('photo').checked,
+                tenth_verify: document.getElementById('tenth').checked,
+                plustwo_verify: document.getElementById('plustwo').checked,
+                graduation_verify: document.getElementById('graduation').checked,
+                experience_verify: document.getElementById('experience').checked,
+            }
+        };
+
+        await axios.put(`${baseURL}/adminapp/update_documents/${userData.teacher_documents.id}/`, updatedData)
+            .then(response => {
+                console.log('Data updated successfully:', response.data);
+            })
+            .catch(error => {
+                console.error('Error updating user documents:', error);
+            });
     };
+
 
   return (
         <>
@@ -86,20 +75,23 @@ function TeacherDetailview() {
                     <h2 className="text-center text-2xl font-semibold mt-3">{userData.user.username}</h2>
                     <p className="text-center text-gray-600 mt-1">{userData.user.email}</p>
                     
-                        {userData.teacher_documents.id_proof && (
+                    <form onSubmit={handleFormSubmit}>
+                        {userData.teacher_documents && userData.teacher_documents.id_proof && (
                             <div className="flex items-center mx-20 mb-3 mt-5">
-                            <h3 className="text-xl font-semibold mr-2">ID Proof:</h3>
-                            <a
-                                href={`http://localhost:8000${userData.teacher_documents.id_proof}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-500 mx-10"
-                            >
-                                View Document
-                            </a>
-                            <input type='checkbox'/>
+                                <h3 className="text-xl font-semibold mr-2">ID Proof:</h3>
+                                <a
+                                    href={`http://localhost:8000${userData.teacher_documents.id_proof}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-500 mx-10"
+                                >
+                                    View Document
+                                </a>
+                                <input type='checkbox' id='id'/>
                             </div>
                         )}
+
+
 
                         {userData.teacher_documents.photo_proof && (
                             <div className="flex items-center mx-20 mb-3">
@@ -112,12 +104,9 @@ function TeacherDetailview() {
                             >
                                 View Document
                             </a>
-                            <input type='checkbox'/>
+                            <input type='checkbox' id='photo'/>
                             </div>
                         )}
-
-
-
 
 
                         {userData.teacher_documents.tenth_proof && (
@@ -131,7 +120,7 @@ function TeacherDetailview() {
                             >
                                 View Document
                             </a>
-                            <input type='checkbox'/>
+                            <input type='checkbox' id='tenth'/>
                             </div>
                         )}
 
@@ -147,7 +136,7 @@ function TeacherDetailview() {
                             >
                                 View Document
                             </a>
-                            <input type='checkbox'/>
+                            <input type='checkbox' id='plustwo'/>
                             </div>
                         )}  
 
@@ -162,7 +151,7 @@ function TeacherDetailview() {
                             >
                                 View Document
                             </a>
-                            <input type='checkbox'/>
+                            <input type='checkbox' id='graduation'/>
                             </div>
                         )}   
 
@@ -177,13 +166,15 @@ function TeacherDetailview() {
                             >
                                 View Document
                             </a>
-                            <input type='checkbox'/>
+                            <input type='checkbox' id='experience'/>
                             </div>
-                        )}                         
+                        )}  
 
+                        <button>submit</button>
 
-                        </div>
+                </form>
 
+                </div>
                 </div>
                 </div>
     

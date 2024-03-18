@@ -51,7 +51,21 @@ function CourseView() {
         fetchCourse();
       }, [id]);
 
-      console.log(course.demo_video);
+
+    //   const handleBuyNow = async () => {
+    //     try {
+    //         const response = await axios.post(`${baseURL}/api/orders/`, {
+    //             user: userId, 
+    //             course: courseId, 
+    //             price: course.offer_price 
+    //         });
+    //         console.log('Order placed successfully:', response.data);
+    //     } catch (error) {
+    //         console.error('Error placing order:', error);
+    //     }
+    // };
+
+      console.log(course);
   return (
 
 <div>
@@ -176,7 +190,12 @@ function CourseView() {
                 Become a certified FullStack developer
             </li>
             </ul>
-            <span aria-describedby="tier-startup" className="mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-green-600 text-white shadow-sm hover:bg-green-800 focus-visible:outline-red-600">Buy plan</span>
+
+            <button 
+            aria-describedby="tier-startup"
+             className="mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-green-600 text-white shadow-sm hover:bg-green-800 focus-visible:outline-red-600">
+                Buy now</button>
+            {/* <span aria-describedby="tier-startup" >Buy plan</span> */}
 
         </div>
         </div>
