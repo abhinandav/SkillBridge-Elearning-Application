@@ -4,8 +4,9 @@ import AdminHeader from '../../Components/Admin/AdminHeader'
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
+
 function TeacherDetailview() {
-    const navigate=useNavigate()
+    const navigate = useNavigate();
     const baseURL = "http://127.0.0.1:8000";
     const { id } = useParams();
     console.log('User ID:', id);
@@ -20,34 +21,60 @@ function TeacherDetailview() {
             number: '',
             experience: '',
             age: '',
-            document: '', 
+            document: '',
             address: '',
         },
 
-        teacher_documents:{
-            id_proof:'',
-            photo_proof:'',
-            tenth_proof:'',
-            plustwo_proof:'',
-            graduation_proof:'',
-            experience_proof:'',
-        }
+        teacher_documents: {
+            id_proof: '',
+            photo_proof: '',
+            tenth_proof: '',
+            plustwo_proof: '',
+            graduation_proof: '',
+            experience_proof: '',
+        },
+        documentVerificationStatus: {
+            id_proof: false,
+            photo_proof: false,
+            tenth_proof: false,
+            plustwo_proof: false,
+            graduation_proof: false,
+            experience_proof: false,
+        },
+        is_document_verified: false,
     });
-    
 
     useEffect(() => {
-        console.log(`${baseURL}/adminapp/teacher_detail/${id}/`)
+        console.log(`${baseURL}/adminapp/teacher_detail/${id}/`);
 
         axios.get(`${baseURL}/adminapp/teacher_detail/${id}/`)
             .then(response => {
-                setUserData(response.data); 
+                setUserData(response.data);
                 console.log(response.data);
-
             })
             .catch(error => {
                 console.error('Error fetching user details:', error);
             });
     }, [id]);
+
+    const handleCheckboxChange = (documentType) => {
+        setUserData(prevState => {
+            const newDocumentVerificationStatus = {
+                ...prevState.documentVerificationStatus,
+                [documentType]: !prevState.documentVerificationStatus[documentType],
+            };
+
+            // Check if all document verifications are true
+            const allDocumentsVerified = Object.values(newDocumentVerificationStatus).every(status => status);
+
+            return {
+                ...prevState,
+                documentVerificationStatus: newDocumentVerificationStatus,
+                is_document_verified: allDocumentsVerified,
+            };
+        });
+    };
+
   return (
         <>
             <Sidebar/>
@@ -85,6 +112,7 @@ function TeacherDetailview() {
                             >
                                 View Document
                             </a>
+                            <input type='checkbox'/>
                             </div>
                         )}
 
@@ -103,6 +131,7 @@ function TeacherDetailview() {
                             >
                                 View Document
                             </a>
+                            <input type='checkbox'/>
                             </div>
                         )}
 
@@ -118,6 +147,7 @@ function TeacherDetailview() {
                             >
                                 View Document
                             </a>
+                            <input type='checkbox'/>
                             </div>
                         )}  
 
@@ -132,12 +162,13 @@ function TeacherDetailview() {
                             >
                                 View Document
                             </a>
+                            <input type='checkbox'/>
                             </div>
                         )}   
 
                             {userData.teacher_documents.experience_proof && (
                             <div className="flex items-center mx-20 mb-3">
-                            <h3 className="text-xl font-semibold mr-5 ">12 th Certificate:</h3>
+                            <h3 className="text-xl font-semibold mr-5 ">Experience Certificate:</h3>
                             <a
                                 href={`http://localhost:8000${userData.teacher_documents.experience_proof}`}
                                 target="_blank"
@@ -146,6 +177,7 @@ function TeacherDetailview() {
                             >
                                 View Document
                             </a>
+                            <input type='checkbox'/>
                             </div>
                         )}                         
 
@@ -161,3 +193,8 @@ function TeacherDetailview() {
 }
 
 export default TeacherDetailview
+
+
+
+
+

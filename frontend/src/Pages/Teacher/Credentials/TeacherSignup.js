@@ -191,8 +191,9 @@ const TeacherSignup = () => {
 
       if (teacherDetailsResponse.status === 200) {
         console.log('Teacher Details Response:', teacherDetailsResponse.data);
-        console.log('logined');
-        navigate('/userotp');
+        const  registeredEmail=teacherDetailsResponse.data.email
+        localStorage.setItem('registeredEmail', registeredEmail);
+        navigate('/teacher/teacher_otp');
         return teacherDetailsResponse;
       }
     } catch (error) {

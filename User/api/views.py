@@ -68,10 +68,11 @@ class TeacherRegisterView(APIView):
         if serializer.is_valid():
             try:
                 user = serializer.save(is_active=False)
-                send_otp_via_mail(user.email, user.otp)
+                # send_otp_via_mail(user.email, user.otp)
                 response_data = {
-                    'message': 'OTP sent successfully.',
-                    'email': user.email  
+                    'message': 'User Saved.',
+                    'email': user.email  ,
+                    'user_id': user.id,
                 }
                 return Response(response_data, status=status.HTTP_200_OK)
             except Exception as e:
@@ -81,6 +82,35 @@ class TeacherRegisterView(APIView):
 
 
 
+class OTPVerificationView(APIView):
+    def post(self, request):
+        serializer = OTPVerificationSerializer(data=request.data)
+        print(serializer)
+        
+        if serializer.is_valid():
+            print('valid serializer')
+            try:
+                email = serializer.validated_data.get('email')
+                entered_otp = serializer.validated_data.get('otp')
+                
+                user = User.objects.get(email=email )
+                print(user)
+                
+                if user.otp == entered_otp:
+                    print('valid otp')
+                    user.is_active = True
+                    user.save()
+                    return Response({'message': 'User registered and verified successfully'}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'error': 'Invalid OTP,Please Check your email and Verify'}, status=status.HTTP_400_BAD_REQUEST)
+                
+            except User.DoesNotExist:
+                return Response({'error': 'User not found or already verified'}, status=status.HTTP_404_NOT_FOUND)
+            except Exception as e:
+                print(f"Error during OTP verification: {e}")
+                return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
     def post(self,request):
@@ -135,32 +165,6 @@ class AdminLoginView(APIView):
         return Response(content, status=status.HTTP_200_OK)
 
 
-class OTPVerificationView(APIView):
-    def post(self, request):
-        serializer = OTPVerificationSerializer(data=request.data)
-        print('valid serializer')
-        
-        if serializer.is_valid():
-            try:
-                email = serializer.validated_data.get('email')
-                entered_otp = serializer.validated_data.get('otp')
-                
-                user = User.objects.get(email=email, is_staff=False)
-                
-                if user.otp == entered_otp:
-                    user.is_active = True
-                    user.save()
-                    return Response({'message': 'User registered and verified successfully'}, status=status.HTTP_200_OK)
-                else:
-                    return Response({'error': 'Invalid OTP,Please Check your email and Verify'}, status=status.HTTP_400_BAD_REQUEST)
-                
-            except User.DoesNotExist:
-                return Response({'error': 'User not found or already verified'}, status=status.HTTP_404_NOT_FOUND)
-            except Exception as e:
-                print(f"Error during OTP verification: {e}")
-                return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # class TeacherRegisterView(APIView):
@@ -194,10 +198,15 @@ class TeacherDetailsView(APIView):
 
                 if serializer.is_valid():
                     teacher_details = serializer.save(user=user)
+                    send_otp_via_mail(user.email, user.otp)
+
                     response_data = {
-                        'message': 'Teacher details saved successfully.',
+                        'message': 'OTP sent successfully.',
                         'teacher_details_id': teacher_details.id,
+                        'email': user.email  ,
+                        'user_id': user.id,
                     }
+                    
                     return Response(response_data, status=status.HTTP_200_OK)
                 else:
                     return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
