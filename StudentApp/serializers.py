@@ -3,6 +3,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer,Token
 from User.api import serializers,views
 from User.models import *
 from Adminapp.views import *
+from TeacherApp.models import *
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -46,39 +47,22 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
 
 
 
+class VideoSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model =Videos
+        fields= '__all__'
 
 
 
+class CourseSerializer(serializers.ModelSerializer):
+    videos = VideoSerializer(many=True, read_only=True)
+    user = serializers.SerializerMethodField()
+    class Meta:
+        model = Course
+        fields = '__all__'
 
-
-# class UserProfileSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = UserProfile
-#         fields = ['profile_pic', 'phone', 'social_link1', 'social_link2', 'about', 'current_role']
-
-
-
-# class StudentUserSerializer(serializers.ModelSerializer):
-#     User_Profile = UserProfileSerializer(required=False)
-
-#     class Meta:
-#         model = User
-#         fields = ['id', 'username', 'User_Profile']
-
-#     def update(self, instance, validated_data):
-#         # Update username if present in validated data
-#         username = validated_data.pop('username', None)
-#         if username:
-#             instance.username = username
-#             instance.save()
-
-#         # Update UserProfile if present in validated data
-#         profile_data = validated_data.pop('User_Profile', None)
-#         if profile_data:
-#             user_profile = instance.User_Profile
-#             for key, value in profile_data.items():
-#                 setattr(user_profile, key, value)
-#             user_profile.save()
-
-#         return instance
+    def get_user(self, obj):
+        return obj.added_by.username
+    
 

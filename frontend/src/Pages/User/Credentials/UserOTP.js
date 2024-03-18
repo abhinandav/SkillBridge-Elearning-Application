@@ -2,10 +2,9 @@ import { useRef, useState } from "react";
 import React  from 'react'
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-
-
-// ... (your imports)
 
 function UserOTP() {
     const [otpValues, setOtpValues] = useState(['', '', '', '']);
@@ -41,6 +40,7 @@ function UserOTP() {
         if (res.status === 200) {
           console.log('verified');
           navigate('/login');
+          toast.success(' Account created Successfully');
         } else {
           console.log('Verification failed');
         }

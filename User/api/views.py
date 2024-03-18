@@ -49,7 +49,7 @@ class UserRegisterView(APIView):
                 send_otp_via_mail(user.email, user.otp)
                 response_data = {
                     'message': 'OTP sent successfully.',
-                    'email': user.email  # Include the user's email
+                    'email': user.email  
                 }
                 return Response(response_data, status=status.HTTP_200_OK)
             
@@ -58,6 +58,28 @@ class UserRegisterView(APIView):
                 return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+class TeacherRegisterView(APIView):
+    def post(self, request):
+        serializer = TeacherRegisterSerializer(data=request.data)
+
+        if serializer.is_valid():
+            try:
+                user = serializer.save(is_active=False)
+                send_otp_via_mail(user.email, user.otp)
+                response_data = {
+                    'message': 'OTP sent successfully.',
+                    'email': user.email  
+                }
+                return Response(response_data, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 class LoginView(APIView):
@@ -141,23 +163,23 @@ class OTPVerificationView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class TeacherRegisterView(APIView):
-    def post(self, request):
-        serializer = TeacherRegisterSerializer(data=request.data)
+# class TeacherRegisterView(APIView):
+#     def post(self, request):
+#         serializer = TeacherRegisterSerializer(data=request.data)
 
-        if serializer.is_valid():
-            try:
-                user = serializer.save()
-                response_data = {
-                    'message': 'Teacher registration successful.',
-                    'user_id': user.id,
-                }
-                print('TeacherRegisterView',response_data)
-                return Response(response_data, status=status.HTTP_200_OK)
-            except Exception as e:
-                return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+#         if serializer.is_valid():
+#             try:
+#                 user = serializer.save()
+#                 response_data = {
+#                     'message': 'Teacher registration successful.',
+#                     'user_id': user.id,
+#                 }
+#                 print('TeacherRegisterView',response_data)
+#                 return Response(response_data, status=status.HTTP_200_OK)
+#             except Exception as e:
+#                 return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#         else:
+#             return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 

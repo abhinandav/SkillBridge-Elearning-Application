@@ -31,8 +31,6 @@ function TeacherDetailview() {
         axios.get(`${baseURL}/adminapp/teacher_detail/${id}/`)
             .then(response => {
                 setUserData(response.data); 
-                console.log(response.data);
-                console.log(userData.user.name);
             })
             .catch(error => {
                 console.error('Error fetching user details:', error);

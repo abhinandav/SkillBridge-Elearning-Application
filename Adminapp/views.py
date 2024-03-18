@@ -41,6 +41,8 @@ class AdminUserListCreateView(ListCreateAPIView):
 
 
 
+
+
 class AcceptUserView(APIView):
     def patch(self, request, pk, *args, **kwargs):
         user = get_object_or_404(User, pk=pk)
@@ -68,7 +70,6 @@ class AdminUserRetrieveView(RetrieveAPIView):
         teacher_documents_instance = TeacherDocument.objects.get(user=user_instance)
         
         user_serializer = self.get_serializer(user_instance)
-
         teacher_details_serializer = TeacherDetailsSerializer(teacher_details_instance)
         teacher_documents_serializer = TeacherDocumentSerializer(teacher_documents_instance)
 

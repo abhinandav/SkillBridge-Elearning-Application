@@ -113,11 +113,6 @@ const TeacherSignup = () => {
         setNumberError('Number is required *');
       }
       
-      // if (!event.target.documents || !event.target.documents.files || !event.target.documents.files[0]) {
-      //   setFileError('Please select a file before submitting.');
-      //   console.log('Please select a file before submitting.');
-      //   return;
-      // }
 
 
   
@@ -197,7 +192,7 @@ const TeacherSignup = () => {
       if (teacherDetailsResponse.status === 200) {
         console.log('Teacher Details Response:', teacherDetailsResponse.data);
         console.log('logined');
-        navigate('/teacher/login');
+        navigate('/userotp');
         return teacherDetailsResponse;
       }
     } catch (error) {

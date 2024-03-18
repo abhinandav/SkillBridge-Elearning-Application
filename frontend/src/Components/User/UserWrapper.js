@@ -11,7 +11,7 @@ import CourseList from "../../Pages/User/CourseList";
 import FPEmails from '../../Pages/User/Credentials/FPEmail'
 import FPreset from "../../Pages/User/Credentials/FPreset";
 import ProfileEdit from "../../Pages/User/Profile/ProfileEdit";
-import Navbar from "./NavBar";
+import CourseView from "../../Pages/User/CourseView";
 
 
 
@@ -66,6 +66,7 @@ function UserWrapper() {
           <Route  path="course_list" element={<CourseList/>}></Route>
           <Route  path="fpemail" element={<FPEmails/>}></Route>
           <Route  path="change_password/:id" element={<FPreset/>}></Route>
+          <Route  path="course_view/:id" element={<CourseView/>}></Route>
 
           
 

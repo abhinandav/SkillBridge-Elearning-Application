@@ -1,39 +1,11 @@
-<!-- component -->
-<link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" />
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
-<main x-data="app" class="min-w-screen grid min-h-screen place-items-center">
-    <button type="button" @click="closeToast()" x-show="open" x-transition.duration.300ms class="fixed right-4 top-4 z-50 rounded-md bg-green-500 px-4 py-2 text-white transition hover:bg-green-600">
-        <div class="flex items-center space-x-2">
-            <span class="text-3xl"><i class="bx bx-check"></i></span>
-            <p class="font-bold">Item Created Successfully!</p>
-        </div>
-    </button>
 
-    <button type="button" @click="openToast()" class="rounded-md bg-blue-500 px-4 py-2 font-bold text-white transition hover:bg-blue-600">Launch toast</button>
-</main>
-
-<script>
-  let timer;
-
-  document.addEventListener("alpine:init", () => {
-      Alpine.data("app", () => ({
-          open: false,
-
-          openToast() {
-              if (this.open) return;
-              this.open = true;
-
-              clearTimeout(timer);
-
-              timer = setTimeout(() => {
-                  this.open = false;
-              }, 5000);
-          },
-
-          closeToast() {
-              this.open = false;
-          },
-      }));
-  });
-</script>
+<div className="mt-32">
+  <div className="px-4 sm:px-8 max-w-5xl m-auto">
+      
+      <ul className="border border-gray-200 rounded overflow-hidden shadow-md">
+          <li className="px-4 py-2 bg-white hover:bg-sky-100 hover:text-sky-900 border-b last:border-none border-gray-200 transition-all duration-300 ease-in-out">First Item</li>
+      </ul>
+  </div>
+</div>

@@ -12,6 +12,8 @@ class Course(models.Model):
     benefit2=models.CharField(max_length=250,blank=True,null=True)
     benefit3=models.CharField(max_length=250,blank=True,null=True)
 
+    date_added=models.DateField(auto_now_add=True)
+
     original_price=models.CharField(max_length=250)
     offer_price=models.CharField(max_length=250)
 
@@ -29,7 +31,7 @@ class Videos(models.Model):
     course=models.ForeignKey(Course,on_delete=models.CASCADE,related_name="Course")
     video_name=models.CharField(max_length=250)
     description=models.TextField()
-    video=models.FileField(upload_to='video/videos')
+    video=models.FileField(upload_to='video/videos',blank=True,null=True)
     is_accepted=models.BooleanField(default=False)
     is_blocked=models.BooleanField(default=False)
     is_rejected=models.BooleanField(default=False)

@@ -1,124 +1,113 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import {Link} from 'react-router-dom'
 
 const CourseList = () => {
+  const baseURL = "http://127.0.0.1:8000";
+  const [courses, setCourses] = useState([]);
+
+
+  const fetchUsers = (url) => {
+    axios.get(url)
+      .then((response) => {
+        if (response.data && Array.isArray(response.data)) {
+          const filterdCourses = response.data.filter(course =>  !course.is_blocked );
+          // const filterdCourses = response.data.filter(course =>  !course.is_blocked && !user.is_staff );
+
+          console.log(response.data);
+          setCourses(filterdCourses);
+        } else {
+          console.error("Error fetching users: Data is not an array or undefined", response);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching users:", error);
+      });
+  };
+
+
+  useEffect(() => {
+    fetchUsers(baseURL + "/student/courses/");
+  }, []);
+
+
+
+
   return (
-    <div>
-    <span
-      className="relative my-10 block p-8 overflow-hidden border bg-white border-slate-300 rounded-lg ml-6 mr-6"
-    >
-      <div className="justify-between sm:flex">
+
+    <div className=" p-6 bg-gray-100 flex items-center justify-center">
+      <div className="container max--screen-lg mx-auto my-10">
         <div>
-          <h5 className="text-xl font-bold text-slate-900">
-            Building a beautiful product as a software developer
-          </h5>
-          <p className="mt-1 text-xs font-medium text-slate-600">By Ana Doe</p>
-        </div>
+        
 
-        <div className="flex-shrink-0 hidden ml-3 sm:block">
-          <img
-            className="object-cover w-16 h-16 rounded-lg shadow-sm"
-            src="https://github.com/creativetimofficial/argon-design-system/blob/master/assets/img/faces/team-2.jpg?raw=true"
-            alt=""
-          />
+          <div className="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
+
+          <h1 className="text-4xl font-bold  m-5 text-gray-500">All Courses</h1>
+            <div className="grid gap-2 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
+              
+            {courses.length === 0 && <tr><td>No Courses Avialable now</td></tr>}
+            {courses.map((course) => (
+            <div key={course.id}>
+              <Link to={`/course_view/${course.id}`}>
+              <span   className="relative my-10 block p-8 overflow-hidden border bg-white border-slate-300 rounded-lg ml-6 mr-6">
+                <div className="justify-between sm:flex">
+                  <div>
+                    <h5 className="text-2xl font-bold text-slate-900">
+                      {course.course_name}  
+                    </h5>
+                    <p className="mt-1 text-xl font-medium text-slate-600">By  {course.user}  </p>
+                  </div>
+
+                  <div className="flex-shrink-0 hidden ml-3 sm:block">
+                    <img
+                      className="object-cover w-100 h-16 rounded-lg shadow-sm"
+                      src="https://github.com/creativetimofficial/argon-design-system/blob/master/assets/img/faces/team-2.jpg?raw=true"
+                      alt=""
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4 sm:pr-8">
+                  <p className="text-md text-slate-500">
+                  {course.description}
+                  </p>
+                </div>
+
+
+                <dl className="flex mt-6">
+                  <div className="flex flex-col-reverse">
+                    <dt className="text-sm font-medium text-slate-600">Published</dt>
+                    <dd className="text-xs text-slate-500"> {course.date_added}</dd>
+                  </div>
+                  <div className="flex flex-col-reverse ml-3 sm:ml-6">
+                    <dt className="text-sm font-large text-slate-600">Level</dt>
+                    <dd className="text-xs text-slate-500">{course.level}</dd>
+                  </div>
+
+
+      
+
+                  <div className="flex flex-col-reverse ml-3 sm:ml-6 mx-20">
+                    <dd className="text-md text-slate-500 text-slate-500"><strike>Rs {course.original_price}</strike></dd>
+                    <dd className="text-xl text-slate-500 text-green-500">Rs {course.offer_price}</dd>
+                  </div>
+
+
+                </dl>
+              </span>
+              </Link>
+            </div>
+
+            ))}
+
+
+            
+          </div>
         </div>
       </div>
-
-      <div className="mt-4 sm:pr-8">
-        <p className="text-sm text-slate-500">
-          Open source Tailwind UI components and templates to bootstrap your new apps, projects, or landing sites! Open source Tailwind UI.
-        </p>
-      </div>
-      <dl className="flex mt-6">
-        <div className="flex flex-col-reverse">
-          <dt className="text-sm font-medium text-slate-600">Published</dt>
-          <dd className="text-xs text-slate-500">31st June, 2022</dd>
-        </div>
-        <div className="flex flex-col-reverse ml-3 sm:ml-6">
-          <dt className="text-sm font-medium text-slate-600">Reading time</dt>
-          <dd className="text-xs text-slate-500">5 minutes</dd>
-        </div>
-      </dl>
-    </span>
-
-    <span
-      className="relative my-10 block p-8 overflow-hidden border bg-white border-slate-300 rounded-lg ml-6 mr-6"
-    >
-      <div className="justify-between sm:flex">
-        <div>
-          <h5 className="text-xl font-bold text-slate-900">
-            Building a beautiful product as a software developer
-          </h5>
-          <p className="mt-1 text-xs font-medium text-slate-600">By Ana Doe</p>
-        </div>
-
-        <div className="flex-shrink-0 hidden ml-3 sm:block">
-          <img
-            className="object-cover w-16 h-16 rounded-lg shadow-sm"
-            src="https://github.com/creativetimofficial/argon-design-system/blob/master/assets/img/faces/team-2.jpg?raw=true"
-            alt=""
-          />
-        </div>
-      </div>
-
-      <div className="mt-4 sm:pr-8">
-        <p className="text-sm text-slate-500">
-          Open source Tailwind UI components and templates to bootstrap your new apps, projects, or landing sites! Open source Tailwind UI.
-        </p>
-      </div>
-      <dl className="flex mt-6">
-        <div className="flex flex-col-reverse">
-          <dt className="text-sm font-medium text-slate-600">Published</dt>
-          <dd className="text-xs text-slate-500">31st June, 2022</dd>
-        </div>
-        <div className="flex flex-col-reverse ml-3 sm:ml-6">
-          <dt className="text-sm font-medium text-slate-600">Reading time</dt>
-          <dd className="text-xs text-slate-500">5 minutes</dd>
-        </div>
-      </dl>
-    </span>
-
-
-    <span
-      className="relative block p-8 overflow-hidden border bg-white border-slate-300 rounded-lg ml-6 mr-6"
-    >
-      <span
-        className="absolute inset-x-0 bottom-0 h-2 bg-gradient-to-r from-green-300 via-blue-500 to-purple-600"
-      ></span>
-
-      <div className="justify-between sm:flex">
-        <div>
-          <h5 className="text-xl font-bold text-slate-900">
-            Building a beautiful product as a software developer
-          </h5>
-          <p className="mt-1 text-xs font-medium text-slate-600">By Ana Doe</p>
-        </div>
-
-        <div className="flex-shrink-0 hidden ml-3 sm:block">
-          <img
-            className="object-cover w-16 h-16 rounded-lg shadow-sm"
-            src="https://github.com/creativetimofficial/argon-design-system/blob/master/assets/img/faces/team-2.jpg?raw=true"
-            alt=""
-          />
-        </div>
-      </div>
-
-      <div className="mt-4 sm:pr-8">
-        <p className="text-sm text-slate-500">
-          Open source Tailwind UI components and templates to bootstrap your new apps, projects, or landing sites! Open source Tailwind UI.
-        </p>
-      </div>
-      <dl className="flex mt-6">
-        <div className="flex flex-col-reverse">
-          <dt className="text-sm font-medium text-slate-600">Published</dt>
-          <dd className="text-xs text-slate-500">31st June, 2022</dd>
-        </div>
-        <div className="flex flex-col-reverse ml-3 sm:ml-6">
-          <dt className="text-sm font-medium text-slate-600">Reading time</dt>
-          <dd className="text-xs text-slate-500">5 minutes</dd>
-        </div>
-      </dl>
-    </span>
     </div>
+  </div>
+
   );
 };
 

@@ -34,14 +34,10 @@ class UserDetails(APIView):
             return Response(data)
 
 
-
-
-
 class UserDetailsUpdate(APIView):
     permission_classes = [IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser)
-
-    print('before post')
+    
     def post(self, request, *args, **kwargs):
 
         print('post')
@@ -57,4 +53,56 @@ class UserDetailsUpdate(APIView):
             print('error', serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-      
+
+
+class CourseListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+
+
+
+
+
+
+
+
+class CourseDetailView(generics.RetrieveAPIView):
+    serializer_class = CourseSerializer
+    lookup_url_kwarg = 'id'
+
+    def get_queryset(self):
+        queryset = Course.objects.filter(id=self.kwargs.get(self.lookup_url_kwarg))
+        return queryset
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+    
+
+
+
+
+
+
+
+
+
+class CourseDetailView(RetrieveAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+    lookup_field = 'id'
+
+    def retrieve(self, request, *args, **kwargs):
+        course_instance = self.get_object()
+        video_instances = Videos.objects.filter(course=course_instance)
+
+        course_serializer = self.get_serializer(course_instance)
+        video_serializer = VideoSerializer(video_instances, many=True)
+
+        data = {
+            'course': course_serializer.data,
+            'videos': video_serializer.data
+        }
+        
+        return Response(data, status=status.HTTP_200_OK)

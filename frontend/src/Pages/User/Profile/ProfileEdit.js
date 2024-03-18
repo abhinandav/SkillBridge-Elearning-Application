@@ -101,6 +101,7 @@ const ProfileEdit = () => {
         form_data.append('social_link1', formData.linkedinurl);
         form_data.append('social_link2', formData.fburl);
         form_data.append('about', formData.about);
+        
         if (formData.profilePic instanceof File) {
             form_data.append('profile_pic', formData.profilePic);
         }

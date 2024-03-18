@@ -7,6 +7,7 @@ function AdminPrivateRoute({ children }) {
     is_authenticated: false,
     is_admin: false,
   });
+  
 
   const [isLoading, setLoading] = useState(true);
 

@@ -6,12 +6,21 @@ import TeacherSignup from "../../Pages/Teacher/Credentials/TeacherSignup";
 import TeacherLogin from "../../Pages/Teacher/Credentials/TeacherLogin";
 import AddCourse from "../../Pages/Teacher/Course/AddCourse";
 import AddVideos from "../../Pages/Teacher/Course/AddVideos";
+import TeacherVideoPreview from "../../Pages/Teacher/Course/TeacherVideoPreview";
+import TeacherCourseList from "../../Pages/Teacher/Course/TeacherCourseList";
+import TeacherCourseView from "../../Pages/Teacher/Course/TeacherCourseView";
+import EditCourse from "../../Pages/Teacher/Course/EditCourse";
+import EditVideo from "../../Pages/Teacher/Course/EditVideo";
+import TeacherProfile from "../../Pages/Teacher/Profile/TeacherProfile";
+import TeacherProfileEdit from "../../Pages/Teacher/Profile/TeacherProfileEdit";
+import TeacherProfileCourseList from "../../Pages/Teacher/Profile/TeacherProfileCourseList";
 
 
 
 import { useDispatch, useSelector } from "react-redux";
 import isAuthTeacher from "../../Utils/isAuthTeacher";
 import { set_authentication } from "../../Redux/autehnticationSlice"; 
+import TeacherPrivateRoute from "../PrivateRoutes/TecaherPrivateRoute";
 
 
 function UserWrapper() {
@@ -53,12 +62,22 @@ function UserWrapper() {
           <Route  path="/signup" element={<TeacherSignup/>}></Route>
           <Route  path="/login" element={<TeacherLogin/>}></Route>
 
-          <Route  path="/add_course" element={<AddCourse/>}></Route>
-          <Route  path="/add_videos/:id" element={<AddVideos/>}></Route>
+          <Route  path="/my_courses" element={<TeacherPrivateRoute><TeacherCourseList/></TeacherPrivateRoute>}></Route>
+          <Route  path="/view_course/:id" element={<TeacherPrivateRoute><TeacherCourseView/></TeacherPrivateRoute>}></Route>
+          <Route  path="/add_course" element={<TeacherPrivateRoute><AddCourse/></TeacherPrivateRoute>}></Route>
+          <Route  path="/edit_course/:id" element={<TeacherPrivateRoute><EditCourse/></TeacherPrivateRoute>}></Route>
+          <Route  path="/add_videos/:id" element={<TeacherPrivateRoute><AddVideos/></TeacherPrivateRoute>}></Route>
+          <Route  path="/edit_video/:id" element={<TeacherPrivateRoute><EditVideo/></TeacherPrivateRoute>}></Route>
+          <Route path='/video_preview' element={<TeacherPrivateRoute><TeacherVideoPreview/></TeacherPrivateRoute>}></Route>
+
+          <Route path='/teacher_profile' element={<TeacherPrivateRoute><TeacherProfile/></TeacherPrivateRoute>}></Route>
+          <Route path='/teacher_profile_edit' element={<TeacherPrivateRoute><TeacherProfileEdit/></TeacherPrivateRoute>}></Route>
+          <Route path='/teacher_mycourse_list' element={<TeacherPrivateRoute><TeacherProfileCourseList/></TeacherPrivateRoute>}></Route>
       </Routes>    
+   
     
     </>
   );
-}
+}<TeacherPrivateRoute></TeacherPrivateRoute>
 
 export default UserWrapper;

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const UserSignUp = () => {
@@ -103,6 +105,7 @@ const UserSignUp = () => {
         localStorage.setItem('registeredEmail', registeredEmail);
         console.log(registeredEmail);
         navigate('/userotp');
+        toast.success(' Otp Sented to your Email');
         return res;
       }
     }
