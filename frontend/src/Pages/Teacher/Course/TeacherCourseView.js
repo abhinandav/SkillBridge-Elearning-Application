@@ -2,6 +2,8 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaEdit  } from 'react-icons/fa'
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function TeacherCourseView() {
     const baseURL = "http://127.0.0.1:8000";
@@ -40,9 +42,15 @@ function TeacherCourseView() {
               original_price:data.course.original_price,
               offer_price:data.course.offer_price,
               videos: data.videos,
-              is_blocked:data.course.is_blocked
+              is_blocked:data.course.is_blocked,
+              is_accepted:data.course.is_accepted,
+
           });
           console.log(response.data);
+          console.log('ss',data.course.is_accepted);
+            if (data.course.is_accepted===false){
+                toast.error(' Your Course is Not yet Verified');
+            }
         } catch (error) {
           console.error("Error fetching course:", error);
         }

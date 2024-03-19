@@ -112,30 +112,35 @@ class OTPVerificationView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class LoginView(APIView):
-    def post(self,request):
-        email=request.data['email']
-        password=request.data['password']
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
 
-        user=authenticate(username=email,password=password)
+        user = authenticate(username=email, password=password)
 
-        if user is not None and not user.is_staff  and  user.is_active:
-            refresh = RefreshToken.for_user(user)
-            refresh['username'] = str(user.username)
-
-            access_token = refresh.access_token
-            refresh_token = str(refresh)
-
-            content = {
-                'access_token': str(access_token),
-                'refresh_token': refresh_token,
-                'isAdmin': user.is_superuser,
-            }
-        elif user.is_staff:
-            return Response({'This account is not a user account'}, status=status.HTTP_401_UNAUTHORIZED)
+        if user is None:
+            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        elif not user.is_active:
+            return Response({'error': 'Blocked'}, status=status.HTTP_403_FORBIDDEN)
         else:
-                return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-        return Response(content, status=status.HTTP_200_OK)
+            if not user.is_staff:
+                refresh = RefreshToken.for_user(user)
+                refresh['username'] = str(user.username)
+
+                access_token = str(refresh.access_token)
+                refresh_token = str(refresh)
+
+                content = {
+                    'access_token': access_token,
+                    'refresh_token': refresh_token,
+                    'isAdmin': user.is_superuser,
+                }
+                return Response(content, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'This account is not a user account'}, status=status.HTTP_401_UNAUTHORIZED) 
 
 
 
@@ -167,23 +172,6 @@ class AdminLoginView(APIView):
 
 
 
-# class TeacherRegisterView(APIView):
-#     def post(self, request):
-#         serializer = TeacherRegisterSerializer(data=request.data)
-
-#         if serializer.is_valid():
-#             try:
-#                 user = serializer.save()
-#                 response_data = {
-#                     'message': 'Teacher registration successful.',
-#                     'user_id': user.id,
-#                 }
-#                 print('TeacherRegisterView',response_data)
-#                 return Response(response_data, status=status.HTTP_200_OK)
-#             except Exception as e:
-#                 return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-#         else:
-#             return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -277,58 +265,18 @@ class TeacherLoginView(APIView):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# class TeacherDetailsView(APIView):
-#     def post(self, request):
-#         user_id = request.data.get('user_id')
-
-#         if user_id:
-#             user = User.objects.get(id=user_id)
-#             serializer = TeacherDetailsSerializer(data=request.data)
-
-#             if serializer.is_valid():
-#                 try:
-#                     teacher_details = serializer.save(user=user)
-#                     response_data = {
-#                         'message': 'Teacher details saved successfully.',
-#                         'teacher_details_id': teacher_details.id,
-#                     }
-#                     return Response(response_data, status=status.HTTP_200_OK)
-#                 except Exception as e:
-#                     return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-#             else:
-#                 return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-#         else:
-#             return Response({'error': 'User ID not provided.'}, status=status.HTTP_400_BAD_REQUEST)
         
 
-        
+# forgot password
+    
 
-# for forgot password
+
 class ForgotPassword(APIView):
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
         try:
             user = User.objects.get(email=email)
 
-            # Generate OTP
-            otp = generate_otp()
 
             link=f"http://localhost:3000/change_password/{user.id}/"
 
@@ -340,6 +288,9 @@ class ForgotPassword(APIView):
             return Response({'exists': True,'email':email , 'user_id': user.id, 'message': 'Please Check your Email'}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({'exists': False, 'message': 'Invalid Email.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+
 
 class ChangePasswordAPIView(APIView):
     def post(self, request, *args, **kwargs):
@@ -367,6 +318,69 @@ class ChangePasswordAPIView(APIView):
 
 
 
+# from rest_framework.views import APIView
+# from rest_framework.response import Response
+# from rest_framework import status
+# from django.http import HttpResponseBadRequest
+# import hashlib
+
+    
+# import hashlib
+# from django.http import HttpResponseBadRequest
+# from rest_framework.views import APIView
+# from rest_framework.response import Response
+# from User.models import User  # Assuming you have a User model
+
+# SECRET_KEY = 'xAbhINandYsKilLLeaRNz'
+
+# def generating_hash(user_id):
+#     data = f"{user_id}-{SECRET_KEY}"
+#     hash_value = hashlib.sha256(data.encode()).hexdigest()
+#     return hash_value
+
+# class ForgotPassword(APIView):
+#     def post(self, request, *args, **kwargs):
+#         email = request.data.get('email')
+#         try:
+#             user = User.objects.get(email=email)
+#             hash_value = generating_hash(user.id)
+#             link = f"http://localhost:3000/change_password?hash={hash_value}"
+#             print(link)
+
+#             send_password_reset_email(user, link)
+
+#             return Response({
+#                 'exists': True,
+#                 'email': email,
+#                 'message': 'Please check your email for password reset instructions.'
+#             }, status=status.HTTP_200_OK)
+#         except User.DoesNotExist:
+#             return Response({'exists': False, 'message': 'Invalid email.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+# class DecodeHash(APIView):
+#     def get(self, request, *args, **kwargs):
+#         hash_value = request.query_params.get('hash')
+
+#         if not hash_value:
+#             return HttpResponseBadRequest("Hash value not provided")
+
+#         decoded_value = decode_hash(hash_value)
+
+#         if decoded_value:
+#             return Response({'decoded_user_id': decoded_value})
+#         else:
+#             return Response({'message': 'Invalid hash value or SECRET_KEY'}, status=400)
+    
+
+# def decode_hash(hash_value):
+#     try:
+#         user_id, secret_key = hash_value.rsplit('-', 1)
+#         if secret_key != SECRET_KEY:
+#             return None 
+#         return user_id
+#     except ValueError:
+#         return None
 
 
 
@@ -376,7 +390,50 @@ class ChangePasswordAPIView(APIView):
 
 
 
+# -----------------------------
 
+# class TeacherDetailsView(APIView):
+#     def post(self, request):
+#         user_id = request.data.get('user_id')
+
+#         if user_id:
+#             user = User.objects.get(id=user_id)
+#             serializer = TeacherDetailsSerializer(data=request.data)
+
+#             if serializer.is_valid():
+#                 try:
+#                     teacher_details = serializer.save(user=user)
+#                     response_data = {
+#                         'message': 'Teacher details saved successfully.',
+#                         'teacher_details_id': teacher_details.id,
+#                     }
+#                     return Response(response_data, status=status.HTTP_200_OK)
+#                 except Exception as e:
+#                     return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#             else:
+#                 return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+#         else:
+#             return Response({'error': 'User ID not provided.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+# class TeacherRegisterView(APIView):
+#     def post(self, request):
+#         serializer = TeacherRegisterSerializer(data=request.data)
+
+#         if serializer.is_valid():
+#             try:
+#                 user = serializer.save()
+#                 response_data = {
+#                     'message': 'Teacher registration successful.',
+#                     'user_id': user.id,
+#                 }
+#                 print('TeacherRegisterView',response_data)
+#                 return Response(response_data, status=status.HTTP_200_OK)
+#             except Exception as e:
+#                 return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#         else:
+#             return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 

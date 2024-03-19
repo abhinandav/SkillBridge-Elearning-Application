@@ -4,7 +4,8 @@ import axios from 'axios'
 import {useDispatch, useSelector} from 'react-redux'
 import { set_authentication } from '../../../Redux/autehnticationSlice';
 import { jwtDecode } from 'jwt-decode';
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const UserLogin = () => {
@@ -19,9 +20,10 @@ const UserLogin = () => {
 
 
   const authentication_user=useSelector(state=>(state.authentication_user))
-  console.log('authenitttt',authentication_user.isAdmin);
-  console.log('authenitttt',authentication_user.isTeacher);
-  console.log('name',authentication_user.name);
+  console.log('auth admin',authentication_user.isAdmin);
+  console.log('auth teacher',authentication_user.isTeacher);
+  console.log('name',authentication_user.isAuthenticated);
+
 
 
   useEffect(() => {
@@ -40,69 +42,82 @@ const UserLogin = () => {
     // navigate('/', {})
   }, [state, navigate])
   
+
+
   const handleLoginSubmit = async (event) => {
     event.preventDefault()
-      setEmailError('')
-      setPasswordError('')
-      setLoginError('')
+    setEmailError('')
+    setPasswordError('')
+    setLoginError('')
 
-      const email = event.target.email.value
-      const password = event.target.password.value
+    const email = event.target.email.value
+    const password = event.target.password.value
 
-      if (!email.trim()) {
+    if (!email.trim()) {
         setEmailError('Email is required')
-      }
-  
-      if (!password.trim()) {
+    }
+
+    if (!password.trim()) {
         setPasswordError('Password is required');
-      }
+    }
 
-      if (password.length > 0 && password.length < 8) {
+    if (password.length > 0 && password.length < 8) {
         setPasswordError('Password must be at least 8 characters');
-      }
-  
-
-     
-
+    }
 
     const formData = new FormData();
     formData.append('email', event.target.email.value);
     formData.append('password', event.target.password.value);
-  
+
     try {
-      const res = await axios.post(baseURL+'/api/accounts/login/', formData);
-      console.log('Response',res)
-      if (res.status === 200) {
-        localStorage.setItem('access', res.data.access_token);
-        localStorage.setItem('refresh', res.data.refresh_token);
+        const res = await axios.post(baseURL + '/api/accounts/login/', formData);
+        console.log('Response', res)
+        if (res.status === 200) {
+            localStorage.setItem('access', res.data.access_token);
+            localStorage.setItem('refresh', res.data.refresh_token);
 
+            console.log('logined', res.data);
+            console.log('Access Token:', res.data.access_token);
+            console.log('Refresh Token:', res.data.refresh_token);
 
-        console.log('logined', res.data);
-        console.log('Access Token:', res.data.access_token);
-        console.log('Refresh Token:', res.data.refresh_token);
+            dispatch(
+                set_authentication({
+                    name: jwtDecode(res.data.access_token).username,
+                    isAuthenticated: true,
+                    isAdmin: false,
+                    isTeacher: false
+                })
+            );
+            navigate('/');
+        }
 
-          
-  
-        dispatch(
-          set_authentication({
-            name: jwtDecode(res.data.access_token).username,
-            isAuthenticated: true,
-            isAdmin: false,
-            isTeacher:false
-          })
-        );
-        navigate('/');
-      }
     } catch (error) {
-      console.error('Error during login:', error);
-      setLoginError('Invalid Credentials')
-      if (error.response) {
-        console.error('Response data:', error.response.data);
-        setLoginError('Invalid Credentials')
-      }
+
+        console.error('Error during login:', error);
+
+        if (error.response) {
+            console.error('Response data:', error.response);
+            if (error.response.status === 403) {
+                // toast.error('Your account is blocked by admin');
+                toast.error('Your account is blocked by admin', {
+                  style: {
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    position: 'fixed',
+                    top: '10%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                },
+              });
+            } else {
+                setLoginError('Invalid Credentials');
+            }
+        } else {
+            setLoginError('Invalid Credentials');
+        }
     }
-  };
-  
+};
 
 
 

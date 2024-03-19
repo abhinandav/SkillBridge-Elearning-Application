@@ -99,11 +99,12 @@ const UserSignUp = () => {
 
     try{
       const res = await axios.post(baseURL+'/api/accounts/signup/', formData);
+
+
       if (res.status == 200){
         console.log('Server Response:', res.data);
         const registeredEmail = res.data.email;
         localStorage.setItem('registeredEmail', registeredEmail);
-        console.log(registeredEmail);
         navigate('/userotp');
         toast.success(' Otp Sented to your Email');
         return res;

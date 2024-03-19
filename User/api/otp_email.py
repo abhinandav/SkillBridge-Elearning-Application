@@ -26,7 +26,6 @@ def send_otp(email, otp):
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
-# email_utils.py
 from django.core.mail import send_mail
 
 def send_password_reset_email(user, reset_link):
@@ -40,3 +39,13 @@ def send_password_reset_email(user, reset_link):
     
     send_mail(subject, message, 'from@SkillBridge.com', [user.email], fail_silently=False)
 
+
+
+
+import hashlib
+def generate_hash(user_id):
+    secret_key = 'xAbhINandYsKilLLeaRNz'
+    data = f"{user_id}-{secret_key}"
+    
+    hash_value = hashlib.sha256(data.encode()).hexdigest()
+    return hash_value

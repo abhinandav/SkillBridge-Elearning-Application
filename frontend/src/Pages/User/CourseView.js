@@ -1,11 +1,18 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, Form } from 'react-router-dom';
 import { FaLock } from 'react-icons/fa'
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function CourseView() {
     const baseURL = "http://127.0.0.1:8000";
+    const token = localStorage.getItem('access');
+    
+    const [alreadyPurchased, setAlreadyPurchased] = useState(false);
     const [course, setCourse] = useState({
+        course_id:'',
         course_name:'',
         user:'',
         description:'',
@@ -16,7 +23,9 @@ function CourseView() {
         original_price:'',
         offer_price:'',
         demo_video:null,
-        videos: []
+        videos: [],
+        purchased:false,
+        is_accepted:false
 
     });
     const { id } = useParams();
@@ -30,6 +39,7 @@ function CourseView() {
             const response = await axios.get(`${baseURL}/student/course_view/${id}/`);
             const data=response.data
             setCourse({
+                course_id:data.course.id,
                 course_name:data.course.course_name,
                 user:data.course.user,
                 description:data.course.description,
@@ -40,9 +50,11 @@ function CourseView() {
                 demo_video:data.course.demo_video,
                 original_price:data.course.original_price,
                 offer_price:data.course.offer_price,
-                videos: data.videos
+                videos: data.videos,
+                is_accepted:data.course.is_accepted,
             });
-            console.log(response.data);
+            console.log('data',response.data);
+            
           } catch (error) {
             console.error("Error fetching course:", error);
           }
@@ -52,20 +64,53 @@ function CourseView() {
       }, [id]);
 
 
-    //   const handleBuyNow = async () => {
-    //     try {
-    //         const response = await axios.post(`${baseURL}/api/orders/`, {
-    //             user: userId, 
-    //             course: courseId, 
-    //             price: course.offer_price 
-    //         });
-    //         console.log('Order placed successfully:', response.data);
-    //     } catch (error) {
-    //         console.error('Error placing order:', error);
-    //     }
-    // };
+    const handleBuyNow = async () => {
+        try {
+       const response = await axios.post( `${baseURL}/student/order/`,
+                {
+                    course: course.course_id, 
+                    price: course.offer_price 
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+    
+            console.log('Order placed successfully:', response.data);
+            setAlreadyPurchased(true);
 
-      console.log(course);
+        } catch (error) {
+            console.error('Error placing order:', error);
+        }
+    };
+
+
+
+    useEffect(() => {
+        const checkCoursePurchase = async () => {
+            try {
+                const response = await axios.get(`${baseURL}/student/purchased/${id}/`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                console.log('sssssssss',response.data);
+                setAlreadyPurchased(response.data.purchased);
+                
+            } catch (error) {
+                console.error("Error checking course purchase:", error);
+            }
+        };
+
+        checkCoursePurchase();
+    }, [id]);
+
+
+    
+      console.log('cjsdbjbdbsdjcbjsbdj',course);
   return (
 
 <div>
@@ -191,11 +236,17 @@ function CourseView() {
             </li>
             </ul>
 
-            <button 
-            aria-describedby="tier-startup"
-             className="mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-green-600 text-white shadow-sm hover:bg-green-800 focus-visible:outline-red-600">
+            
+            
+            {alreadyPurchased ? (
+                <span 
+                 className="mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-green-600 text-white shadow-sm hover:bg-green-800 focus-visible:outline-red-600">
+                    Already Purchased</span>
+            ) : (
+                <button  onClick={handleBuyNow} aria-describedby="tier-startup"
+                 className="mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-orange-600 text-white shadow-sm hover:bg-orange-800 focus-visible:outline-red-600">
                 Buy now</button>
-            {/* <span aria-describedby="tier-startup" >Buy plan</span> */}
+            )}
 
         </div>
         </div>

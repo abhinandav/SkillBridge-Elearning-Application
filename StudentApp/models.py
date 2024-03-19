@@ -8,3 +8,6 @@ class Order(models.Model):
     course=models.ForeignKey(Course, on_delete=models.CASCADE)
     date_purchased=models.DateField(auto_now_add=True,blank=True,null=True)
     price=models.CharField(max_length=100,blank=True,null=True)
+
+    def __str__(self):
+            return f"order by {self.user.username}    - course {self.course.course_name}" 

@@ -1,7 +1,15 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer,TokenRefreshSerializer
 from rest_framework import serializers
 from User.models import User,TeacherDetails
+from TeacherApp.models import *
 
+
+
+
+class VideosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Videos
+        fields= '__all__'
 
 
 

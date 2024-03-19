@@ -19,6 +19,7 @@ urlpatterns = [
     path("user/details/", UserDetails.as_view(), name="user-details"),
     path('forgotpassword/', ForgotPassword.as_view(), name='forgotpassword'),
     path('change_password/<int:id>/', ChangePasswordAPIView.as_view(), name='forgotpassword'),
+    # path('decode_hash/', DecodeHash.as_view(), name='decode_hash'),
 
 
 

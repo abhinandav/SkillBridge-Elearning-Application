@@ -66,10 +66,22 @@ function AdminTecaherRequest() {
         <div className='p-6'>
           <div className="bg-white p-8 rounded-md w-full">
             <div className="flex items-center justify-between pb-6">
-              <div>
-                <h2 className="text-gray-600 font-semibold">View New Teacher Requests</h2>
-                <span className="text-xs">Accept or Reject teachers</span>
+
+              <div className='flex justify-between'>
+                <div>
+                  <h2 className="text-gray-600 font-semibold">View New Teacher Requests</h2>
+                  <span className="text-xs">Accept or Reject teachers</span>
+                </div>
+                
+                <div>
+                    <Link to="/admin/course_list">
+                    <span className="text-md">Go back</span>
+                    </Link>
+                </div>
+                 
               </div>
+
+
               <div className="flex items-center justify-between">
                 <div className="lg:ml-40 ml-10 space-x-8">
                   

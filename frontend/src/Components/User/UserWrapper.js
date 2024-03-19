@@ -12,6 +12,8 @@ import FPEmails from '../../Pages/User/Credentials/FPEmail'
 import FPreset from "../../Pages/User/Credentials/FPreset";
 import ProfileEdit from "../../Pages/User/Profile/ProfileEdit";
 import CourseView from "../../Pages/User/CourseView";
+import EnrolledCourses from "../../Pages/User/Profile/EnrolledCourses";
+import ChangePasswordPage from "../../Pages/User/Credentials/LinkDecode";
 
 
 
@@ -67,12 +69,14 @@ function UserWrapper() {
           <Route  path="fpemail" element={<FPEmails/>}></Route>
           <Route  path="change_password/:id" element={<FPreset/>}></Route>
           <Route  path="course_view/:id" element={<CourseView/>}></Route>
+         
 
           
 
 
           <Route  path="profile" element={<UserPrivateRoute> <UserProfile/> </UserPrivateRoute>}> </Route>
           <Route  path="profile_edit" element={<UserPrivateRoute><ProfileEdit/></UserPrivateRoute>}></Route>
+          <Route  path="enrolled_courses" element={<UserPrivateRoute><EnrolledCourses/></UserPrivateRoute>}></Route>
       </Routes>    
     <UserFooter/>
     </>

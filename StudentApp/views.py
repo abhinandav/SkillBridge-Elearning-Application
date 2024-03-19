@@ -54,15 +54,9 @@ class UserDetailsUpdate(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class CourseListCreateAPIView(generics.ListCreateAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-
-
-
-
-
 
 
 
@@ -79,14 +73,6 @@ class CourseDetailView(generics.RetrieveAPIView):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
     
-
-
-
-
-
-
-
-
 
 class CourseDetailView(RetrieveAPIView):
     queryset = Course.objects.all()
@@ -106,3 +92,44 @@ class CourseDetailView(RetrieveAPIView):
         }
         
         return Response(data, status=status.HTTP_200_OK)
+
+
+
+class OrderCreateAPIView(APIView):
+    def post(self, request, format=None):
+        mutable_data = request.data.copy()
+        mutable_data['user'] = request.user.id
+        print(request.user.id)
+        
+        serializer = OrderSerializer(data=mutable_data)
+        
+        if serializer.is_valid():
+            serializer.save() 
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class CheckCoursePurchaseAPIView(APIView):
+    def get(self, request, course_id, format=None):
+        print(request.user)
+        if not request.user:
+            return Response({"message": "Authentication credentials were not provided"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        order_exists = Order.objects.filter(user=request.user, course_id=course_id).exists()
+        print(order_exists)
+        
+        if order_exists:
+            return Response({"purchased": True}, status=status.HTTP_200_OK)
+        else:
+            return Response({"purchased": False}, status=status.HTTP_200_OK)
+        
+
+class PurchasedCoursesListAPIView(generics.ListAPIView):
+    serializer_class = OrderMycourseSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        order=Order.objects.filter(user=user)
+        return order

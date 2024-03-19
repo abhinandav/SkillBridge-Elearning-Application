@@ -12,7 +12,10 @@ import { set_authentication } from "../../Redux/autehnticationSlice";
 import AdminPrivateRoute from "../PrivateRoutes/AdminPrivateRoute";
 import AdminTecaherRequest from "../../Pages/Admin/AdminTecaherRequest";
 import VerifyDocuments from '../../Pages/Admin/VerifyDocuments'
-
+import AdminCourseList from "../../Pages/Admin/AdminCourseList";
+import AdminCourseRequests from "../../Pages/Admin/AdminCourseRequests";
+import AdminCourseView from "../../Pages/Admin/AdminCourseView";
+import AdminAcceptedCourseVIew from "../../Pages/Admin/AdminAcceptedCourseVIew";
 
  
 function AdminWrapper() {
@@ -59,6 +62,12 @@ function AdminWrapper() {
       <Route path="/teacher_request" element={<AdminPrivateRoute><AdminTecaherRequest /></AdminPrivateRoute>} />
       <Route path="/teacher_detail/:id" element={<AdminPrivateRoute><TeacherDetailview /></AdminPrivateRoute>} />
       <Route path="/verify_documents/:id" element={<AdminPrivateRoute><VerifyDocuments /></AdminPrivateRoute>} />
+
+      
+      <Route path="/course_list" element={<AdminPrivateRoute><AdminCourseList /></AdminPrivateRoute>} />
+      <Route path="/course_request" element={<AdminPrivateRoute><AdminCourseRequests /></AdminPrivateRoute>} />
+      <Route path="/view_course/:id" element={<AdminPrivateRoute><AdminCourseView /></AdminPrivateRoute>} />
+      <Route path="/course_view/:id" element={<AdminPrivateRoute><AdminAcceptedCourseVIew /></AdminPrivateRoute>} />
 
       </Routes>    
     

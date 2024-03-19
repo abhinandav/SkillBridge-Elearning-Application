@@ -122,7 +122,7 @@ const TeacherProfileEdit = () => {
                         name: formData.username,
                         isAuthenticated: true,
                         isAdmin: false,
-                        isTeacher: false
+                        isTeacher: true
                     })
                 );
                 dispatch(set_profile_details({

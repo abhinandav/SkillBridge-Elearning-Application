@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 function ProfileSidebar() {
     const profileDetails = useSelector(state => state.profile_details);
-    console.log('pp',profileDetails);
+
 
   return (
     
@@ -39,7 +39,7 @@ function ProfileSidebar() {
               </Link>
 
               <hr className="my-6 border-t border-gray-300" />
-              <Link to='/user_course_list'>
+              <Link to='/enrolled_courses'>
               <div className="flex flex-col">
                 <span className="text-gray-700 text-lg  font-bold tracking-wider mb-2">Enrolled Courses</span>
               </div>

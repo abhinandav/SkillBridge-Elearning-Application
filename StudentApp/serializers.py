@@ -4,6 +4,7 @@ from User.api import serializers,views
 from User.models import *
 from Adminapp.views import *
 from TeacherApp.models import *
+from .models import *
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -66,3 +67,16 @@ class CourseSerializer(serializers.ModelSerializer):
         return obj.added_by.username
     
 
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['user', 'course', 'price', 'date_purchased'] 
+
+
+
+class OrderMycourseSerializer(serializers.ModelSerializer):
+    course = CourseSerializer()
+    class Meta:
+        model = Order
+        fields = ['user', 'course', 'price', 'date_purchased'] 
