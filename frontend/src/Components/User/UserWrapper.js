@@ -13,7 +13,6 @@ import FPreset from "../../Pages/User/Credentials/FPreset";
 import ProfileEdit from "../../Pages/User/Profile/ProfileEdit";
 import CourseView from "../../Pages/User/CourseView";
 import EnrolledCourses from "../../Pages/User/Profile/EnrolledCourses";
-import ChangePasswordPage from "../../Pages/User/Credentials/LinkDecode";
 import ForgotOtp from "../../Pages/User/Credentials/ForgotOtp";
 
 

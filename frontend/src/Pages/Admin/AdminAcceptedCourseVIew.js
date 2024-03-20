@@ -307,6 +307,13 @@ function AdminAcceptedCourseView() {
                 </div>
             </div>
 
+            <div className="lg:col-span-2">
+                    <video className="w-full" controls>
+                    <source src={course.demo_video} type="video/mp4" />
+                    Your browser does not support the video tag.
+                    </video>
+                </div>
+
         </div>
 
 

@@ -41,7 +41,7 @@ const EnrolledCourses = () => {
                                     {courses.length === 0 && <tr><td>No Courses Purchased</td></tr>}
                                     {courses.map((purchase) => (
                                         <div key={purchase.course.id}>
-                                            <Link to={`/teacher/view_course/${purchase.course.id}`}>
+                                            <Link to={`/course_view/${purchase.course.id}`}>
                                                 <span className="relative my-10 block p-8 overflow-hidden border bg-white border-slate-300 rounded-lg ml-6 mr-6">
                                                     <div className="justify-between sm:flex">
                                                         <div>

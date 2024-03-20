@@ -28,33 +28,51 @@ function EditCourse() {
         original_price:'',
         offer_price:'',
         demo_video:null,
+        thumbnail: null, 
 
     });
     
+
+
     const handleChange = (e) => {
-        if (e.target.name === 'demo') {
-            console.log("File input changed:", e.target.files);
-            if (e.target.files.length > 0) 
-            {
-                console.log("File selected. Setting demo_video to:", e.target.files[0]);
-                setCourse({
-                    ...course,
-                    demo_video: e.target.files[0]
-                });
-            } else {
-                console.log("No file selected. Keeping previous demo_video:", course.demo_video);
-                setCourse({
-                    ...course,
-                    demo_video: course.demo_video
-                });
-            }
-        } else {
+    if (e.target.name === 'demo') {
+        console.log("File input changed:", e.target.files);
+        if (e.target.files.length > 0) {
+            console.log("File selected. Setting demo_video to:", e.target.files[0]);
             setCourse({
                 ...course,
-                [e.target.name]: e.target.value
+                demo_video: e.target.files[0]
+            });
+        } else {
+            console.log("No file selected. Keeping previous demo_video:", course.demo_video);
+            setCourse({
+                ...course,
+                demo_video: course.demo_video
             });
         }
-    };
+    } else if (e.target.name === 'thumbnail') {
+        console.log("File input changed:", e.target.files);
+        if (e.target.files.length > 0) {
+            console.log("File selected. Setting thumbnail to:", e.target.files[0]);
+            setCourse({
+                ...course,
+                thumbnail: e.target.files[0]
+            });
+        } else {
+            console.log("No file selected. Keeping previous thumbnail:", course.thumbnail);
+            setCourse({
+                ...course,
+                thumbnail: course.thumbnail
+            });
+        }
+    } else {
+        setCourse({
+            ...course,
+            [e.target.name]: e.target.value
+        });
+    }
+};
+
     
     
     console.log(course.demo_video);
@@ -83,6 +101,7 @@ function EditCourse() {
             demo_video:demoVideo,
             original_price:Data.course.original_price,
             offer_price:Data.course.offer_price,
+            thumbnail: Data.course.thumbnail,
             videos: Data.videos
         });
         console.log(response.data);
@@ -144,6 +163,11 @@ if (!course.offer_price.trim()) {
           if (course.demo_video instanceof File) {
               formData.append('demo_video', course.demo_video);
           } 
+
+          if (course.thumbnail instanceof File) {
+            formData.append('thumbnail', course.thumbnail);
+        }
+
 
           const response = await axios.post(`${baseURL}/teacher/edit_course/${id}/`, formData, {
               headers: {
@@ -213,6 +237,19 @@ if (!course.offer_price.trim()) {
                       </p>
                     )}
                   </div>
+
+
+                  <div className="md:col-span-6 mt-3">
+                    <label htmlFor="thumbnail">Thumbnail</label>
+                    <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
+                        <input type='file' name="thumbnail" onChange={handleChange} className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent" />
+                    </div>
+                    {course.thumbnail && (
+                        <p className="mt-2 text-sm text-gray-500">
+                            <Link to={course.thumbnail}>Current Thumbnail</Link>
+                        </p>
+                    )}
+                </div>
 
 
                 <h3 className=' md:col-span-6 mt-5'>Benefits</h3>

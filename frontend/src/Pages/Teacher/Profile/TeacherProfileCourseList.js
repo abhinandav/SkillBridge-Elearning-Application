@@ -59,7 +59,7 @@ const TeacherProfileCourseList = () => {
                             <div className="flex-shrink-0 hidden ml-3 sm:block">
                               <img
                                 className="object-cover w-100 h-16 rounded-lg shadow-sm"
-                                src="https://github.com/creativetimofficial/argon-design-system/blob/master/assets/img/faces/team-2.jpg?raw=true"
+                                src={course.thumbnail}
                                 alt=""
                               />
                             </div>

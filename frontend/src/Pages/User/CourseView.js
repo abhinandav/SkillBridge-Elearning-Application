@@ -4,11 +4,14 @@ import { useParams, useNavigate, Link, Form } from 'react-router-dom';
 import { FaLock } from 'react-icons/fa'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from 'react-redux';
 
 
 function CourseView() {
     const baseURL = "http://127.0.0.1:8000";
     const token = localStorage.getItem('access');
+    const authentication_user = useSelector(state => state.authentication_user) || false;
+    const navigate=useNavigate()
     
     const [alreadyPurchased, setAlreadyPurchased] = useState(false);
     const [course, setCourse] = useState({
@@ -67,28 +70,57 @@ function CourseView() {
       }, [id]);
 
 
+
+
+
+    // const handleBuyNow = async () => {
+    //     try {
+    //    const response = await axios.post( `${baseURL}/student/order/`,
+    //             {
+    //                 course: course.course_id, 
+    //                 price: course.offer_price 
+    //             },
+    //             {
+    //                 headers: {
+    //                     Authorization: `Bearer ${token}`
+    //                 }
+    //             }
+    //         );
+    
+    //         console.log('Order placed successfully:', response.data);
+    //         setAlreadyPurchased(true);
+
+    //     } catch (error) {
+    //         console.error('Error placing order:', error);
+    //     }
+    // };
+
+
+
+
     const handleBuyNow = async () => {
         try {
-       const response = await axios.post( `${baseURL}/student/order/`,
-                {
-                    course: course.course_id, 
-                    price: course.offer_price 
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+            const response = await axios.post(`${baseURL}/student/order/`, {
+                course: course.course_id, 
+                price: course.offer_price 
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
-            );
+            });
     
-            console.log('Order placed successfully:', response.data);
-            setAlreadyPurchased(true);
-
+            if (response.status === 201) {
+                console.log('Order placed successfully:', response.data);
+                setAlreadyPurchased(true);
+            } 
         } catch (error) {
             console.error('Error placing order:', error);
+            if (error.response && error.response.status === 401) {
+                navigate('/login');
+            }
         }
     };
-
+    
 
 
     useEffect(() => {
@@ -238,6 +270,7 @@ function CourseView() {
                 Become a certified FullStack developer
             </li>
             </ul>
+
 
             
             

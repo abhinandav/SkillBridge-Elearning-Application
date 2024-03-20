@@ -3,6 +3,7 @@ from .models import Course,Videos
 
 class CourseSerializer(serializers.ModelSerializer):
     demo_video = serializers.FileField(required=False)
+    thumbnail = serializers.FileField(required=False)
     user = serializers.SerializerMethodField()
     class Meta:
         model = Course
