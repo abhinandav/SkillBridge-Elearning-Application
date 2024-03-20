@@ -54,7 +54,10 @@ function CourseView() {
                 is_accepted:data.course.is_accepted,
             });
             console.log('data',response.data);
-            
+            // console.log('ss',data.course.is_accepted);
+            // if (data.course.is_accepted===false){
+            //     toast.error(' Your Course is Not yet Verified');
+            // }
           } catch (error) {
             console.error("Error fetching course:", error);
           }

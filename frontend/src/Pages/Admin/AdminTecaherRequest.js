@@ -109,9 +109,7 @@ function AdminTecaherRequest() {
                         <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                           View
                         </th>
-                        <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          Documents
-                        </th>
+                
 
                         <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                           Action
@@ -144,20 +142,14 @@ function AdminTecaherRequest() {
                           </td>
 
                           <td>
-                            <Link to={`/admin/teacher_detail/${user.id}`}>
+                            <Link to={`/admin/verify_documents/${user.id}`}>
                             <button className="bg-blue-600 px-2 py-2  rounded-md  ml-3 text-white font-semibold tracking-wide cursor-pointer">
                               View
                             </button>
                             </Link>
                           </td>
 
-                          <td>
-                            <Link to={`/admin/verify_documents/${user.id}`}>
-                            <button className="bg-blue-600 px-2 py-2  rounded-md  ml-3 text-white font-semibold tracking-wide cursor-pointer">
-                              Docments
-                            </button>
-                            </Link>
-                          </td>
+                         
                           
 
                           

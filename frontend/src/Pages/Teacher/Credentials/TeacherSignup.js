@@ -172,14 +172,17 @@ const TeacherSignup = () => {
       const userResponse = await axios.post(userRegistrationEndpoint, userFormData);
 
       const userId = userResponse.data.user_id;
+      console.log('iddddddddd',userId);
 
 
-      teacherDetailsFormData.append('user_id', userId);
+      teacherDetailsFormData.append('user', userId);
+      console.log(teacherDetailsFormData);
+
       const teacherDetailsResponse = await axios.post(teacherDetailsEndpoint, teacherDetailsFormData);
       console.log('User detail  Registration Response:', teacherDetailsResponse.data);
 
       
-      teacherDocumentsFormData.append('user_id', userId);
+      teacherDocumentsFormData.append('user', userId);
       const teacherDocumentsResponse = await axios.post(teacherDocumentsEndpoint, teacherDocumentsFormData);
       console.log('Teacher documents Uploaded:', teacherDocumentsResponse.data);
 

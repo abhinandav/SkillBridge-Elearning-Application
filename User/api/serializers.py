@@ -65,14 +65,15 @@ class TeacherRegisterSerializer(UserRegisterSerializer):
 class TeacherDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeacherDetails
-        fields = ['number', 'age', 'experience', 'address']
+        fields='__all__'
+        # fields = ['number', 'age', 'experience', 'address']
 
 
 class TeacherDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeacherDocument
-        # fields='__all__'
-        fields = ['id_proof', 'photo_proof','tenth_proof', 'plustwo_proof', 'graduation_proof', 'experience_proof' ]
+        fields='__all__'
+        # fields = ['id_proof', 'photo_proof','tenth_proof', 'plustwo_proof', 'graduation_proof', 'experience_proof' ]
 
     def create(self, validated_data):
         return TeacherDocument.objects.create(**validated_data)

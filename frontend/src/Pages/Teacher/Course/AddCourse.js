@@ -6,7 +6,13 @@ function AddCourse() {
     const baseURL='http://127.0.0.1:8000'
     const token = localStorage.getItem('access');
     const navigate=useNavigate()
-
+    const [nameError,setNameError]=useState('')
+    const [descError,setDescError]=useState('')
+    const [levelError,setLevelError]=useState('')
+    const [opriceError,setOpriceError]=useState('')
+    const [ofpriceError,setOfpriceError]=useState('')
+    const [demoError,setDemoError]=useState('')
+    const [thumbError,setThumbError]=useState('')
 
     const [formData, setFormData] = useState({
         course_name: '',
@@ -14,6 +20,7 @@ function AddCourse() {
         category: '',
         level: '',
         demo_video:null,
+        thumbnail:null,
         benefit1:'',
         benefit2:'',
         benefit3:'',
@@ -29,7 +36,14 @@ function AddCourse() {
             ...formData,
             demo_video: e.target.files[0] 
           });
-        } else {
+        } 
+        else if (e.target.name === 'thumbnail') {
+          setFormData({
+            ...formData,
+            thumbnail: e.target.files[0] 
+          });
+        } 
+        else {
           setFormData({
             ...formData,
             [e.target.name]: e.target.value
@@ -43,6 +57,56 @@ function AddCourse() {
 
       const handleSubmit = async (e) => {
         e.preventDefault();
+       
+          setNameError('')
+          setDescError('')
+          setLevelError('')
+          setOfpriceError('')
+          setOpriceError('')
+          setDemoError('')
+          setThumbError('')
+    
+        if (!formData.course_name.trim()) {
+            setNameError('name is required')
+        }
+    
+        if (!formData.description.trim()) {
+            setDescError('Description required is required');
+        }
+    
+        if (!formData.level.trim()) {
+          setLevelError('level required is required');
+      }
+    
+    
+      if (!formData.original_price.trim()) {
+        setOpriceError('original price required is required');
+        
+
+    }
+
+   
+
+    if (!formData.demo_video) {
+      setDemoError('Demo video is required');
+     
+  }
+
+
+  if (!formData.thumbnail) {
+    setThumbError('Thumbnail is required');
+
+}
+
+
+
+    if (!formData.original_price.trim()) {
+      setOfpriceError('offer price required is required');
+      return 
+    }
+
+    
+
     
         try {
           const response = await axios.post(baseURL+'/teacher/add_course/',  formData,
@@ -83,34 +147,42 @@ function AddCourse() {
                   <div className="md:col-span-6">
                     <label htmlFor="username">Course  Name</label>
                     <input type="text" name="course_name" value={formData.course_name} onChange={handleChange} placeholder='enter course name' className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"  />
+                    {nameError && <span className="text-md text-red-800 mt-1 mb-5">{nameError}</span>}
                   </div>
 
                   <div className="md:col-span-6 mt-3">
                     <label htmlFor="address">Description</label>
                     <textarea name="description" value={formData.description} onChange={handleChange} className="h-20 border mt-1 rounded px-4 w-full bg-gray-50 resize-none" placeholder="Enter description"></textarea>
+                    {descError && <span className="text-md text-red-800 mt-1 mb-5">{descError}</span>}
                 </div>
 
 
-                  <div className="md:col-span-2">
-                    <label htmlFor="number">Category</label>
-                    <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                      <input type='text' name="category" value={formData.category} onChange={handleChange} placeholder='category' className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"  />
-                    </div>
-                  </div>
-
+                  
                   <div className="md:col-span-2">
                     <label htmlFor="age">Course Level</label>
                     <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
                       <input type='text' name="level" value={formData.level} onChange={handleChange} placeholder="course level " className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"  />
                     </div>
+                    {levelError && <span className="text-md text-red-800 mt-1 mb-5">{levelError}</span>}
                   </div>
 
              
-                  <div className="md:col-span-4 mt-3">
+                  <div className="md:col-span-6 mt-3">
                     <label htmlFor="demo">Add Demo Video</label>
                     <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
                       <input type='file' name="demo"  onChange={handleChange}  className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"  />
                     </div>
+                    {demoError && <span className="text-md text-red-800 mt-1 mb-5">{demoError}</span>}
+
+                  </div>
+
+                  <div className="md:col-span-6 mt-3">
+                    <label htmlFor="demo">Thumbnail</label>
+                    <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
+                      <input type='file' name="thumbnail"  onChange={handleChange}  className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"  />
+                    </div>
+                    {thumbError && <span className="text-md text-red-800 mt-1 mb-5">{thumbError}</span>}
+
                   </div>
     
 
@@ -152,20 +224,27 @@ function AddCourse() {
                     <input type="text" name="original_price" value={formData.original_price} onChange={handleChange} placeholder='enter  original price' className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"  />
                   </div>
                 </div>
+                {opriceError && <span className="text-md text-red-800 mt-1 mb-5">{opriceError}</span>}
+
 
                 <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6 mt-5">
                   <div className="md:col-span-3">
                     <label htmlFor="offer_price">Offer Price</label>
                     <input type="text" name="offer_price" value={formData.offer_price} onChange={handleChange} placeholder='enter  offer3 price' className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"  />
-                  </div>
+                    {ofpriceError && <span className="text-md text-red-800 mt-1 mb-5">{ofpriceError}</span>}
 
+                  </div>
 
                   <div className="md:col-span-5 text-right">
                     <div className="inline-flex items-end">
                       <button className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded">Save and Add Videos</button>
                     </div>
                   </div>
+
                 </div>
+
+
+
               </div>
             </div>
           </div>

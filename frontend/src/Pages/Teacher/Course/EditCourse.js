@@ -8,6 +8,12 @@ import { FaEdit } from 'react-icons/fa';
 function EditCourse() {
     const baseURL='http://127.0.0.1:8000'
     const token = localStorage.getItem('access');
+    const [nameError,setNameError]=useState('')
+    const [descError,setDescError]=useState('')
+    const [levelError,setLevelError]=useState('')
+    const [opriceError,setOpriceError]=useState('')
+    const [ofpriceError,setOfpriceError]=useState('')
+
     const navigate=useNavigate()
     const { id } = useParams();
     const [course, setCourse] = useState({
@@ -51,7 +57,7 @@ function EditCourse() {
     };
     
     
-      console.log(course.demo_video);
+    console.log(course.demo_video);
 
     const fetchCourse = async () => {
       try {
@@ -94,7 +100,34 @@ function EditCourse() {
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-  
+      setNameError('')
+      setDescError('')
+      setLevelError('')
+      setOfpriceError('')
+      setOpriceError('')
+
+    if (!course.course_name.trim()) {
+        setNameError('name is required')
+    }
+
+    if (!course.description.trim()) {
+        setDescError('Description required is required');
+    }
+
+    if (!course.level.trim()) {
+      setLevelError('level required is required');
+  }
+
+
+  if (!course.original_price.trim()) {
+    setOpriceError('original price required is required');
+}
+if (!course.offer_price.trim()) {
+  setOfpriceError('offer price required is required');
+}
+
+
+
       try {
           let formData = new FormData();
           formData.append('course_name', course.course_name);
@@ -159,12 +192,7 @@ function EditCourse() {
                 </div>
 
 
-                  <div className="md:col-span-2">
-                    <label htmlFor="number">Category</label>
-                    <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                      <input type='text' name="category" value={course.category} onChange={handleChange} placeholder='category' className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"  />
-                    </div>
-                  </div>
+                  
 
                   <div className="md:col-span-2">
                     <label htmlFor="age">Course Level</label>
@@ -174,7 +202,7 @@ function EditCourse() {
                   </div>
 
              
-                  <div className="md:col-span-4 mt-3">
+                  <div className="md:col-span-6 mt-3">
                     <label htmlFor="demo">Add Demo Video</label>
                     <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
                       <input type='file' name="demo"  onChange={handleChange}  className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"  />
@@ -185,11 +213,6 @@ function EditCourse() {
                       </p>
                     )}
                   </div>
-    
-
-    
-
-                  
 
 
                 <h3 className=' md:col-span-6 mt-5'>Benefits</h3>

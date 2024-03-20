@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 // import userimg from '../../Images/user.png'
 import userimg from '../../Images/userprofile.webp'
 
-function TeacherDetailview() {
+function AdminVerifyDocuments() {
     const navigate = useNavigate();
     const baseURL = "http://127.0.0.1:8000";
     const { id } = useParams();
@@ -422,7 +422,7 @@ function TeacherDetailview() {
   )
 }
 
-export default TeacherDetailview
+export default AdminVerifyDocuments
 
 
 

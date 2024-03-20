@@ -10,6 +10,9 @@ function AddVideos() {
   const baseURL='http://127.0.0.1:8000';
   const { id } = useParams();
   const navigate = useNavigate();
+  const [nameError,setNameError]=useState('')
+    const [descError,setDescError]=useState('')
+    const [videoError,setVideoError]=useState('')
 
   const [videoData, setVideoData] = useState({
     video_name: '',
@@ -32,6 +35,24 @@ function AddVideos() {
 
   const handleSubmit = async (e, redirect) => {
     e.preventDefault();
+    setNameError('')
+    setDescError('')
+    setVideoError('')
+
+
+    if (!videoData.video_name.trim()) {
+      setNameError('name is required')
+  }
+
+  if (!videoData.description.trim()) {
+      setDescError('Description  is required');
+  }
+
+  if (!videoData.video) {
+    setVideoError('emo video is required');
+    return
+}
+
     const formData = new FormData();
     formData.append('video_name', videoData.video_name);
     formData.append('description', videoData.description);
@@ -48,6 +69,7 @@ function AddVideos() {
       if (redirect === 'add_course') {
         navigate('/teacher/add_course');
       } else {
+
 
         setVideoData({
           video_name: '',
@@ -85,6 +107,8 @@ function AddVideos() {
                           placeholder="Enter video name"
                           className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                         />
+                     {nameError && <span className="text-md text-red-800 mt-1 mb-5">{nameError}</span>}
+
                       </div>
                       <div className="md:col-span-6 mt-3">
                         <label htmlFor="address">Description</label>
@@ -95,6 +119,8 @@ function AddVideos() {
                           className="h-20 border mt-1 rounded px-4 w-full bg-gray-50 resize-none"
                           placeholder="Enter description"
                         ></textarea>
+                        {descError && <span className="text-md text-red-800 mt-1 mb-5">{descError}</span>}
+
                       </div>
                       <div className="md:col-span-4 mt-3">
                         <label htmlFor="demo">Add Video</label>
@@ -106,6 +132,8 @@ function AddVideos() {
                             className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
                           />
                         </div>
+                        {videoError && <span className="text-md text-red-800 mt-1 mb-5">{videoError}</span>}
+
                       </div>
                       <div className="md:col-span-5 text-right">
                         <div className="inline-flex items-end">

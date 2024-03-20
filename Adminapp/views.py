@@ -61,12 +61,13 @@ class AcceptUserView(APIView):
     
 
 # teacher details and document view
-class AdminUserRetrieveView(RetrieveAPIView):
+class AdminTeacherListView(RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer  
 
     def retrieve(self, request, *args, **kwargs):
         user_instance = self.get_object()
+        print(user_instance)
         teacher_details_instance = TeacherDetails.objects.get(user=user_instance)
         teacher_documents_instance = TeacherDocument.objects.get(user=user_instance)
         
@@ -115,9 +116,6 @@ class AdminCourseListCreateView(ListCreateAPIView):
     search_fields = ['course_name']
 
 
-
- 
-
 class CourseStatusChangeView(APIView):
     def patch(self, request, id, *args, **kwargs):
         course = get_object_or_404(Course, id=id)
@@ -143,4 +141,27 @@ class VideoStatusChangeView(APIView):
         video.save()
 
         serializer = VideosSerializer(video)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class TeacherDocumentStatusChangeView(APIView):
+    def patch(self, request, id, *args, **kwargs):
+        document = get_object_or_404(TeacherDocument, id=id)
+
+        if 'id_verify' in request.data:
+            document.id_verify = True
+        if 'photo_verify' in request.data:
+            document.photo_verify = True
+        if 'tenth_verify' in request.data:
+            document.tenth_verify = True
+        if 'plustwo_verify' in request.data:
+            document.plustwo_verify = True
+        if 'graduation_verify' in request.data:
+            document.graduation_verify = True
+        if 'experience_verify' in request.data:
+            document.experience_verify = True
+       
+        
+        document.save()
+
+        serializer = TeacherDocumentSerializer(document)
         return Response(serializer.data, status=status.HTTP_200_OK)

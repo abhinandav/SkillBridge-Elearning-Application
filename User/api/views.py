@@ -125,6 +125,8 @@ class LoginView(APIView):
         
         elif not user.is_active:
             return Response({'error': 'Blocked'}, status=status.HTTP_403_FORBIDDEN)
+        
+         
         else:
             if not user.is_staff:
                 refresh = RefreshToken.for_user(user)
@@ -177,7 +179,7 @@ class AdminLoginView(APIView):
 
 class TeacherDetailsView(APIView):
     def post(self, request):
-        user_id = request.data.get('user_id')
+        user_id = request.data.get('user')
 
         if user_id:
             try:
@@ -197,18 +199,21 @@ class TeacherDetailsView(APIView):
                     
                     return Response(response_data, status=status.HTTP_200_OK)
                 else:
+                    print(serializer.errors)
                     return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
             except User.DoesNotExist:
                 return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
             except Exception as e:
                 return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
+           
             return Response({'error': 'User ID not provided.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TeacherDocumentView(APIView):
     def post(self, request):
-        user_id = request.data.get('user_id')
+        print(id)
+        user_id = request.data.get('user')
         print(user_id)
 
         if user_id:

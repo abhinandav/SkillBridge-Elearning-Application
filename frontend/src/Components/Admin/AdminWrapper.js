@@ -11,7 +11,7 @@ import { set_authentication } from "../../Redux/autehnticationSlice";
 
 import AdminPrivateRoute from "../PrivateRoutes/AdminPrivateRoute";
 import AdminTecaherRequest from "../../Pages/Admin/AdminTecaherRequest";
-import VerifyDocuments from '../../Pages/Admin/VerifyDocuments'
+import VerifyDocuments from '../../Pages/Admin/AdminVerifyDocuments'
 import AdminCourseList from "../../Pages/Admin/AdminCourseList";
 import AdminCourseRequests from "../../Pages/Admin/AdminCourseRequests";
 import AdminCourseView from "../../Pages/Admin/AdminCourseView";

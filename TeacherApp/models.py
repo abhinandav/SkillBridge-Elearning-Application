@@ -5,9 +5,10 @@ from User.models import User
 class Course(models.Model):
     course_name=models.CharField(max_length=250)
     description=models.TextField()
-    category=models.CharField(max_length=250)
+    category=models.CharField(max_length=250,blank=True,null=True)
     level=models.CharField(max_length=250)
     demo_video=models.FileField(upload_to='video/demo_video')
+    thumbnail=models.FileField(upload_to='video/thumbnail')
     benefit1=models.CharField(max_length=250,blank=True,null=True)
     benefit2=models.CharField(max_length=250,blank=True,null=True)
     benefit3=models.CharField(max_length=250,blank=True,null=True)
