@@ -14,6 +14,7 @@ import ProfileEdit from "../../Pages/User/Profile/ProfileEdit";
 import CourseView from "../../Pages/User/CourseView";
 import EnrolledCourses from "../../Pages/User/Profile/EnrolledCourses";
 import ChangePasswordPage from "../../Pages/User/Credentials/LinkDecode";
+import ForgotOtp from "../../Pages/User/Credentials/ForgotOtp";
 
 
 
@@ -65,6 +66,8 @@ function UserWrapper() {
           <Route  path="login" element={<UserLogin/>}></Route>
           <Route  path="signup" element={<UserSignUp/>}></Route>
           <Route  path="userotp" element={<UserOTP/>}></Route>
+          <Route  path="forgot_otp" element={<ForgotOtp/>}></Route>
+
           <Route  path="course_list" element={<CourseList/>}></Route>
           <Route  path="fpemail" element={<FPEmails/>}></Route>
           <Route  path="change_password/:id" element={<FPreset/>}></Route>

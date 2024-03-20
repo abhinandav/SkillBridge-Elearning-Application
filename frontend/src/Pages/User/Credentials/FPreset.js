@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function FPreset() {
@@ -26,6 +28,8 @@ function FPreset() {
   
         if (response.data.success) {
           navigate("/login");
+          toast.success(' Password Reset Successfull');
+          localStorage.clear()
         } else {
           // Handle unsuccessful password reset
           setError(response.data.message);

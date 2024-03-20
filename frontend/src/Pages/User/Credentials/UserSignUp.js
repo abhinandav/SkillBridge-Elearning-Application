@@ -49,10 +49,16 @@ const UserSignUp = () => {
       const email=event.target.email.value
       const password=event.target.password.value
       const cpassword=event.target.cpassword.value
+      const alphabeticRegex = /^[A-Za-z]+$/;
 
       if (!username.trim()) {
         setUsernameError('Username is required *')
      
+      }
+
+      if (!alphabeticRegex.test(username)) {
+        setUsernameError('Username must contain only alphabetic characters');
+        return;
       }
 
       if (username.length > 0 && username.length < 4) {
@@ -113,6 +119,12 @@ const UserSignUp = () => {
     catch (error) {
       if (error.response && error.response.status === 400) {
         console.log('Error:', error.response.data);
+        const errorData = error.response.data;
+        if (errorData.email && errorData.email.length > 0) {
+          setEmailError(errorData.email[0]);
+        } else {
+          setLoginError('An error occurred during registration.');
+        }
       } else {
         console.log('Error:', error.message); 
       }
@@ -188,6 +200,10 @@ const UserSignUp = () => {
                 </div>
 
                 {/* Submit Button */}
+
+
+
+                {loginError && <span className="text-sm font-bold text-red-500 mt-1 mb-5">{loginError}</span>}
                 <div className="relative mt-10">
                   <button
                     className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-orange-500 rounded-lg transition duration-200 hover:bg-orange-600 ease"

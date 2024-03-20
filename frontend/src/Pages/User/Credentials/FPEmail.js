@@ -1,11 +1,15 @@
 import { useRef, useState } from "react";
 import React  from 'react'
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function FPEmails() {
     const [emailExists, setEmailExists] = useState(null);
     const [message,setMessage]=useState('')
+    const navigate=useNavigate()
 
     const handleEmailCheck = async (event) => {
         event.preventDefault();
@@ -18,17 +22,19 @@ function FPEmails() {
               email: email,
             }
           );
-          const registeredEmail = response.data.email;
-          localStorage.setItem('registeredEmail', registeredEmail);
-    
-          setEmailExists(response.data.exists);
-    
-          if (response.data.exists) {
-            console.log("Link sent to mail");
-            setEmailExists('Check your mail')
-    
-            
-          } else {
+
+          if (response.status == 200){
+            console.log('Server Response:', response.data);
+            const registeredEmail = response.data.email;
+            localStorage.setItem('registeredEmail', registeredEmail);
+            localStorage.setItem('user_id',  response.data.user_id);
+            navigate('/forgot_otp');
+            toast.success(' Otp Sented to your Email');
+            return response;
+          }
+          
+          
+          else {
             console.log("Email does not exist.");
           }
         } catch (error) {

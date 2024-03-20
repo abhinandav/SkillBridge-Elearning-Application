@@ -39,12 +39,13 @@ class UserDetails(APIView):
 
 
 
+
 class UserRegisterView(APIView):
     def post(self, request):
         serializer = UserRegisterSerializer(data=request.data)
-        
         if serializer.is_valid():
             try:
+                
                 user = serializer.save(is_active=False)  
                 send_otp_via_mail(user.email, user.otp)
                 response_data = {
@@ -283,14 +284,17 @@ class ForgotPassword(APIView):
             user = User.objects.get(email=email)
 
 
-            link=f"http://localhost:3000/change_password/{user.id}/"
+            # link=f"http://localhost:3000/change_password/{user.id}/"
 
-            send_password_reset_email(user,link)
+            # send_password_reset_email(user,link)
 
-            print(link)
-
-
-            return Response({'exists': True,'email':email , 'user_id': user.id, 'message': 'Please Check your Email'}, status=status.HTTP_200_OK)
+            send_otp_via_mail(user.email, user.otp)
+            response_data = {
+                    'message': 'OTP sent successfully.',
+                    'email': user.email  ,
+                    'user_id':user.id,
+                }
+            return Response(response_data, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({'exists': False, 'message': 'Invalid Email.'}, status=status.HTTP_404_NOT_FOUND)
 

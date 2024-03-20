@@ -15,7 +15,7 @@ const TeacherSignup = () => {
   const [experienceError, setExperienceError] = useState('')
   const [addressError, setAddressError] = useState('')
   const [fileError, setFileError] = useState('');
-  const [documentFields, setDocumentFields] = useState(1);
+  const [loginError, setLoginError] = useState('')
   const authentication_user=useSelector(state=>(state.authentication_user))
 
     useEffect(() => {
@@ -28,10 +28,16 @@ const TeacherSignup = () => {
 
 
  // -----------------------------------------------------
- const handleAddDocumentField = () => {
-  setDocumentFields(prevFields => prevFields + 1);
-};
+//  const handleAddDocumentField = () => {
+//   setDocumentFields(prevFields => prevFields + 1);
+// };
  // -----------------------------------------------------
+
+ const validateEmail = (email) => {
+  // Regular expression for email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
@@ -46,6 +52,7 @@ const TeacherSignup = () => {
       setExperienceError('')
       setNumberError('')
       setFileError('')
+      setLoginError('')
 
       const username = event.target.username.value;
       const email = event.target.email.value;
@@ -55,19 +62,36 @@ const TeacherSignup = () => {
       const age = event.target.age.value;
       const experience = event.target.experience.value;
       const number = event.target.number.value;
+      const experienceprpoof=event.target.experience_proof.value
+      const idproof=event.target.id_proof.value
+      const photoproof=event.target.photo_proof.value
+      const tenthproof=event.target.tenth_proof.value
+      const plustwoproof=event.target.plustwo_proof.value
+      const graduationproof=event.target.graduation_proof.value
       
+      const alphabeticRegex = /^[A-Za-z]+$/;
 
       if (!username.trim()) {
         setUsernameError('Username is required *')
      
       }
 
+      if (!alphabeticRegex.test(username)) {
+        setUsernameError('Username must contain only alphabetic characters');
+        return;
+      }
+
       if (username.length > 0 && username.length < 4) {
         setUsernameError('length must be atleast 4 characters *')
+        return
       }
 
       if (!email.trim()) {
         setEmailError('Email is required *')
+      }
+
+      if (!validateEmail(email)) {
+        setEmailError('Invalid email *')
       }
   
       if (!password.trim()) {
@@ -102,7 +126,11 @@ const TeacherSignup = () => {
       
       if (!age.trim()) {
         setAgeError('Age is required *');
-        
+      }
+
+      if ( age.length >= 2) {
+        setAgeError('Invalid age *');
+        return
       }
       
       if (!experience.trim()) {
@@ -111,6 +139,16 @@ const TeacherSignup = () => {
       
       if (!number.trim()) {
         setNumberError('Number is required *');
+      }
+
+      if (!(number.length ===10)){
+        setNumberError('Invalid number *');
+        return
+      }
+
+      if(!experienceprpoof||!idproof||!photoproof||!tenthproof||!plustwoproof||!graduationproof){
+        setFileError('All documents must upload')
+        // return
       }
       
 
@@ -202,7 +240,15 @@ const TeacherSignup = () => {
     } catch (error) {
       if (error.response && error.response.status === 400) {
         console.log('Error:', error.response.data);
-        console.log(teacherDetailsFormData);
+        const errorData = error.response.data.errors;
+      
+        if (errorData && errorData.email && errorData.email.length > 0) {
+          setEmailError(errorData.email[0]);
+        } else {
+          setLoginError('An error occurred during teacher signup.');
+        }
+       
+        
       } else {
         console.log('Error:', error.message);
         console.log(teacherDetailsFormData);
@@ -296,7 +342,6 @@ const TeacherSignup = () => {
                     <div className="h-10 mt-3 w-150 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
                       <input type='file' name="id_proof"  className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
                     </div>
-                    {fileError && <span className="text-red-800 text-sm">{fileError}</span>}
                   </div>
 
                   <div className="md:col-span-6 mb-3 ">
@@ -304,7 +349,6 @@ const TeacherSignup = () => {
                     <div className="h-10 mt-3 w-150 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
                       <input type='file' name="photo_proof" className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
                     </div>
-                    {fileError && <span className="text-red-800 text-sm">{fileError}</span>}
                   </div>
 
                   <div className="md:col-span-6 mb-3 ">
@@ -312,7 +356,6 @@ const TeacherSignup = () => {
                     <div className="h-10 mt-3 w-150 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
                       <input type='file' name="tenth_proof" id="10th-proof" className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
                     </div>
-                    {fileError && <span className="text-red-800 text-sm">{fileError}</span>}
                   </div>
 
 
@@ -321,7 +364,6 @@ const TeacherSignup = () => {
                     <div className="h-10 mt-3 w-150 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
                       <input type='file' name="plustwo_proof"  className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
                     </div>
-                    {fileError && <span className="text-red-800 text-sm">{fileError}</span>}
                   </div>
 
 
@@ -330,7 +372,6 @@ const TeacherSignup = () => {
                     <div className="h-10 mt-3 w-150 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
                       <input type='file' name="graduation_proof"  className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"  />
                     </div>
-                    {fileError && <span className="text-red-800 text-sm">{fileError}</span>}
                   </div>
 
                   <div className="md:col-span-6 mb-3 ">
@@ -341,39 +382,14 @@ const TeacherSignup = () => {
                     {fileError && <span className="text-red-800 text-sm">{fileError}</span>}
                   </div>
 
-                
 
+              
 
+           
                   
-                  
-
-
-                {/* {[...Array(documentFields)].map((_, index) => (
-                        <div key={index} className="md:col-span-3">
-                          <label htmlFor={`document${index + 1}`}>Upload Document {index + 1}</label>
-                          <div className="h-10 w-52 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                            <input
-                              type='file'
-                              name={`document${index + 1}`}
-                              id={`document${index + 1}`}
-                              className="px-2 text-center appearance-none outline-none text-gray-800 w-full bg-transparent"
-                            />
-                          </div>
-                        </div>
-                      ))} */}
-
-
-                  {/* <div className="md:col-span-3">
-                    <button
-                      type="button"
-                      onClick={handleAddDocumentField}
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    >
-                      Add More Document
-                    </button>
-                  </div> */}
 
                   <div className="md:col-span-5 text-right">
+                  {loginError && <span className="text-red-800 text-sm">{loginError}</span>}
                     <div className="inline-flex items-end">
                       <button className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded">Submit</button>
                     </div>
