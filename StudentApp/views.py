@@ -165,4 +165,5 @@ class VideoCommentsView(generics.ListAPIView):
     serializer_class = CommentSerializer
     def get_queryset(self):
         video_id = self.kwargs['video_id']
-        return Comment.objects.filter(video=video_id).order_by('date_added')
+        comments=Comment.objects.filter(video=video_id).order_by('date_added')
+        return comments 

@@ -17,6 +17,8 @@ function VideoPlayer() {
     const [comment, setComment] = useState('');
     const [loading, setLoading] = useState('');
     const [comments, setComments] = useState([]);
+    const [showReplyField, setShowReplyField] = useState(false);
+    const [replyComment, setReplyComment] = useState('');
 
 
 
@@ -152,8 +154,26 @@ function VideoPlayer() {
     
     useEffect(() => {
         fetchVideoComments();
-},[vid]);
-    
+    },[vid]);
+        
+
+
+
+    const handleReplySubmit = (event) => {
+        event.preventDefault();
+        console.log('Reply submitted:', replyComment);
+        setShowReplyField(false);
+        setReplyComment('');
+    };
+
+    const [replyFields, setReplyFields] = useState({});
+
+    const handleReplyClick = (commentId) => {
+    setReplyFields((prevFields) => ({
+        ...prevFields,
+        [commentId]: !prevFields[commentId] // Toggle the state for the specific comment
+    }));
+};
     
 
 
@@ -250,20 +270,78 @@ function VideoPlayer() {
                             </div>
 
 
+  
+                                {/* {comments.map((comment) => (
+                                    <div  key={comment.id} className="my-7 max-w-2xl"> 
+                                        <div className="flex justify-between items-center">
+                                        <div className=" flex items-center space-x-4 ">
+                                            <div className="">
+                                            <img className="w-12 h-12 rounded-full" src="https://images.unsplash.com/photo-1593104547489-5cfb3839a3b5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1036&q=80" alt="" />
+                                            </div>
+                                            <div>
+
+                                                <div className='flex'>
+                                                    <div className="text-md font-bold w-30">{comment.username}  </div> 
+                                                    <span onClick={handleReplyClick} className='ml-5'>replay</span>
+                                                </div>
+                                                <div className="text-sm"> • {comment.date_added}</div>
+                                            </div>
+                                        </div>
+                                        </div>
 
 
-                            <ul>
-                                {comments.map((comment) => (
-                                    <li key={comment.id}>
-                                        <p>User: {comment.username}</p>
-                                        <p>Comment: {comment.comment}</p>
-                                        <p>Date Added: {comment.date_added}</p>
-                                    </li>
-                                ))}
-                            </ul>
+                                        <p className="mt-2 mx-20 text-md text-gray-600 w-30">{comment.comment}</p>
+                                        {showReplyField && (
+                                            <form onSubmit={handleReplySubmit} className='mx-20 my-5 w-full max-w-xl'>
+                                                <textarea
+                                                    value={replyComment}
+                                                    onChange={(e) => setReplyComment(e.target.value)}
+                                                    placeholder="Enter your reply"
+                                                    className="w-full h-15 resize-none border rounded-md p-2"
+                                                />
+                                                <button type="submit">Submit</button>
+                                            </form>
+                                        )}
+                                    </div>
+                                     ))} */}
+
+
+                            {comments.map((comment) => (
+                                <div key={comment.id} className="my-7 max-w-2xl">
+                                    <div className="flex justify-between items-center">
+                                        <div className=" flex items-center space-x-4 ">
+                                        <div className="">
+                                            <img className="w-12 h-12 rounded-full" src="https://images.unsplash.com/photo-1593104547489-5cfb3839a3b5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1036&q=80" alt="" />
+                                            </div>
+                                            <div>
+
+                                                <div className='flex'>
+                                                    <div className="text-md font-bold w-30">{comment.username}  </div>
+                                                        <span onClick={() => handleReplyClick(comment.id)} className='ml-5'>Reply</span>
+                                                    </div>
+                                                <div className="text-sm"> • {comment.date_added}</div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    {replyFields[comment.id] && (
+                                        <form onSubmit={handleReplySubmit} className='mx-20 my-5 w-full max-w-xl'>
+                                            <textarea
+                                                value={replyComment}
+                                                onChange={(e) => setReplyComment(e.target.value)}
+                                                placeholder="Enter your reply"
+                                                className="w-full h-15 resize-none border rounded-md p-2"
+                                            />
+                                            <button type="submit">Submit</button>
+                                        </form>
+                                    )}
+                                </div>
+                            ))}
+
+
+
+
+
                         </div>
-
-
                     </div>
                     )}
                     
