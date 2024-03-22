@@ -49,7 +49,6 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
 
 
 class VideoSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model =Videos
         fields= '__all__'
@@ -80,3 +79,10 @@ class OrderMycourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['user', 'course', 'price', 'date_purchased'] 
+
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields ='__all__'

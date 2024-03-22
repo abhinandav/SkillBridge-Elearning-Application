@@ -14,6 +14,7 @@ import ProfileEdit from "../../Pages/User/Profile/ProfileEdit";
 import CourseView from "../../Pages/User/CourseView";
 import EnrolledCourses from "../../Pages/User/Profile/EnrolledCourses";
 import ForgotOtp from "../../Pages/User/Credentials/ForgotOtp";
+import VideoPlayer from "../../Pages/User/VideoPlayer";
 
 
 
@@ -34,6 +35,7 @@ function UserWrapper() {
 
     dispatch(
       set_authentication({
+        userid:isAuthenticated.userid,
         name: isAuthenticated.name,
         isAuthenticated: isAuthenticated.isAuthenticated,
         isAdmin: isAuthenticated.isAdmin,
@@ -71,6 +73,7 @@ function UserWrapper() {
           <Route  path="fpemail" element={<FPEmails/>}></Route>
           <Route  path="change_password/:id" element={<FPreset/>}></Route>
           <Route  path="course_view/:id" element={<CourseView/>}></Route>
+          <Route path='videoplayer/:id/:vid' element={<VideoPlayer/>}></Route>
          
 
           

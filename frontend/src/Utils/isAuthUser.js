@@ -2,8 +2,10 @@ import axios from "axios";
 import {jwtDecode} from 'jwt-decode'
 
 const baseURL = 'http://127.0.0.1:8000';
+const userid = localStorage.getItem('userid');
 const updateToken = async () => {
     const refreshToken = localStorage.getItem('refresh');
+    
    
 
     try {
@@ -88,7 +90,7 @@ const isAuthUser = async () => {
             const [checkAdmin, checkTeacher] = await Promise.all([fetchisAdmin(), fetchisTeacher()]);
             // console.log('Admin?', checkAdmin);
             // console.log('Teacher?', checkTeacher);
-            return { name: decoded.username, isAuthenticated: true, isAdmin: checkAdmin, isTeacher: checkTeacher };
+            return { userid:userid, name: decoded.username, isAuthenticated: true, isAdmin: checkAdmin, isTeacher: checkTeacher };
         // let checkAdmin = await fetchisAdmin(); 
         // let checkTeacher = await fetchisTeacher(); 
         // console.log('Admin?',checkAdmin);
@@ -102,7 +104,7 @@ const isAuthUser = async () => {
             const [checkAdmin, checkTeacher] = await Promise.all([fetchisAdmin(), fetchisTeacher()]);
             // console.log('Admin2?', checkAdmin);
             // console.log('Teacher2?', checkTeacher);
-            return { name: decoded.username, isAuthenticated: true, isAdmin: checkAdmin, isTeacher: checkTeacher };
+            return { userid:userid,name: decoded.username, isAuthenticated: true, isAdmin: checkAdmin, isTeacher: checkTeacher };
 
 
             // let checkAdmin = await fetchisAdmin(); 

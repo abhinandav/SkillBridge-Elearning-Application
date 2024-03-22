@@ -75,6 +75,7 @@ const UserLogin = () => {
         if (res.status === 200) {
             localStorage.setItem('access', res.data.access_token);
             localStorage.setItem('refresh', res.data.refresh_token);
+            localStorage.setItem('userid', res.data.userid);
 
             console.log('logined', res.data);
             console.log('Access Token:', res.data.access_token);
@@ -84,6 +85,7 @@ const UserLogin = () => {
                 set_authentication({
                     name: jwtDecode(res.data.access_token).username,
                     isAuthenticated: true,
+                    userid:res.data.userid,
                     isAdmin: false,
                     isTeacher: false
                 })

@@ -57,10 +57,7 @@ function CourseView() {
                 is_accepted:data.course.is_accepted,
             });
             console.log('data',response.data);
-            // console.log('ss',data.course.is_accepted);
-            // if (data.course.is_accepted===false){
-            //     toast.error(' Your Course is Not yet Verified');
-            // }
+
           } catch (error) {
             console.error("Error fetching course:", error);
           }
@@ -73,27 +70,6 @@ function CourseView() {
 
 
 
-    // const handleBuyNow = async () => {
-    //     try {
-    //    const response = await axios.post( `${baseURL}/student/order/`,
-    //             {
-    //                 course: course.course_id, 
-    //                 price: course.offer_price 
-    //             },
-    //             {
-    //                 headers: {
-    //                     Authorization: `Bearer ${token}`
-    //                 }
-    //             }
-    //         );
-    
-    //         console.log('Order placed successfully:', response.data);
-    //         setAlreadyPurchased(true);
-
-    //     } catch (error) {
-    //         console.error('Error placing order:', error);
-    //     }
-    // };
 
 
 
@@ -144,47 +120,62 @@ function CourseView() {
     }, [id]);
 
 
+    const handleStartLesson = (id, firstVideoId) => {
+        navigate(`/videoplayer/${id}/${firstVideoId}`);
+    };
+
     
-      console.log('cjsdbjbdbsdjcbjsbdj',course);
+      console.log('course',course);
   return (
 
 <div>
   <div className=" p-5 bg-gray-100 flex items-center justify-center">
-    <div className="container max-w-screen-x mx-auto my-10">
+    <div className="container max-w-screen-x mx-auto ">
       <div className=" mt-5 bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
 
     
-        <nav className="flex" aria-label="Breadcrumb">
-        <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-            <li className="inline-flex items-center">
-        <Link to='/'>
-            <span className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-orange-600 dark:text-black-400 dark:hover:text-orange">
-                <svg className="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
-                </svg>
-                Home
+        <nav className="flex justify-between" aria-label="Breadcrumb">
+            <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+                <li className="inline-flex items-center">
+
+            <Link to='/'>
+                <span className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-orange-600 dark:text-black-400 dark:hover:text-orange">
+                    <svg className="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+                    </svg>
+                    Home
+                </span>
+            </Link>
+
+            
+                </li>
+                <li>
+                <div className="flex items-center">
+                    <svg className="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                    </svg>
+                    <Link to='course_list'> 
+                    <span className="ms-1 text-sm font-medium text-gray-700 hover:text-orange-600 md:ms-2 dark:text-black-400 dark:hover:text-orange">Courses</span>
+                    </Link>
+                </div>
+                </li>
+                <li aria-current="page">
+                <div className="flex items-center">
+                    <svg className="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                    </svg>
+                    <span className="ms-1 text-sm font-medium text-black-500 md:ms-2 dark:text-black-400">View course</span>
+                </div>
+                </li>
+            </ol>
+
+            <Link to={`/videoplayer/${id}/${course.videos[0]?.id}`}>
+            <span className="text-blue-800 text-md font-semibold bg-blue-50 border border-blue-700 px-4 py-2 rounded-lg hover:text-orange-500 hover:border-orange-500 hover:bg-orange-50 cursor-pointer ml-5"
+                onClick={() => handleStartLesson(course.id, course.videos[0].id)}>
+                Start Lesson
             </span>
-        </Link>
-            </li>
-            <li>
-            <div className="flex items-center">
-                <svg className="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                </svg>
-                <Link to='course_list'> 
-                <span className="ms-1 text-sm font-medium text-gray-700 hover:text-orange-600 md:ms-2 dark:text-black-400 dark:hover:text-orange">Courses</span>
-                </Link>
-            </div>
-            </li>
-            <li aria-current="page">
-            <div className="flex items-center">
-                <svg className="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                </svg>
-                <span className="ms-1 text-sm font-medium text-black-500 md:ms-2 dark:text-black-400">View course</span>
-            </div>
-            </li>
-        </ol>
+            </Link>
+
         </nav>
 
 
@@ -356,9 +347,10 @@ function CourseView() {
                             <div className="flex-1">
                                 <li className="text-lg px-4 py-2 bg-white hover:bg-sky-100 hover:text-sky-900 border-b last:border-none border-gray-100 transition-all duration-300 ease-in-out">{video.video_name}</li>
                             </div>
+                            {/* {alreadyPurchased ? 
                             <div className="flex-none">
                                 <FaLock className='mt-2 mx-10' />
-                            </div>
+                            </div>} */}
                         </ul>
                     </div>
                 ))}

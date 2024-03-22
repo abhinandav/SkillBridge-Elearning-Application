@@ -175,6 +175,7 @@ class LoginView(APIView):
                 refresh_token = str(refresh)
 
                 content = {
+                    'userid':user.id,
                     'access_token': access_token,
                     'refresh_token': refresh_token,
                     'isAdmin': user.is_superuser,

@@ -11,3 +11,14 @@ class Order(models.Model):
 
     def __str__(self):
             return f"order by {self.user.username}    - course {self.course.course_name}" 
+    
+
+class Comment(models.Model):
+    user=models.ForeignKey(User, on_delete=models.CASCADE)
+    course=models.ForeignKey(Course, on_delete=models.CASCADE)
+    video=models.ForeignKey(Videos,on_delete=models.CASCADE)
+    comment=models.CharField(max_length=255)
+    date_added=models.DateField(auto_now_add=True)
+
+    def __str__(self):
+         return f" comment of '{self.user.username}' -  on - {self.video.video_name} - {self.course.course_name}"

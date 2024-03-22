@@ -10,4 +10,9 @@ urlpatterns=[
     path('order/',OrderCreateAPIView.as_view(),name='order'),
     path('purchased/<int:course_id>/',CheckCoursePurchaseAPIView.as_view(),name='purchased'),
     path('enrolled_courses/',PurchasedCoursesListAPIView.as_view(),name='enrolled_courses'),
+
+    path('courses/<int:course_id>/videos/<int:video_id>/', VideoDetailView.as_view(), name='video-detail'),
+
+    path('add_comment/',CommentCreateView.as_view(),name='add_comment'),
+
 ]

@@ -8,6 +8,7 @@ from django.contrib.auth.models import AnonymousUser
 from User.models import *
 from .serializers import *
 from .models import *
+from TeacherApp . models import *
 
 
 
@@ -86,6 +87,8 @@ class CourseDetailView(RetrieveAPIView):
         course_serializer = self.get_serializer(course_instance)
         video_serializer = VideoSerializer(video_instances, many=True)
 
+       
+
         data = {
             'course': course_serializer.data,
             'videos': video_serializer.data
@@ -93,6 +96,17 @@ class CourseDetailView(RetrieveAPIView):
         
         return Response(data, status=status.HTTP_200_OK)
 
+
+class VideoDetailView(APIView):
+    def get(self, request, course_id, video_id):
+        try:
+            video = Videos.objects.get(course_id=course_id, id=video_id)
+            serializer = VideoSerializer(video)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Videos.DoesNotExist:
+            return Response({"message": "Video not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class OrderCreateAPIView(APIView):
@@ -133,3 +147,15 @@ class PurchasedCoursesListAPIView(generics.ListAPIView):
         user = self.request.user
         order=Order.objects.filter(user=user)
         return order
+    
+
+
+class CommentCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        request.data['user'] = request.user.id
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
