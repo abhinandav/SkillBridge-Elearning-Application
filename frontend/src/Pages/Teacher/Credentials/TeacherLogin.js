@@ -6,6 +6,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { set_authentication } from '../../../Redux/autehnticationSlice';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 const TeacherLogin = () => {
@@ -77,14 +80,32 @@ const TeacherLogin = () => {
               );
               navigate('/teacher');
             }
-        }catch(error){
-            console.error('Error during login:', error);
-            setLoginError('Invalid Credentials')
-            if (error.response) {
-            console.error('Response data:', error.response.data);
-            setLoginError('Invalid Credentials')
-        }
-    }
+        }catch (error) {
+
+          console.error('Error during login:', error);
+  
+          if (error.response) {
+              console.error('Response data:', error.response);
+              if (error.response.status === 403) {
+                  // toast.error('Your account is blocked by admin');
+                  toast.error('Your account is blocked by admin', {
+                    style: {
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      position: 'fixed',
+                      top: '10%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                  },
+                });
+              } else {
+                  setLoginError('Invalid Credentials');
+              }
+          } else {
+              setLoginError('Invalid Credentials');
+          }
+      }
 }
   return (
     <div className=" flex flex-col items-center justify-center bg-gray-100 my-0 py-20" >

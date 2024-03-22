@@ -111,9 +111,7 @@ function AdminTecaherRequest() {
                         </th>
                 
 
-                        <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          Action
-                        </th>
+               
                       </tr>
                     </thead>
                     <tbody>
@@ -152,12 +150,7 @@ function AdminTecaherRequest() {
                          
                           
 
-                          
-                          <button onClick={() => acceptUser(user.id)} className="bg-green-600 px-1 py-1 rounded-md mt-4 ml-3 text-white font-semibold tracking-wide cursor-pointer">
-                            Accept
-                          </button>
-
-
+                       
                         </tr>
                       ))}
                     </tbody>

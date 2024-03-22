@@ -7,6 +7,7 @@ import AdminHeader from '../../Components/Admin/AdminHeader';
 function AdminAcceptedCourseView() {
     const baseURL = "http://127.0.0.1:8000";
     const token = localStorage.getItem('access');
+    const [selectedVideo, setSelectedVideo] = useState(null);
     
     const [course, setCourse] = useState({
         course_id:'',
@@ -97,6 +98,17 @@ function AdminAcceptedCourseView() {
             });
         }
     };
+
+    const handleVideoClick = (video) => {
+        setSelectedVideo({
+            ...video,
+            video_url: baseURL + video.video 
+        });
+    };
+    
+
+    console.log('course--',course);
+    console.log('vdo--',selectedVideo);
     
   return (
 
@@ -281,7 +293,7 @@ function AdminAcceptedCourseView() {
 
 
                 {course.videos.map((video) => (
-                        <div key={video.id} className="px-6 sm:px-8  m-auto">
+                        <div key={video.id} onClick={() => handleVideoClick(video)} className="px-6 sm:px-8  m-auto">
                             <ul className="border border-gray-200 rounded overflow-hidden flex">
                                 <div className="flex-1">
                                     <li className="text-lg px-4 py-2 bg-white hover:bg-sky-100 hover:text-sky-900 border-b last:border-none border-gray-100 transition-all duration-300 ease-in-out">{video.video_name}</li>
@@ -308,11 +320,15 @@ function AdminAcceptedCourseView() {
             </div>
 
             <div className="lg:col-span-2">
-                    <video className="w-full" controls>
-                    <source src={course.demo_video} type="video/mp4" />
-                    Your browser does not support the video tag.
+            {selectedVideo && (
+                <div className="lg:col-span-2">
+                    <video key={selectedVideo.video_url} className="w-full" controls>
+                        <source src={selectedVideo.video_url} type="video/mp4" />
+                        Your browser does not support the video tag.
                     </video>
                 </div>
+            )}
+            </div>
 
         </div>
 

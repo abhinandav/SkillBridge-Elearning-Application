@@ -67,7 +67,7 @@ function AddVideos() {
       });
       console.log('Video uploaded successfully:', response.data);
       if (redirect === 'add_course') {
-        navigate('/teacher/add_course');
+        navigate('/teacher/my_courses');
       } else {
 
 

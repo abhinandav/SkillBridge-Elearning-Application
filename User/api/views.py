@@ -114,6 +114,44 @@ class OTPVerificationView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+class ResendOTPView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+
+        new_otp = random.randint(1000, 9999)
+        print(new_otp)
+
+        user = User.objects.get(email=email)
+        user.otp = new_otp
+        user.save()
+
+
+        subject = 'Your New OTP'
+        message = f'Your new OTP is: {new_otp}'
+        email_from = settings.EMAIL_HOST
+        send_mail(subject, message, email_from, [email])
+
+        return Response({'message': 'New OTP sent successfully'}, status=status.HTTP_200_OK)
+
+
+
+class DeleteOTPView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        try:
+            user = User.objects.get(email=email)
+            user.otp = None  
+            user.save()
+            return Response({'message': 'OTP deleted successfully'}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+
+
 class LoginView(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -171,10 +209,6 @@ class AdminLoginView(APIView):
         else:
                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(content, status=status.HTTP_200_OK)
-
-
-
-
 
 
 
@@ -248,6 +282,9 @@ class TeacherLoginView(APIView):
         email = request.data['email']
         password = request.data['password']
         user=authenticate(username=email,password=password)
+
+        if not user.is_active:
+            return Response({'error': 'Blocked'}, status=status.HTTP_403_FORBIDDEN)
 
         if user is not None and user.is_staff and not user.is_superuser and user.is_active and user.is_email_verified :
             refresh = RefreshToken.for_user(user)

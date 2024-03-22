@@ -128,7 +128,7 @@ const TeacherSignup = () => {
         setAgeError('Age is required *');
       }
 
-      if ( age.length >= 2) {
+      if ( age.length > 2) {
         setAgeError('Invalid age *');
         return
       }
