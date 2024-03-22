@@ -16,6 +16,7 @@ function VideoPlayer() {
     const [videoUrl, setVideoUrl] = useState('');
     const [comment, setComment] = useState('');
     const [loading, setLoading] = useState('');
+    const [comments, setComments] = useState([]);
 
 
 
@@ -127,10 +128,32 @@ function VideoPlayer() {
     
             console.log('Comment added successfully:', response.data);
             setComment('');
+            fetchVideoComments();
         } catch (error) {
             console.error('Error adding comment:', error);
         }
     };
+    
+
+    const fetchVideoComments = async () => {
+
+        try {
+            const response = await axios.get(baseURL+`/student/video_comments/${vid}/`);
+            const comments = response.data;
+            setComments(response.data);
+            console.log('Comments:', comments);
+
+        } catch (error) {
+            console.error('Error fetching video comments:', error);
+        }
+    };
+    
+
+    
+    useEffect(() => {
+        fetchVideoComments();
+},[vid]);
+    
     
 
 
@@ -225,6 +248,19 @@ function VideoPlayer() {
                             </form>
 
                             </div>
+
+
+
+
+                            <ul>
+                                {comments.map((comment) => (
+                                    <li key={comment.id}>
+                                        <p>User: {comment.username}</p>
+                                        <p>Comment: {comment.comment}</p>
+                                        <p>Date Added: {comment.date_added}</p>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
 
 

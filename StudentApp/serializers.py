@@ -82,7 +82,15 @@ class OrderMycourseSerializer(serializers.ModelSerializer):
 
 
 
+# class CommentSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Comment
+#         fields ='__all__'
+
+
 class CommentSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source='user.username')
+
     class Meta:
         model = Comment
-        fields ='__all__'
+        fields = ['id', 'user','course','video', 'username', 'comment', 'date_added']

@@ -14,5 +14,6 @@ urlpatterns=[
     path('courses/<int:course_id>/videos/<int:video_id>/', VideoDetailView.as_view(), name='video-detail'),
 
     path('add_comment/',CommentCreateView.as_view(),name='add_comment'),
+    path('video_comments/<int:video_id>/', VideoCommentsView.as_view(), name='video_comments'),
 
 ]

@@ -159,3 +159,10 @@ class CommentCreateView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class VideoCommentsView(generics.ListAPIView):
+    serializer_class = CommentSerializer
+    def get_queryset(self):
+        video_id = self.kwargs['video_id']
+        return Comment.objects.filter(video=video_id).order_by('date_added')
