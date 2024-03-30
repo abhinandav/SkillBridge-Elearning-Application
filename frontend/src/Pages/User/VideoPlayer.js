@@ -323,6 +323,7 @@ function VideoPlayer() {
                                             </div>
                                         </div>
                                         </div>
+                                        <p className="mt-2 mx-20 text-md text-gray-600 w-30">{comment.comment}</p>
                                     {replyFields[comment.id] && (
                                         <form onSubmit={handleReplySubmit} className='mx-20 my-5 w-full max-w-xl'>
                                             <textarea
@@ -346,6 +347,9 @@ function VideoPlayer() {
                     )}
                     
                     <div className="lg:col-span-2 bg-gray-50 py-5">
+                        <Link to='/inbox'>
+                        <button className='bg-blue-500 text-white p-3 text-center'>Chat</button>
+                        </Link>
                         <h1 className="mb-5 text-2xl font-bold text-gray-600 text-center ">Course Content</h1>
                         <div className="mt-10">
                             <div className="bg--200">

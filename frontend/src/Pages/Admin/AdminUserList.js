@@ -62,6 +62,8 @@ const AdminUserList = () => {
     fetchUsers(baseURL + "/adminapp/users/");
   }, []);
 
+  
+
   return (
     <div>
       <Sidebar />

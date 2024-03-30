@@ -69,7 +69,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Order
+        model = Orders
         fields = ['user', 'course', 'price', 'date_purchased'] 
 
 
@@ -77,15 +77,12 @@ class OrderSerializer(serializers.ModelSerializer):
 class OrderMycourseSerializer(serializers.ModelSerializer):
     course = CourseSerializer()
     class Meta:
-        model = Order
+        model = Orders
         fields = ['user', 'course', 'price', 'date_purchased'] 
 
 
 
-# class CommentSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Comment
-#         fields ='__all__'
+
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -94,3 +91,20 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'user','course','video', 'username', 'comment', 'date_added']
+
+
+
+
+
+
+
+
+
+
+
+# class MessageSerializer(serializers.ModelSerializer):
+#     sender_profile=UserProfileSerializer(read_only=True)
+#     reciever_profile=UserProfileSerializer(read_only=True)
+#     class Meta:
+#         model=ChatMessage
+#         fields=['user','sender','reciever','message','sender_profile','reciever_profile','is_read','date']

@@ -42,7 +42,6 @@ class User(AbstractBaseUser):
     is_email_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    # is_rejected=models.BooleanField(default=True)
     otp = models.CharField(max_length=6, blank=True, null=True)
     
     USERNAME_FIELD  = 'email'

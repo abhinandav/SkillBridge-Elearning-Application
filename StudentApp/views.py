@@ -1,3 +1,4 @@
+import json
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import generics
@@ -11,6 +12,8 @@ from .models import *
 from TeacherApp . models import *
 
 
+
+from django.db.models import Subquery,OuterRef,Q
 
 class UserDetails(APIView):
     permission_classes = [IsAuthenticated]
@@ -130,7 +133,7 @@ class CheckCoursePurchaseAPIView(APIView):
         if not request.user:
             return Response({"message": "Authentication credentials were not provided"}, status=status.HTTP_401_UNAUTHORIZED)
         
-        order_exists = Order.objects.filter(user=request.user, course_id=course_id).exists()
+        order_exists = Orders.objects.filter(user=request.user, course_id=course_id).exists()
         print(order_exists)
         
         if order_exists:
@@ -145,7 +148,7 @@ class PurchasedCoursesListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        order=Order.objects.filter(user=user)
+        order=Orders.objects.filter(user=user)
         return order
     
 
@@ -167,3 +170,158 @@ class VideoCommentsView(generics.ListAPIView):
         video_id = self.kwargs['video_id']
         comments=Comment.objects.filter(video=video_id).order_by('date_added')
         return comments 
+    
+
+
+
+
+
+
+
+
+import environ
+import razorpay
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+from .models import eg
+from .serializers import OrderSerializer
+
+env = environ.Env()
+
+environ.Env.read_env()
+
+
+
+
+
+
+@api_view(['POST'])
+def start_payment(request):
+    price = request.data['amount']
+    course_id = request.data['course']
+
+    course = Course.objects.get(pk=course_id)
+    user = User.objects.get(pk=2)
+
+    client = razorpay.Client(auth=(env('PUBLIC_KEY'), env('SECRET_KEY')))
+
+    payment = client.order.create({"amount": int(price) * 100, 
+                                   "currency": "INR", 
+                                   "payment_capture": "1"})
+
+    order = Orders.objects.create(user=user,course=course, 
+                                 price=price
+                               )
+
+    serializer = OrderSerializer(order)
+
+
+    data = {
+        "payment": payment,
+        "order": serializer.data
+    }
+    return Response(data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# class MyInbox(generics.ListAPIView):
+    
+#     serializer_class=MessageSerializer
+
+#     def get_queryset(self):
+#         user_id=self.kwargs['user_id']
+#         messages=ChatMessage.objects.filter(
+#             id__in=Subquery(
+#                 User.objects.filter(
+#                     Q(sender__reciever=user_id)|
+#                     Q(reciever__sender=user_id)
+#                 ).distinct().annotate(
+#                     Last_msg=Subquery(
+#                         ChatMessage.objects.filter(
+#                             Q(sender=OuterRef('id'),reciever=user_id)|
+#                             Q(reciever=OuterRef('id'),sender=user_id)
+#                         ).order_by('-id')[:1].values_list("id",flat=True)
+#                     )
+#                 ).values_list("Last_msg",flat=True).order_by('-id')
+#             )
+#         ).order_by("-id")
+
+#         return messages
+    
+
+
+# class GetMessages(generics.ListAPIView):
+#     serializer_class=ChatMessage
+
+#     def get_queryset(self):
+#         sender_id=self.kwargs['sender_id']
+#         reciever_id=self.kwargs['reciever_id']
+
+#         messages=ChatMessage.objects.filter(
+#             sender__in=[sender_id,reciever_id],
+#             reciever__in=[sender_id,reciever_id]
+#         )
+
+#         return messages
+
+  
+
+# class SendMessage(generics.CreateAPIView):
+#     serializer_class=MessageSerializer
+
+
+
+# class ProfileDetail(generics.RetrieveAPIView):
+#     serializer_class=UserProfileSerializer
+#     queryset=UserProfile.objects.all()
+#     permission_classes=[IsAuthenticated]
+
+
+# class SearchUser(generics.ListAPIView):
+#     serializer_class=UserProfileSerializer
+#     queryset=UserProfile.objects.all()
+#     # permission_classes=[IsAuthenticated]
+
+#     def List(self,req,*args,**kwargs):
+#         username=self.kwargs['username']
+#         logged_in_user=self.request.user
+#         users=UserProfile.objects.filter(
+#             Q(user__username__icontains=username)|
+#             Q(user__email__icontains=username)&
+#             -Q(user=logged_in_user)
+#         )
+
+#         if not user.exists():
+#             return Response(
+#                 {'detail':"no user founds"},
+#                 status=status.HTTP_404_NOT_FOUND
+#             )
+#         serializer=self.get_serializer(users,many=True)
+#         return Response(serializer.data)
+
+
+
+
+
+
+
+

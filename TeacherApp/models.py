@@ -4,6 +4,7 @@ from User.models import User
 
 class Course(models.Model):
     course_name=models.CharField(max_length=250)
+    added_by=models.ForeignKey(User,on_delete=models.CASCADE,related_name="User")
     description=models.TextField()
     category=models.CharField(max_length=250,blank=True,null=True)
     level=models.CharField(max_length=250)
@@ -22,7 +23,6 @@ class Course(models.Model):
     is_blocked=models.BooleanField(default=False)
     is_rejected=models.BooleanField(default=False)
 
-    added_by=models.ForeignKey(User,on_delete=models.CASCADE,related_name="User")
 
     def __str__(self) -> str:
         return f" {self.course_name} added by {self.added_by.username}"

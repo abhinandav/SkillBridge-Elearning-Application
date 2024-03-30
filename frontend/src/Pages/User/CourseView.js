@@ -5,13 +5,15 @@ import { FaLock } from 'react-icons/fa'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
+import useRazorpay from 'react-razorpay'
 
 
 function CourseView() {
     const baseURL = "http://127.0.0.1:8000";
     const token = localStorage.getItem('access');
-    const authentication_user = useSelector(state => state.authentication_user) || false;
     const navigate=useNavigate()
+
+
     
     const [alreadyPurchased, setAlreadyPurchased] = useState(false);
     const [course, setCourse] = useState({
@@ -68,54 +70,24 @@ function CourseView() {
 
 
 
-
-
-
-
-
-
-    const handleBuyNow = async () => {
+      const checkCoursePurchase = async () => {
         try {
-            const response = await axios.post(`${baseURL}/student/order/`, {
-                course: course.course_id, 
-                price: course.offer_price 
-            }, {
+            const response = await axios.get(`${baseURL}/student/purchased/${id}/`,
+            {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
-    
-            if (response.status === 201) {
-                console.log('Order placed successfully:', response.data);
-                setAlreadyPurchased(true);
-            } 
+            console.log('sssssssss',response.data);
+            setAlreadyPurchased(response.data.purchased);
+            
         } catch (error) {
-            console.error('Error placing order:', error);
-            if (error.response && error.response.status === 401) {
-                navigate('/login');
-            }
+            console.error("Error checking course purchase:", error);
         }
     };
     
 
-
     useEffect(() => {
-        const checkCoursePurchase = async () => {
-            try {
-                const response = await axios.get(`${baseURL}/student/purchased/${id}/`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-                console.log('sssssssss',response.data);
-                setAlreadyPurchased(response.data.purchased);
-                
-            } catch (error) {
-                console.error("Error checking course purchase:", error);
-            }
-        };
-
         checkCoursePurchase();
     }, [id]);
 
@@ -123,6 +95,76 @@ function CourseView() {
     const handleStartLesson = (id, firstVideoId) => {
         navigate(`/videoplayer/${id}/${firstVideoId}`);
     };
+
+
+
+// ---------------------------------
+
+      const loadScript = () => {
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        document.body.appendChild(script);
+      };
+    
+
+      const showRazorpay = async () => {
+        const res = await loadScript();
+        console.log(res);
+    
+        let bodyData = new FormData();
+    
+
+        bodyData.append("amount", course.offer_price);
+        bodyData.append("course", course.course_id);
+    
+        const data = await axios({
+          url: `${baseURL}/student/pay/`,
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          data: bodyData,
+        }).then((res) => {
+          return res;
+        });
+    
+
+    
+        var options = {
+          key_id: process.env.REACT_APP_PUBLIC_KEY, // in react your environment variable must start with REACT_APP_
+          key_secret: process.env.REACT_APP_SECRET_KEY,
+          amount: data.data.payment.amount,
+          currency: "INR",
+          name: course.course_name,
+          description: "Test teansaction",
+          image: "", // add image url
+          order_id: data.data.payment.id,
+          handler: function (response) {
+            checkCoursePurchase()
+            alert('payment successfull')
+    
+          },
+          prefill: {
+            name: "User's name",
+            email: "User's email",
+            contact: "User's phone",
+          },
+          notes: {
+            address: "Razorpay Corporate Office",
+          },
+          theme: {
+            color: "#3399cc",
+          },
+        };
+    
+        var rzp1 = new window.Razorpay(options);
+        rzp1.open();
+      };
+
+
+
+
 
     
       console.log('course',course);
@@ -270,10 +312,12 @@ function CourseView() {
                  className="mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-green-600 text-white shadow-sm hover:bg-green-800 focus-visible:outline-red-600">
                     Already Purchased</span>
             ) : (
-                <button  onClick={handleBuyNow} aria-describedby="tier-startup"
+                <button  onClick={showRazorpay} aria-describedby="tier-startup"
                  className="mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-orange-600 text-white shadow-sm hover:bg-orange-800 focus-visible:outline-red-600">
                 Buy now</button>
             )}
+
+
 
         </div>
         </div>
@@ -369,3 +413,7 @@ function CourseView() {
 }
 
 export default CourseView;
+
+
+
+

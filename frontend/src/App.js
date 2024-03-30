@@ -6,6 +6,7 @@ import TeacherWrapper from "./Components/Teacher/TeacherWrapper"
 import AdminWrapper from './Components/Admin/AdminWrapper'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Messages from "./Pages/Message/messages";
 
 
 function App() {
@@ -18,6 +19,9 @@ function App() {
           <Route path="/*" element={<UserWrapper/>}></Route> 
           <Route path="teacher/*" element={<TeacherWrapper />}></Route>
           <Route path="admin/*" element={<AdminWrapper />}></Route>
+
+
+          <Route path="/messages" element={<Messages/>}></Route> 
 
         </Routes>
         <ToastContainer />

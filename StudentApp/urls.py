@@ -16,4 +16,28 @@ urlpatterns=[
     path('add_comment/',CommentCreateView.as_view(),name='add_comment'),
     path('video_comments/<int:video_id>/', VideoCommentsView.as_view(), name='video_comments'),
 
+
+    path('pay/', start_payment, name="payment"),
+    # path('payment/success/', handle_payment_success, name="payment_success")
+
+
 ]
+
+
+
+
+
+
+
+
+
+
+
+#     path('my-messages/<user_id>/',MyInbox.as_view(),name='my-messages'),
+#     path('get-messages/<sender_id>/<reciever_id>/',GetMessages.as_view(),name='get-messages'),
+#     path('send-message/',SendMessage.as_view(),name='send-message'),
+
+
+# # get/filter data
+#     path('profile/<int:pk>/',ProfileDetail.as_view()),
+#     path('search/<username>/',SearchUser.as_view()),

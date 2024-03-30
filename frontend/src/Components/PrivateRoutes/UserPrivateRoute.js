@@ -20,8 +20,9 @@ function UserPrivateRoute({ children }) {
         'is_authenticated' : authInfo.isAuthenticated,
         'is_admin' : authInfo.isAdmin,
         'is_teacher' : authInfo.isTeacher,
+        
       });
-      setLoading(false);
+        setLoading(false);
     };
 
     fetchData();

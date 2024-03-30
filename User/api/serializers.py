@@ -47,10 +47,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
 
 
-
-
-
-
 class TeacherRegisterSerializer(UserRegisterSerializer):
     class Meta(UserRegisterSerializer.Meta):
         fields = UserRegisterSerializer.Meta.fields

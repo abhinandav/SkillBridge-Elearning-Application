@@ -11,12 +11,14 @@ SECRET_KEY = 'django-insecure-+b@00oq^#k%u^gdjt=ff93w0#4q7x=lqmvjf^l=*0rrao6hn8z
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    # 'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -32,7 +34,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework_simplejwt',
     'rest_framework',
-
+    'chat',
 ]
 
 
@@ -68,7 +70,30 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+# WSGI_APPLICATION = 'backend.wsgi.application'
+
+
+
+# ASGI_APPLICATION = 'backend.asgi.application'
+
+
+# CHANNEL_LAYERS = {
+#     "default":{
+#         "BACKEND":"channels_redis.core.RedisChannelLayer",
+#         "CONFIG":{"hosts":[("127.0.0.1",6379)]},
+#     }
+# }
+
+
+ASGI_APPLICATION = 'backend.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default':{
+        'BACKEND':'channels.layers.InMemoryChannelLayer'
+    }
+}
+
+
 
 
 # Database
@@ -85,7 +110,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'skillbridge',
+        'NAME': 'Sproject',
         'USER': 'postgres',
         'PASSWORD': '1234',
         'HOST':'localhost',
@@ -125,8 +150,6 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
 
