@@ -46,7 +46,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 
     async def receive(self, text_data):
-        print("Received message:", text_data)  
+        # print("Received message:", text_data)  
         data = json.loads(text_data)
         message = data.get('message', '') 
         sender_id = data.get('sender_id')
@@ -58,16 +58,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
              f"chat_{self.order_id}",
             {
                 'type': 'chat_message',
-                'message': message
+                'message': message,
+                'sender':sender_id
             }
         )
 
 
     async def chat_message(self, event):
         message = event['message']
+        sender = event['sender']
+
         await self.send(text_data=json.dumps({
             'type': 'chat_message',
-            'message': message
+            'message': message,
+            'sender':sender,
         }))
 
 

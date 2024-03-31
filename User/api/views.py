@@ -297,6 +297,7 @@ class TeacherLoginView(APIView):
             content = {
                 'access_token': str(access_token),
                 'refresh_token': refresh_token,
+                'userid':user.id,
                 'isAdmin': user.is_superuser,
                 'isTeacher': user.is_staff,
             }

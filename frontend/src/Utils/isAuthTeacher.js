@@ -2,9 +2,11 @@ import axios from "axios";
 import {jwtDecode} from 'jwt-decode'
 
 const baseURL = 'http://127.0.0.1:8000';
+const userid = localStorage.getItem('userid');
 
 const updateToken = async () => {
     const refreshToken = localStorage.getItem("refresh");
+    
     console.log('refresh--',refreshToken);
     console.log('updating');
 
@@ -60,11 +62,9 @@ const fetchisAdmin = async () => {
 
 
 
-
-
-
 const isAuthTeacher = async () => {
     const accessToken = localStorage.getItem("access");
+
     console.log('access----',accessToken);
 
     if (!accessToken) {
@@ -79,14 +79,14 @@ const isAuthTeacher = async () => {
 
     if (decoded.exp > currentTime) {
         let checkAdmin = await fetchisAdmin(); 
-        return { name: decoded.username, isAuthenticated: true,isTeacher:true ,isAdmin:checkAdmin};
+        return {  userid:userid,name: decoded.username, isAuthenticated: true,isTeacher:true ,isAdmin:checkAdmin};
     } else {
         const updateSuccess = await updateToken();
 
         if (updateSuccess) {
             let decoded = jwtDecode(accessToken);
             let checkAdmin = await fetchisAdmin(); 
-            return { name: decoded.username, isAuthenticated: true,isTeacher: true,isAdmin:checkAdmin };
+            return { userid:userid, name: decoded.username,   isAuthenticated: true,isTeacher: true,isAdmin:checkAdmin };
         } else {
             return { name: null, isAuthenticated: false ,isTeacher: false};
         }

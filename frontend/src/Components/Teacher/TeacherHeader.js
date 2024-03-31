@@ -8,6 +8,7 @@ const TeacherHeader = () => {
 
   const dispatch=useDispatch()
   const navigate=useNavigate()
+  const orderId=13
   const authentication_user=useSelector(state=>state.authentication_user)
   console.log('hhhhh',authentication_user.isTeacher);
 
@@ -56,6 +57,10 @@ const TeacherHeader = () => {
               <Link to='my_courses/'>
                 <span className="text-gray-800 text-md font-semibold hover:text-orange-500 mr-4">My Courses</span>  
                 </Link>
+
+                <Link className="nav-link" to={`inbox/${orderId}/`}>
+                <span className="text-gray-800 text-md font-semibold hover:text-orange-500 mr-4">Inbox</span>
+              </Link>
               </div>
               
 

@@ -63,6 +63,7 @@ const TeacherLogin = () => {
             if(res.status==200){
                 localStorage.setItem('access', res.data.access_token);
                 localStorage.setItem('refresh', res.data.refresh_token);
+                localStorage.setItem('userid', res.data.userid);
 
                 console.log('logined', res.data);
                 console.log('Access Token:', res.data.access_token);
@@ -73,6 +74,7 @@ const TeacherLogin = () => {
             dispatch(
                 set_authentication({
                   name: jwtDecode(res.data.access_token).username,
+                  userid:res.data.userid,
                   isAuthenticated: true,
                   isAdmin: false,
                   isTeacher:true

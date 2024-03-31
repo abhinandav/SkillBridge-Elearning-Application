@@ -7,6 +7,7 @@ function TeacherPrivateRoute({ children }) {
   
   const [isAuthenticated, setIsAuthenticated] = useState({
     is_authenticated: false,
+    userid:null,
     is_admin: false,
     is_teacher:false
   });
@@ -21,6 +22,7 @@ function TeacherPrivateRoute({ children }) {
         'is_authenticated' : authInfo.isAuthenticated,
         'is_admin' : authInfo.isAdmin,
         'is_teacher' : authInfo.isTeacher,
+        'userid':authInfo.userid
       });
       setLoading(false);
     };

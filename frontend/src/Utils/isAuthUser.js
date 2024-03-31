@@ -74,6 +74,7 @@ const fetchisAdmin = async () => {
   
 
 
+  
 const isAuthUser = async () => {
     const accessToken = localStorage.getItem("access");
 
@@ -88,13 +89,8 @@ const isAuthUser = async () => {
 
     if (decoded.exp > currentTime) {
             const [checkAdmin, checkTeacher] = await Promise.all([fetchisAdmin(), fetchisTeacher()]);
-            // console.log('Admin?', checkAdmin);
-            // console.log('Teacher?', checkTeacher);
             return { userid:userid, name: decoded.username, isAuthenticated: true, isAdmin: checkAdmin, isTeacher: checkTeacher };
-        // let checkAdmin = await fetchisAdmin(); 
-        // let checkTeacher = await fetchisTeacher(); 
-        // console.log('Admin?',checkAdmin);
-        // return { name: decoded.username, isAuthenticated: true , isAdmin:checkAdmin, isTeacher:checkTeacher};
+       
     } else {
         const updateSuccess = await updateToken();
 
@@ -102,15 +98,10 @@ const isAuthUser = async () => {
             let decoded = jwtDecode(accessToken);
 
             const [checkAdmin, checkTeacher] = await Promise.all([fetchisAdmin(), fetchisTeacher()]);
-            // console.log('Admin2?', checkAdmin);
-            // console.log('Teacher2?', checkTeacher);
             return { userid:userid,name: decoded.username, isAuthenticated: true, isAdmin: checkAdmin, isTeacher: checkTeacher };
 
 
-            // let checkAdmin = await fetchisAdmin(); 
-            // let checkTeacher = await fetchisTeacher(); 
-            // console.log('Admin2?',checkAdmin);
-            // return { name: decoded.username, isAuthenticated: true,isAdmin:checkAdmin,isTeacher:checkTeacher};
+         
         } else {
             return { name: null, isAuthenticated: false,isAdmin:false };
         }

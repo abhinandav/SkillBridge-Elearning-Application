@@ -7,6 +7,7 @@ import { Link, useParams } from 'react-router-dom';
 function Messages() {
     const baseURL = "http://127.0.0.1:8000";
     const token = localStorage.getItem('access');
+    const userid = localStorage.getItem('userid');
 
     const { orderId } = useParams()
     const chatContainerRef = useRef(null);
@@ -15,46 +16,163 @@ function Messages() {
     const [teachers, setTeachers] = useState([]);
     const [chatMessages, setChatMessages] = useState([]);
     const [message, setMessage] = useState([]);
+    const [senders, setSenders] = useState([]);
     const authentication_user = useSelector(state => state.authentication_user);
-    // console.log('auth',authentication_user);
-    const userid=parseInt(authentication_user.id)
-    console.log('auth',userid);
-
+    console.log('auth',authentication_user);
 
     console.log('orderid',orderId);
 
-    useEffect(() => {
-        if (orderId) {
-            console.log(orderId);
-            const wsURL = `ws://127.0.0.1:8000/ws/socket-server/${orderId}/`;
-            connectToWebSocket(wsURL);
-            return () => {
-                client && client.close();
-            };
-        }
-    }, [orderId]);
 
-    const handleMessageChange = (e) => {
-        setMessage(e.target.value);
+// sidebar
+
+useEffect(() => {
+    axios.get(baseURL+'/chat/users_messaged_teacher/', {
+        headers: {
+            Authorization: `Bearer ${token}` 
+        }
+    })
+    .then(response => {
+        setSenders(response.data);
+        console.log('Data received:', response.data);
+    })
+    .catch(error => {
+        console.error('Error fetching users who messaged teacher:', error);
+    });
+}, [token]);
+
+console.log('senders',senders);
+
+
+
+
+// websocket
+
+useEffect(() => {
+    if (orderId) {
+        console.log(orderId);
+        const wsURL = `ws://127.0.0.1:8000/ws/socket-server/${orderId}/`;
+        connectToWebSocket(wsURL);
+        return () => {
+            client && client.close();
+        };
+    }
+}, [orderId]);
+
+
+const handleMessageChange = (e) => {
+    setMessage(e.target.value);
+};
+
+const connectToWebSocket = (url) => {
+    if (client) {
+    client.close();
+    setChatMessages([]);
+    }
+
+
+    const newClient = new W3CWebSocket(url);
+    setClient(newClient);
+    newClient.onopen = () => {
+        console.log("WebSocket Client Connected");
+        fetchExistingMessages();
     };
 
+    newClient.onmessage = (message) => {
+        const data = JSON.parse(message.data);
+        
+        if (parseInt(data.sender) === parseInt(userid)) {
+            setChatMessages((prevMessages) => [...prevMessages, { ...data, sender: userid }]);
+        } else {
+            setChatMessages((prevMessages) => [...prevMessages, data]);
+        }
+    };
+};
 
-// fetch reciver(teacher)
+useEffect(() => {
+    if (orderId) {
+        fetchExistingMessages();
+    }
+}, [orderId]);
+
+
+const fetchExistingMessages = async () => {
+    try {
+      const response = await fetch(
+        `${baseURL}/chat/chat-messages/${orderId}/`
+      );
+
+      if (!response.ok) {
+        console.error(
+          "Error fetching existing messages. Status:",
+          response.status
+        );
+        return;
+      }
+
+      const data = await response.json();
+      console.log('data',data);
+
+      const messagesTextArray = data.map((item) => ({
+        message: item.message,
+        sender: item.sender,
+        receiver:item.receiver,
+        timestamp:item.timestamp
+      }));
+
+      setChatMessages(messagesTextArray);
+      
+    } catch (error) {
+      console.error("Error fetching existing messages:", error);
+    }
+};
+
+
+
+const sendMessage = (e) => {
+    e.preventDefault();
+    if (!client || client.readyState !== client.OPEN) {
+      console.error("WebSocket is not open");
+      return;
+    }
+
+   
+    const messageData = { 
+        'message': message, 
+        'order_id': orderId, 
+        'sender_id': userid, 
+        'receiver_id': receiverId 
+    };
+    const messageString = JSON.stringify(messageData);
+
+    console.log("Sending Message:", messageString);
+
+
+    client.send(messageString);
+
+   
+    setMessage('')
+};
+
+
+   
+// fetch reciver(user)
 
 const fetchReciever = async (orderId) => {
     try {
-        const response = await axios.get(`${baseURL}/chat/created_teacher/${orderId}/`, {
+        const response = await axios.get(`${baseURL}/chat/buyed_user/${orderId}/`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
-        setRecieverId(response.data[0].id)
+        setRecieverId(response.data)
         return response.data;
     } catch (error) {
         console.error('Error fetching added user:', error);
         return null;
     }
 };
+
+console.log('reciever',receiverId);
 
 useEffect(() => {
     if (orderId) {
@@ -63,135 +181,20 @@ useEffect(() => {
 }, [orderId]);
 
 
+  // chat screen
 
-// websocket connection
+  useEffect(() => {
+    scrollToBottom();
+}, [chatMessages]); 
 
-    const connectToWebSocket = (url) => {
-        if (client) {
-        client.close();
-        setChatMessages([]);
-        }
-
-
-        const newClient = new W3CWebSocket(url);
-        setClient(newClient);
-        newClient.onopen = () => {
-            console.log("WebSocket Client Connected");
-            fetchExistingMessages();
-        };
-    
-       
+const scrollToBottom = () => {
+    if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+};
 
 
-        newClient.onmessage = (message) => {
-            const data = JSON.parse(message.data);
-            
-            if (parseInt(data.sender) === parseInt(userid)) {
-                setChatMessages((prevMessages) => [...prevMessages, { ...data, sender: userid }]);
-            } else {
-                setChatMessages((prevMessages) => [...prevMessages, data]);
-            }
-        };
-
-    };
-
-
-    const fetchExistingMessages = async () => {
-        try {
-          const response = await fetch(
-            `${baseURL}/chat/chat-messages/${orderId}/`
-          );
-  
-          if (!response.ok) {
-            console.error(
-              "Error fetching existing messages. Status:",
-              response.status
-            );
-            return;
-          }
-  
-          const data = await response.json();
-          console.log('data',data);
-  
-          const messagesTextArray = data.map((item) => ({
-            message: item.message,
-            sender: item.sender,
-            receiver:item.receiver,
-            timestamp:item.timestamp
-          }));
-  
-          setChatMessages(messagesTextArray);
-          
-        } catch (error) {
-          console.error("Error fetching existing messages:", error);
-        }
-    };
-
-
-
-    const sendMessage = (e) => {
-        e.preventDefault();
-        if (!client || client.readyState !== client.OPEN) {
-          console.error("WebSocket is not open");
-          return;
-        }
-    
-        const senderId = authentication_user.userid;
-        const messageData = { 
-            'message': message, 
-            'order_id': orderId, 
-            'sender_id': senderId, 
-            'receiver_id': receiverId 
-        };
-        const messageString = JSON.stringify(messageData);
-    
-        console.log("Sending Message:", messageString);
-    
-        client.send(messageString);
-        setMessage('')
-
-        // fetchExistingMessages();
-    };
-    
-
-
-    // sidebar
-    useEffect(() => {
-        const fetchTeachers = async () => {
-            try {
-                const response = await axios.get(baseURL+'/chat/ordercourse_teachers/', {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-                setTeachers(response.data);
-            } catch (error) {
-                console.error('Error fetching teachers:', error);
-            }
-        };
-
-        fetchTeachers();
-    }, []);
-
-
-    // chat screen
-
-    useEffect(() => {
-        scrollToBottom();
-    }, [chatMessages]); 
-
-    const scrollToBottom = () => {
-        if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-        }
-    };
-
-
-
-
-    console.log("Chat messages:", chatMessages);
-
-
+   
     return (
         <div style={{height:640}} className="flex h-  antialiased text-gray-800">
             <div className="flex flex-row h-full w-full overflow-x-hidden">
@@ -216,13 +219,13 @@ useEffect(() => {
                 
                 <div className="flex flex-row mt-8 ml-5">
                     <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 ">
-                        {teachers.map((order) => (
+                        {senders.map((order) => (
                             <span key={order.id} className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2 px-10">
-                                <Link to={`/inbox/${order.id}/`} className="flex items-center">
+                                <Link to={`/teacher/inbox/${order.id}/`} className="flex items-center">
                                     <div className="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center">
                                         H
                                     </div>
-                                    <div className="ml-5  font- text-md">{order.user.username}</div>
+                                    <div className="ml-5  font- text-md">{order.username}</div>
                                 </Link>
                             </span>
                         ))}
@@ -240,9 +243,9 @@ useEffect(() => {
                             <div ref={chatContainerRef} className="flex flex-col h-full overflow-y-auto  mb-4" style={{ WebkitOverflowScrolling: 'touch', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
                                 <div className="flex flex-col h-full">
 
-                                    {chatMessages.map((message, index) => (
+                                    {/* {chatMessages.map((message, index) => (
                                         <div key={index}>
-                                            {parseInt(message.sender) === parseInt(authentication_user.userid) ? (
+                                            {parseInt(message.sender) === parseInt(userid) ? (
                                                 <div className="col-start-8 col-end-12 p-3 rounded-lg mb-2 mr-auto">
                                                 <div className="flex items-center justify-start flex-row-reverse">
                                                     <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
@@ -266,7 +269,36 @@ useEffect(() => {
                                         </div>
                                     )}
                                         </div>
-                                    ))}
+                                    ))} */}
+
+                                            {chatMessages.map((message, index) => (
+                                                <div key={index} >
+                                                    {!(parseInt(message.sender) === parseInt(userid) )? (
+                                                    <div  className="col-start-1 col-end-5 p-3 rounded-lg mb-2 ml-auto" >
+                                                        <div className="flex flex-row items-center">
+                                                            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
+                                                                R
+                                                            </div>
+                                                            <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
+                                                                <div style={{ maxWidth: 500 }}>{message.message}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    ) : (
+                                                        <div className="col-start-8 col-end-12 p-3 rounded-lg mb-2 mr-auto">
+                                                        <div className="flex items-center justify-start flex-row-reverse">
+                                                            <div className=" mr-2 flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
+                                                                S
+                                                            </div>
+                                                            <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
+                                                                <div style={{ maxWidth: 500 }}>{message.message}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    )}
+                                                </div>
+                                            ))}
+
 
 
 
@@ -277,7 +309,7 @@ useEffect(() => {
 
                         
                     
-                        <form onSubmit={sendMessage} className='flex '>
+                        <form onSubmit={sendMessage} className='flex'>
                             <div className="flex flex-row items-center h-16 rounded-xl bg-gray w-full px-4">
                                 <div className="flex-grow ml-4">
                                     <div className="relative w-full">
@@ -326,68 +358,4 @@ useEffect(() => {
     }
     
 export default Messages;
-
-
-
-                        // value={inputValue}
-                        // onChange={handleInputChange}
-
-
-                        // import MessageInput from './MessageInput';
-
-
-                         // useEffect(() => {
-    //     const url = 'ws://127.0.0.1:8000/ws/socket-server/';
-    //     console.log(url);
-    //     chatSocketRef.current = new WebSocket(url);
-    //     chatSocketRef.current.onmessage = function(event) {
-    //         const data = JSON.parse(event.data);
-    //         console.log('Data:', data);
-    //         if (data.type === 'chat') {
-    //             setMessages(prevMessages => [...prevMessages, data.message]);
-    //             messagesRef.current.insertAdjacentHTML('beforeend', `<div><p>${data.message}</p></div>`);
-    //         }
-    //     };
-
-    //     return () => {
-    //         chatSocketRef.current.close();
-    //     };
-    // }, []);
-
-
-
-
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     const message = e.target.elements.message.value;
-    //     const senderId = authentication_user.userid; 
-    //     const receiverId = 4; 
-    //     setMessages(prevMessages => [...prevMessages, message]);
-    //     chatSocketRef.current.send(JSON.stringify({ 'message': message,'order_id':13, 'sender_id': senderId, 'receiver_id': receiverId }));
-    //     e.target.reset();
-    // };
-
-
-
-
-
-    //  {/* {chatMessages.map((message, index) => (
-    //                                     <div key={index} className={`col-start-${message.sender === 'A' ? '6' : '1'} col-end-${message.sender === 'A' ? '13' : '8'} p-3 rounded-lg`}>
-                                        
-    //                                         <div className={`flex flex-row items-center ${message.sender === authentication_user.id ? 'justify-start flex-row-reverse' : ''}`}>
-    //                                             <div className={`flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0`}>
-    //                                                 S
-    //                                             </div>
-
-    //                                             <div className={`relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl ${message.sender === authentication_user.id  ? 'self-end' : 'self-start'}`}>
-    //                                                 <div>{message.message}</div>
-    //                                             </div>
-    //                                         </div>
-    //                                     </div>
-    //                                 ))} */}
-    
-
-// chat...................
-
 

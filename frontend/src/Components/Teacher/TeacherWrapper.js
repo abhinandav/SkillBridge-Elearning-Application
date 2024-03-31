@@ -15,13 +15,14 @@ import EditVideo from "../../Pages/Teacher/Course/EditVideo";
 import TeacherProfile from "../../Pages/Teacher/Profile/TeacherProfile";
 import TeacherProfileEdit from "../../Pages/Teacher/Profile/TeacherProfileEdit";
 import TeacherProfileCourseList from "../../Pages/Teacher/Profile/TeacherProfileCourseList";
-
+import Messages from "../../Pages/Teacher/messages";
 
 
 import { useDispatch, useSelector } from "react-redux";
 import isAuthTeacher from "../../Utils/isAuthTeacher";
 import { set_authentication } from "../../Redux/autehnticationSlice"; 
 import TeacherPrivateRoute from "../PrivateRoutes/TecaherPrivateRoute";
+
 
 
 function UserWrapper() {
@@ -75,6 +76,8 @@ function UserWrapper() {
           <Route path='/teacher_profile' element={<TeacherPrivateRoute><TeacherProfile/></TeacherPrivateRoute>}></Route>
           <Route path='/teacher_profile_edit' element={<TeacherPrivateRoute><TeacherProfileEdit/></TeacherPrivateRoute>}></Route>
           <Route path='/teacher_mycourse_list' element={<TeacherPrivateRoute><TeacherProfileCourseList/></TeacherPrivateRoute>}></Route>
+          <Route  path="/inbox/:orderId" element={<TeacherPrivateRoute><Messages/></TeacherPrivateRoute>}></Route>
+
       </Routes>    
    
     
