@@ -23,25 +23,25 @@ function ProfileSidebar() {
               </div>
 
               
-              <hr className="my-6 border-t border-gray-300" />
+              <hr className="my-4 border-t border-gray-300" />
               <Link to='/teacher/teacher_profile'>
               <div className="flex flex-col text-center">
-                <span className="text-gray-700 text-lg  font-bold tracking-wider mb-2">Dashboard</span>
+                <span className="text-gray-700 text-md  font-bold tracking-wider mb-2">Dashboard</span>
               </div>
               </Link>
 
-              <hr className="my-6 border-t border-gray-300" />
+              <hr className="my-4 border-t border-gray-300" />
               <Link to='/teacher/teacher_mycourse_list '>
               <div className="flex flex-col text-center">
-                <span className="text-gray-700 text-lg  font-bold tracking-wider mb-2">My Courses</span>
+                <span className="text-gray-700 text-md  font-bold tracking-wider mb-2">My Courses</span>
               </div>
               </Link>
 
 
-              <hr className="my-6 border-t border-gray-300" />
+              <hr className="my-4 border-t border-gray-300" />
               <Link to='/teacher/teacher_profile_edit'>
               <div className="flex flex-col text-center">
-                <span className="text-gray-700 text-lg  font-bold tracking-wider mb-2">Settings</span>
+                <span className="text-gray-700 text-md  font-bold tracking-wider mb-2">Settings</span>
               </div>
               </Link>
 

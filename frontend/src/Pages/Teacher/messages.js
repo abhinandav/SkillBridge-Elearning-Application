@@ -3,11 +3,14 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import { Link, useParams } from 'react-router-dom';
+import { formatDistanceToNow } from 'date-fns';
 
 function Messages() {
     const baseURL = "http://127.0.0.1:8000";
     const token = localStorage.getItem('access');
     const userid = localStorage.getItem('userid');
+
+    
 
     const { orderId } = useParams()
     const chatContainerRef = useRef(null);
@@ -194,15 +197,25 @@ const scrollToBottom = () => {
 };
 
 
+// time 
+// Define the formatTime function
+const formatTime = (timestamp) => {
+    const date = new Date(timestamp);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    return `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+};
+
    
     return (
-        <div style={{height:640}} className="flex h-  antialiased text-gray-800">
+        <div style={{height:570}} className="flex  antialiased text-gray-800">
             <div className="flex flex-row h-full w-full overflow-x-hidden">
 
         {/*-------------------- sidebar start --------------------*/}
 
                 
-            <div style={{height:200}} className="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
+            <div style={{width:220}} className="flex flex-col py-8 pl-2 pr-2 w-64 bg-white flex-shrink-0">
+
                 <div className="flex flex-row items-center justify-center h-12 w-full">
                     <div className="flex items-center justify-center rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10" >
                         <svg className="w-6 h-6"  fill="none"  stroke="currentColor"  viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" >
@@ -220,14 +233,16 @@ const scrollToBottom = () => {
                 <div className="flex flex-row mt-8 ml-5">
                     <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 ">
                         {senders.map((order) => (
-                            <span key={order.id} className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2 px-10">
+
+                           <span key={order.id} className={`flex flex-row items-center hover:bg-gray-150 ${parseInt(orderId) === parseInt(order.id) ? 'bg-gray-300' : ''} rounded-lg p-1 px-10`}>
                                 <Link to={`/teacher/inbox/${order.id}/`} className="flex items-center">
                                     <div className="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center">
                                         H
                                     </div>
-                                    <div className="ml-5  font- text-md">{order.username}</div>
+                                    <div className="ml-5 font-text-md">{order.username}</div>
                                 </Link>
-                            </span>
+                        </span>
+
                         ))}
                     </div>
                 </div>
@@ -236,81 +251,61 @@ const scrollToBottom = () => {
         {/*----------------------sidebar end--------------------*/}
 
 
-            <div className="flex flex-col flex-auto h-full p-6">
+            <div className="flex flex-col flex-auto h-full p-6 bg-orange-00">
                 <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-40 p-4" >
-                    <div className="flex flex-col flex-auto h-full p-6">
-                        <div className="flex flex-col flex-auto flex-shrink-0 overflow-hidden rounded-2xl bg-gray-100 h-full p-4">
-                            <div ref={chatContainerRef} className="flex flex-col h-full overflow-y-auto  mb-4" style={{ WebkitOverflowScrolling: 'touch', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+                    <div className="flex flex-col flex-auto h-full px-3">
+
+                        <div  className="flex flex-col flex-auto flex-shrink-0 overflow-hidden rounded-xl bg-gray-100 h-full ">
+                            <div ref={chatContainerRef} className="flex flex-col h-full overflow-y-auto   mb-4" style={{ WebkitOverflowScrolling: 'touch', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
                                 <div className="flex flex-col h-full">
-
-                                    {/* {chatMessages.map((message, index) => (
-                                        <div key={index}>
-                                            {parseInt(message.sender) === parseInt(userid) ? (
-                                                <div className="col-start-8 col-end-12 p-3 rounded-lg mb-2 mr-auto">
-                                                <div className="flex items-center justify-start flex-row-reverse">
-                                                    <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                                                        R
-                                                    </div>
-                                                    <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
-                                                        <div>{message.message}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            ) : (
-                                            <div className="col-start-1 col-end-8 p-3 rounded-lg mb-2 ml-auto">
-                                            <div className="flex flex-row items-center">
-                                                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                                                    A
-                                                </div>
-                                                <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
-                                                    <div>{message.message}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                        </div>
-                                    ))} */}
-
                                             {chatMessages.map((message, index) => (
                                                 <div key={index} >
                                                     {!(parseInt(message.sender) === parseInt(userid) )? (
                                                     <div  className="col-start-1 col-end-5 p-3 rounded-lg mb-2 ml-auto" >
                                                         <div className="flex flex-row items-center">
-                                                            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
+                                                            <div className="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500 flex-shrink-0">
                                                                 R
                                                             </div>
-                                                            <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
-                                                                <div style={{ maxWidth: 500 }}>{message.message}</div>
+
+                                                            <div className="flex flex-col relative ml-3 bg-white py-1 px-4 shadow rounded-xl">
+                                                                <div style={{ maxWidth: 500 }} className='text-sm mr-5 '>{message.message}</div>
+                                                                <div className="flex justify-end">
+                                                                    <div style={{ fontSize: '10px' }} className='text-sm text-gray-500 ml-5 -mt-1'>
+                                                                        {formatTime(message.timestamp)}
+                                                                    </div>
+                                                                </div>
                                                             </div>
+
                                                         </div>
                                                     </div>
                                                     ) : (
                                                         <div className="col-start-8 col-end-12 p-3 rounded-lg mb-2 mr-auto">
                                                         <div className="flex items-center justify-start flex-row-reverse">
-                                                            <div className=" mr-2 flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
+                                                            <div className=" ml-2 flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500 flex-shrink-0">
                                                                 S
                                                             </div>
-                                                            <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
-                                                                <div style={{ maxWidth: 500 }}>{message.message}</div>
+
+                                                            <div className="flex flex-col relative ml-3 bg-white py-1 px-4 shadow rounded-xl">
+                                                                <div style={{ maxWidth: 500 }} className='text-sm mr-5 '>{message.message}</div>
+                                                                <div className="flex justify-end">
+                                                                    <div style={{ fontSize: '10px' }} className='text-sm text-gray-500 ml-5 -mt-1'>
+                                                                        {formatTime(message.timestamp)}
+                                                                    </div>
+                                                                </div>
                                                             </div>
+
                                                         </div>
                                                     </div>
                                                     )}
                                                 </div>
                                             ))}
-
-
-
-
-
                                 </div>
-                            </div>                            
+                            </div>                        
                         </div>
 
-                        
-                    
+
                         <form onSubmit={sendMessage} className='flex'>
-                            <div className="flex flex-row items-center h-16 rounded-xl bg-gray w-full px-4">
+                            <div className=" -mt-6 flex flex-row items-center h-16 rounded-xl bg-gray w-full px-4">
                                 <div className="flex-grow ml-4">
                                     <div className="relative w-full">
                                     <input
@@ -344,7 +339,9 @@ const scrollToBottom = () => {
                                     </button>
                                 </div>
                             </div>
-                        </form>
+                        </form>   
+
+
                     </div>
                 </div>
             </div>
