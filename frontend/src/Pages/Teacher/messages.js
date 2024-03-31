@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import { Link, useParams } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
+import msgimg from '../../Images/msg1.jpg'
 
 function Messages() {
     const baseURL = "http://127.0.0.1:8000";
@@ -13,6 +14,8 @@ function Messages() {
     
 
     const { orderId } = useParams()
+    const parsedOrderId = parseInt(orderId);
+
     const chatContainerRef = useRef(null);
     const [client, setClient] = useState('');
     const [receiverId, setRecieverId] = useState([]);
@@ -27,7 +30,6 @@ function Messages() {
 
 
 // sidebar
-
 useEffect(() => {
     axios.get(baseURL+'/chat/users_messaged_teacher/', {
         headers: {
@@ -44,6 +46,8 @@ useEffect(() => {
 }, [token]);
 
 console.log('senders',senders);
+
+
 
 
 
@@ -71,8 +75,6 @@ const connectToWebSocket = (url) => {
     client.close();
     setChatMessages([]);
     }
-
-
     const newClient = new W3CWebSocket(url);
     setClient(newClient);
     newClient.onopen = () => {
@@ -88,6 +90,7 @@ const connectToWebSocket = (url) => {
         } else {
             setChatMessages((prevMessages) => [...prevMessages, data]);
         }
+        fetchExistingMessages()
     };
 };
 
@@ -113,13 +116,15 @@ const fetchExistingMessages = async () => {
       }
 
       const data = await response.json();
-      console.log('data',data);
+    //   console.log('data',data);
 
       const messagesTextArray = data.map((item) => ({
         message: item.message,
         sender: item.sender,
         receiver:item.receiver,
-        timestamp:item.timestamp
+        timestamp:item.timestamp,
+        receiver_profile_pic:item.receiver_profile_pic,
+        sender_profile_pic:item.sender_profile_pic
       }));
 
       setChatMessages(messagesTextArray);
@@ -129,6 +134,8 @@ const fetchExistingMessages = async () => {
     }
 };
 
+console.log('type...',typeof parsedOrderId);
+
 
 
 const sendMessage = (e) => {
@@ -137,8 +144,6 @@ const sendMessage = (e) => {
       console.error("WebSocket is not open");
       return;
     }
-
-   
     const messageData = { 
         'message': message, 
         'order_id': orderId, 
@@ -146,14 +151,10 @@ const sendMessage = (e) => {
         'receiver_id': receiverId 
     };
     const messageString = JSON.stringify(messageData);
-
     console.log("Sending Message:", messageString);
-
-
     client.send(messageString);
-
-   
     setMessage('')
+    fetchExistingMessages()
 };
 
 
@@ -206,6 +207,11 @@ const formatTime = (timestamp) => {
     return `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
 };
 
+
+
+
+console.log('chat messages',chatMessages);
+
    
     return (
         <div style={{height:570}} className="flex  antialiased text-gray-800">
@@ -214,7 +220,7 @@ const formatTime = (timestamp) => {
         {/*-------------------- sidebar start --------------------*/}
 
                 
-            <div style={{width:220}} className="flex flex-col py-8 pl-2 pr-2 w-64 bg-white flex-shrink-0">
+            <div style={{width:220}} className="flex flex-col py-8 px-10 pl-2 mt-3 pr-5 w-64 bg-white flex-shrink-0 border-r border-gray-50">
 
                 <div className="flex flex-row items-center justify-center h-12 w-full">
                     <div className="flex items-center justify-center rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10" >
@@ -237,7 +243,7 @@ const formatTime = (timestamp) => {
                            <span key={order.id} className={`flex flex-row items-center hover:bg-gray-150 ${parseInt(orderId) === parseInt(order.id) ? 'bg-gray-300' : ''} rounded-lg p-1 px-10`}>
                                 <Link to={`/teacher/inbox/${order.id}/`} className="flex items-center">
                                     <div className="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center">
-                                        H
+                                        <img src={`${baseURL}/media/${order.profile_pic}`} alt='profile'  className="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center"/>
                                     </div>
                                     <div className="ml-5 font-text-md">{order.username}</div>
                                 </Link>
@@ -250,13 +256,16 @@ const formatTime = (timestamp) => {
 
         {/*----------------------sidebar end--------------------*/}
 
-
+        { !(orderId === 'undefined' ) ? (
+                        <>
             <div className="flex flex-col flex-auto h-full p-6 bg-orange-00">
-                <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-40 p-4" >
-                    <div className="flex flex-col flex-auto h-full px-3">
+                <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-50 h-40 p-4 " >
+                    <div className="flex flex-col flex-auto h-full px-3 bg-orange- ">
 
-                        <div  className="flex flex-col flex-auto flex-shrink-0 overflow-hidden rounded-xl bg-gray-100 h-full ">
-                            <div ref={chatContainerRef} className="flex flex-col h-full overflow-y-auto   mb-4" style={{ WebkitOverflowScrolling: 'touch', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+
+                    
+                        <div  className="flex flex-col flex-auto flex-shrink-0 overflow-hidden rounded-xl bg-gray-50 h-full ">
+                            <div ref={chatContainerRef} className="flex flex-col h-full overflow-y-auto bg-orange-00  mb-4" style={{ WebkitOverflowScrolling: 'touch', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
                                 <div className="flex flex-col h-full">
                                             {chatMessages.map((message, index) => (
                                                 <div key={index} >
@@ -264,7 +273,7 @@ const formatTime = (timestamp) => {
                                                     <div  className="col-start-1 col-end-5 p-3 rounded-lg mb-2 ml-auto" >
                                                         <div className="flex flex-row items-center">
                                                             <div className="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500 flex-shrink-0">
-                                                                R
+                                                                <img src={`${baseURL}${message.sender_profile_pic}`} alt='profile'  className="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center"/>
                                                             </div>
 
                                                             <div className="flex flex-col relative ml-3 bg-white py-1 px-4 shadow rounded-xl">
@@ -282,7 +291,7 @@ const formatTime = (timestamp) => {
                                                         <div className="col-start-8 col-end-12 p-3 rounded-lg mb-2 mr-auto">
                                                         <div className="flex items-center justify-start flex-row-reverse">
                                                             <div className=" ml-2 flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500 flex-shrink-0">
-                                                                S
+                                                            <img src={`${baseURL}${message.receiver_profile_pic}`} alt='profile'  className="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center"/>
                                                             </div>
 
                                                             <div className="flex flex-col relative ml-3 bg-white py-1 px-4 shadow rounded-xl">
@@ -302,8 +311,6 @@ const formatTime = (timestamp) => {
                                 </div>
                             </div>                        
                         </div>
-
-
                         <form onSubmit={sendMessage} className='flex'>
                             <div className=" -mt-6 flex flex-row items-center h-16 rounded-xl bg-gray w-full px-4">
                                 <div className="flex-grow ml-4">
@@ -340,15 +347,19 @@ const formatTime = (timestamp) => {
                                 </div>
                             </div>
                         </form>   
-
+                    
+                    
 
                     </div>
                 </div>
             </div>
 
-
-
-
+            </>
+            ):(
+                <h1 className='flex justify-center'>
+                <img src={msgimg} className='mt-4 mx-80 ' style={{height:450 , width:520}} alt=''/>
+                </h1>
+            )}
             </div>
         </div>
       );

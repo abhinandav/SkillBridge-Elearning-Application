@@ -58,7 +58,7 @@ const TeacherHeader = () => {
                 <span className="text-gray-800 text-sm font-semibold hover:text-orange-500 mr-4">My Courses</span>  
                 </Link>
 
-                <Link className="nav-link" to={`inbox/${orderId}/`}>
+              <Link className="nav-link" to={`inbox/undefined/`}>
                 <span className="text-gray-800 text-sm font-semibold hover:text-orange-500 mr-4">Inbox</span>
               </Link>
               </div>

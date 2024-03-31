@@ -50,6 +50,19 @@ class UserRecieverView(APIView):
     
 
 
+# class OrderChatMessagesAPIView(APIView):
+#     def get(self, request, oid, *args, **kwargs):
+#         try:
+#             order = Orders.objects.get(pk=oid)
+#         except Orders.DoesNotExist:
+#             return Response({'error': 'order not found'}, status=status.HTTP_404_NOT_FOUND)
+
+#         chat_messages = order.chat_messages.all()
+#         serializer = ChatMessageSerializer(chat_messages, many=True)
+
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class OrderChatMessagesAPIView(APIView):
     def get(self, request, oid, *args, **kwargs):
         try:
@@ -58,32 +71,29 @@ class OrderChatMessagesAPIView(APIView):
             return Response({'error': 'order not found'}, status=status.HTTP_404_NOT_FOUND)
 
         chat_messages = order.chat_messages.all()
-        serializer = ChatMessageSerializer(chat_messages, many=True)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-
-# class UsersMessagedTeacher(APIView):
-#     def get(self, request):
-#         print('wwww')
-#         current_user = request.user
-#         print(current_user)
+        sender = chat_messages.first().sender
+        receiver = chat_messages.first().receiver
         
-#         chat = ChatMessage.objects.filter(receiver=current_user)
+        # Fetch user profiles for sender and receiver
+        sender_profile = UserProfile.objects.get(user=sender)
+        receiver_profile = UserProfile.objects.get(user=receiver)
         
-#         orders=set(ord.order for ord in chat)
-#         username=set(ord.order.user.username for ord in chat)
-#         print(orders)
-         
-#         serializer = OrderSerializer(orders, many=True)
-#         data={
-#             'order':serializer.data,
-#             'username':username
-#         }
+        # Serialize chat messages along with sender and receiver profile pictures
+        serialized_data = []
+        for message in chat_messages:
+            serializer = ChatMessageSerializer(message)
+            sender_profile_pic = sender_profile.profile_pic.url if sender_profile.profile_pic else None
+            receiver_profile_pic = receiver_profile.profile_pic.url if receiver_profile.profile_pic else None
+            serialized_data.append({
+                **serializer.data,
+                'sender_profile_pic': sender_profile_pic,
+                'receiver_profile_pic': receiver_profile_pic
+            })
 
-#         return Response(data, status=status.HTTP_200_OK)
-    
+        return Response(serialized_data, status=status.HTTP_200_OK)
+
+
 
 
 class UsersMessagedTeacher(APIView):
@@ -91,6 +101,19 @@ class UsersMessagedTeacher(APIView):
         current_user = request.user
         chat = ChatMessage.objects.filter(receiver=current_user)
         orders = set(ord.order for ord in chat)
-        serializer = OrderSerializer(orders, many=True)
-        # print(serializer.data)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        user_ids = {order.user_id for order in orders}
+        user_profiles = UserProfile.objects.filter(user_id__in=user_ids)
+        user_profiles_dict = {profile.user_id: profile for profile in user_profiles}
+
+
+        serialized_data = []
+        for order in orders:
+            user_profile = user_profiles_dict.get(order.user_id)
+            if user_profile:
+                serializer = OrderSerializer(order)
+                serialized_order = serializer.data
+                serialized_order['profile_pic'] = str(user_profile.profile_pic)
+                serialized_data.append(serialized_order)
+
+        return Response(serialized_data, status=status.HTTP_200_OK)
