@@ -446,8 +446,9 @@ console.log('replies',replies);
                                             <span key={video.id}  onClick={() => handleVideoLinkClick(video.id)} >
                                                 <Link to={`/videoplayer/${id}/${video.id}`}>
 
-                                                <li className={`text-lg my-2 p-5 px-4 py-2 ${parseInt(vid) === parseInt(video.id) ? 'bg-gray-300 rounded-xl' : ''} hover:bg-sky-50 hover:text-sky-900 border-b last:border-none border-gray-100 transition-all duration-300 ease-in-out`}>
-                                                    {video.video_name}
+                                                <li className={` flex justify-between text-lg my-2 p-5 px-4 py-2 ${parseInt(vid) === parseInt(video.id) ? 'bg-gray-300 rounded-xl' : ''} hover:bg-sky-50 hover:text-sky-900 border-b last:border-none border-gray-100 transition-all duration-300 ease-in-out`}>
+                                                    <span>{video.video_name}</span>
+                                                    <span>{video.duration}</span>
                                                 </li>
 
                                                 </Link>

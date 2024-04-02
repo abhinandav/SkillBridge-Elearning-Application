@@ -36,6 +36,8 @@ class Videos(models.Model):
     is_accepted=models.BooleanField(default=False)
     is_blocked=models.BooleanField(default=False)
     is_rejected=models.BooleanField(default=False)
+    duration=models.CharField(blank=True, null=True)
+
 
     def __str__(self) -> str:
         return f" {self.video_name} of {self.course.course_name}  added by {self.course.added_by.username}"
