@@ -83,14 +83,32 @@ class OrderMycourseSerializer(serializers.ModelSerializer):
 
 
 
-
-
 class CommentSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source='user.username')
+    user_profile = serializers.SerializerMethodField() 
 
     class Meta:
         model = Comment
-        fields = ['id', 'user','course','video', 'username', 'comment', 'date_added']
+        fields = ['id', 'user','username', 'user_profile', 'course', 'video', 'comment', 'date_added']
+
+    def get_user_profile(self, obj):
+        user_profile = obj.user.User_Profile.first() 
+        return UserProfileSerializer(user_profile).data if user_profile else None 
+
+
+
+
+
+class ReplySerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source='user.username')
+    user_profile = serializers.SerializerMethodField() 
+    class Meta:
+        model = Reply
+        fields = ['id', 'comment','username','user_profile', 'user', 'reply_text', 'date_added']
+
+    def get_user_profile(self, obj):
+        user_profile = obj.user.User_Profile.first() 
+        return UserProfileSerializer(user_profile).data if user_profile else None 
 
 
 
@@ -98,13 +116,3 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 
-
-
-
-
-# class MessageSerializer(serializers.ModelSerializer):
-#     sender_profile=UserProfileSerializer(read_only=True)
-#     reciever_profile=UserProfileSerializer(read_only=True)
-#     class Meta:
-#         model=ChatMessage
-#         fields=['user','sender','reciever','message','sender_profile','reciever_profile','is_read','date']

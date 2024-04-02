@@ -3,6 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Lin, Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
+import { formatDistanceToNow } from 'date-fns';
+
+
 
 
 function VideoPlayer() {
@@ -17,15 +20,18 @@ function VideoPlayer() {
     const [comment, setComment] = useState('');
     const [loading, setLoading] = useState('');
     const [comments, setComments] = useState([]);
-    const [showReplyField, setShowReplyField] = useState(false);
+    const [replies, setReplies] = useState({});
     const [replyComment, setReplyComment] = useState('');
-
-
-
-    const [course, setCourse] = useState({
-        videos: []
-    });
+    const [orderId,setOrderId]=useState()
+    const [replyFields, setReplyFields] = useState({});
+    const [newReply, setNewReply] = useState(null);
+    const [course, setCourse] = useState({ videos: []});
+    // const formattedDate = formatDistanceToNow(new Date(comment.date_added), { addSuffix: true });
     
+
+
+
+
     const fetchCourse = async () => {
         try {
         const response = await axios.get(`${baseURL}/student/course_view/${id}/`);
@@ -103,9 +109,10 @@ function VideoPlayer() {
         fetchVideoDetails();
     }, [id, vid, token]);
 
+
     useEffect(() => {
         fetchCourse();
-    }, [id]);
+    }, [id,vid]);
 
 
 
@@ -150,39 +157,110 @@ function VideoPlayer() {
         }
     };
     
-
+    const checkCoursePurchase = async () => {
+        try {
+            const response = await axios.get(`${baseURL}/student/purchased/${vid}/`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log('sssssssss',response.data);
+            setOrderId(response.data.order_id)
+            
+        } catch (error) {
+            console.error("Error checking course purchase:", error);
+        }
+    };
+        
     
     useEffect(() => {
         fetchVideoComments();
+        checkCoursePurchase()
     },[vid]);
-        
+
+
+    
 
 
 
-    const handleReplySubmit = (event) => {
-        event.preventDefault();
-        console.log('Reply submitted:', replyComment);
-        setShowReplyField(false);
-        setReplyComment('');
-    };
-
-    const [replyFields, setReplyFields] = useState({});
-
-    const handleReplyClick = (commentId) => {
+const handleReplyClick = (commentId) => {
     setReplyFields((prevFields) => ({
         ...prevFields,
-        [commentId]: !prevFields[commentId] // Toggle the state for the specific comment
+        [commentId]: !prevFields[commentId] 
     }));
 };
+
+
+
+
+const handleReplySubmit = async (event,commentId, replyContent) => {
+    event.preventDefault(); 
+    try {
+        console.log('Comment ID:', commentId);
+        console.log('Reply Content:', replyContent);
+
+        const response = await axios.post(baseURL+`/student/comments/${commentId}/add_reply/`,{
+            user: authentication_user.userid,
+            comment: commentId,
+            reply_text:replyComment
+        },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('access')}`,
+                },
+            }
+        );
+
+        setNewReply(response.data);
+        setReplyFields(prevFields => ({
+            ...prevFields,
+            [commentId]: false
+        }));
+        setReplyComment('')
+    } catch (error) {
+        console.error('Error adding reply:', error);
+        throw error; 
+    }
+};
+
+
+const fetchReplies = async (commentId) => {
+    try {
+        const response = await axios.get(`${baseURL}/student/comments/${commentId}/replies/`);
+        setReplies(prevReplies => ({
+            ...prevReplies,
+            [commentId]: response.data
+        }));
+    } catch (error) {
+        console.error('Error fetching replies:', error);
+    }
+};
+
+useEffect(() => {
+    comments.forEach(comment => {
+        fetchReplies(comment.id);
+    });
+
+    if (newReply) {
+        setReplies((prevReplies) => ({
+            ...prevReplies,
+            [newReply.comment_id]: [...(prevReplies[newReply.comment_id] || []), newReply]
+        }))}
     
+}, [comments,newReply]);
+
+console.log('replies',replies);
+
 
 
 
   return (
 
-        <div>
-        <div className="  bg-gray-100 flex items-center justify-center">
-            <div className="container max-w-screen-x mx-auto my-8">
+        <div className=''>
+        <div className="  bg-gray-100 flex items-center justify-center ">
+            <div className="container max-w-screen-x mx-auto my-8 px-20">
             <div className="  bg-white rounded shadow-lg  md:p-8 mb-6">
 
             
@@ -221,8 +299,6 @@ function VideoPlayer() {
                 
 
                 <div className=" my-10 mx-10 grid gap-5 gap-y-2 text-sm grid-cols-1 lg:grid-cols-6">
-
-
                     {videoUrl && (
                     <div className="lg:col-span-4 w-200">
                         <div>
@@ -269,70 +345,62 @@ function VideoPlayer() {
 
                             </div>
 
-
-  
-                                {/* {comments.map((comment) => (
-                                    <div  key={comment.id} className="my-7 max-w-2xl"> 
-                                        <div className="flex justify-between items-center">
-                                        <div className=" flex items-center space-x-4 ">
-                                            <div className="">
-                                            <img className="w-12 h-12 rounded-full" src="https://images.unsplash.com/photo-1593104547489-5cfb3839a3b5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1036&q=80" alt="" />
-                                            </div>
-                                            <div>
-
-                                                <div className='flex'>
-                                                    <div className="text-md font-bold w-30">{comment.username}  </div> 
-                                                    <span onClick={handleReplyClick} className='ml-5'>replay</span>
-                                                </div>
-                                                <div className="text-sm"> • {comment.date_added}</div>
-                                            </div>
-                                        </div>
-                                        </div>
-
-
-                                        <p className="mt-2 mx-20 text-md text-gray-600 w-30">{comment.comment}</p>
-                                        {showReplyField && (
-                                            <form onSubmit={handleReplySubmit} className='mx-20 my-5 w-full max-w-xl'>
-                                                <textarea
-                                                    value={replyComment}
-                                                    onChange={(e) => setReplyComment(e.target.value)}
-                                                    placeholder="Enter your reply"
-                                                    className="w-full h-15 resize-none border rounded-md p-2"
-                                                />
-                                                <button type="submit">Submit</button>
-                                            </form>
-                                        )}
-                                    </div>
-                                     ))} */}
-
-
+                                      
                             {comments.map((comment) => (
                                 <div key={comment.id} className="my-7 max-w-2xl">
                                     <div className="flex justify-between items-center">
-                                        <div className=" flex items-center space-x-4 ">
-                                        <div className="">
-                                            <img className="w-12 h-12 rounded-full" src="https://images.unsplash.com/photo-1593104547489-5cfb3839a3b5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1036&q=80" alt="" />
+                                        <div className="flex items-center space-x-4">
+                                            <div className="">
+                                                <img className="w-10 h-10 rounded-full" src={baseURL+comment.user_profile.profile_pic} alt="" />
                                             </div>
                                             <div>
-
                                                 <div className='flex'>
-                                                    <div className="text-md font-bold w-30">{comment.username}  </div>
-                                                        <span onClick={() => handleReplyClick(comment.id)} className='ml-5'>Reply</span>
-                                                    </div>
-                                                <div className="text-sm"> • {comment.date_added}</div>
+                                                    <div className="text-md font-bold w-30">{comment.username}</div>
+                                            
+                                                    <span onClick={() => handleReplyClick(comment.id)} className='ml-5 cursor-pointer text-blue-500'>Reply</span>
+                                                </div>
+                                                <div className="text-xs"> • 
+                                                {formatDistanceToNow(new Date(comment.date_added), { addSuffix: false , addPrefix: false })}
+                                                </div>
                                             </div>
                                         </div>
-                                        </div>
-                                        <p className="mt-2 mx-20 text-md text-gray-600 w-30">{comment.comment}</p>
+                                    </div>
+                                    <p className="mt-2 mx-20 text-lg  text-gray-600 w-30">{comment.comment}</p>
+
+                                    {replies[comment.id] && replies[comment.id].map(reply => (
+                                                    <div key={reply.id}>
+                                    
+                                                        <div className=" ml-10 mt-5 flex justify-between items-center">
+                                                            <div className="flex items-center space-x-4">
+                                                                <div className="flex">
+                                                        
+                                                                    <img className="w-8 h-8 rounded-full" src={baseURL+reply.user_profile.profile_pic} alt="" />
+                                                                </div>
+                                                                <div>
+                                                                    <div className='flex'>
+                                                                        <div className="text-md font-bold w-30">{reply.username}</div>
+                                                                    </div>
+                                                                    <div className="text-xs"> •  
+                                                                    {formatDistanceToNow(new Date(reply.date_added), { addSuffix: false , addPrefix: false })}
+                                                
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <p className="mt-2 mx-20 text-md text-gray-600 w-30">{reply.reply_text}</p>
+                                                    </div>
+                                                ))}
+
+
                                     {replyFields[comment.id] && (
-                                        <form onSubmit={handleReplySubmit} className='mx-20 my-5 w-full max-w-xl'>
+                                        <form onSubmit={(e) => handleReplySubmit(e,comment.id,replyComment)} className='mx-20 my-5 w-full max-w-xl'>
                                             <textarea
                                                 value={replyComment}
                                                 onChange={(e) => setReplyComment(e.target.value)}
                                                 placeholder="Enter your reply"
                                                 className="w-full h-15 resize-none border rounded-md p-2"
                                             />
-                                            <button type="submit">Submit</button>
+                                            <button type="submit" className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md">Submit</button>
                                         </form>
                                     )}
                                 </div>
@@ -340,16 +408,34 @@ function VideoPlayer() {
 
 
 
-
-
                         </div>
                     </div>
                     )}
+
                     
-                    <div className="lg:col-span-2 bg-gray-50 py-5">
-                        <Link to='/inbox'>
-                        <button className='bg-blue-500 text-white p-3 text-center'>Chat</button>
-                        </Link>
+                    
+                    <div className="lg:col-span-2 bg-gray-50 py-5 ">
+                        <div className='flex justify-end'>
+                            <Link to={`/inbox/${orderId}`}>
+                            <button className=' mr-2 bg-blue-500 rounded-full text-white p-3 text-center ' title=" Connect with tecaher">
+                                <span className="chat-icon flex justify-end rounded-full">
+                                        <svg
+                                            width="28"
+                                            height="28"
+                                            viewBox="0 0 28 28"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                            d="M19.8333 14.0002V3.50016C19.8333 3.19074 19.7103 2.894 19.4915 2.6752C19.2728 2.45641 18.976 2.3335 18.6666 2.3335H3.49992C3.1905 2.3335 2.89375 2.45641 2.67496 2.6752C2.45617 2.894 2.33325 3.19074 2.33325 3.50016V19.8335L6.99992 15.1668H18.6666C18.976 15.1668 19.2728 15.0439 19.4915 14.8251C19.7103 14.6063 19.8333 14.3096 19.8333 14.0002ZM24.4999 7.00016H22.1666V17.5002H6.99992V19.8335C6.99992 20.1429 7.12284 20.4397 7.34163 20.6585C7.56042 20.8772 7.85717 21.0002 8.16659 21.0002H20.9999L25.6666 25.6668V8.16683C25.6666 7.85741 25.5437 7.56066 25.3249 7.34187C25.1061 7.12308 24.8093 7.00016 24.4999 7.00016Z"
+                                            fill="white"
+                                            />
+                                        </svg>
+                                </span>
+                            </button>
+                            </Link>
+                        </div>
+                        
                         <h1 className="mb-5 text-2xl font-bold text-gray-600 text-center ">Course Content</h1>
                         <div className="mt-10">
                             <div className="bg--200">
@@ -357,14 +443,15 @@ function VideoPlayer() {
                                     <div className="flex-1">
                                         {course.videos.map((video) => (
 
-                                            <Link to={`/videoplayer/${id}/${video.id}`}
-                                             key={video.id} 
-                                             onClick={() => handleVideoLinkClick(video.id)}>
-                                                
-                                                <li className="text-lg my-2 p-5 px-4 py-2 bg-gray-50 hover:bg-sky-50 hover:text-sky-900 border-b last:border-none border-gray-100 transition-all duration-300 ease-in-out">
+                                            <span key={video.id}  onClick={() => handleVideoLinkClick(video.id)} >
+                                                <Link to={`/videoplayer/${id}/${video.id}`}>
+
+                                                <li className={`text-lg my-2 p-5 px-4 py-2 ${parseInt(vid) === parseInt(video.id) ? 'bg-gray-300 rounded-xl' : ''} hover:bg-sky-50 hover:text-sky-900 border-b last:border-none border-gray-100 transition-all duration-300 ease-in-out`}>
                                                     {video.video_name}
                                                 </li>
-                                            </Link>
+
+                                                </Link>
+                                            </span>
                                         ))}
                                     </div>
                                 </ul>

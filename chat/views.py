@@ -15,13 +15,31 @@ from rest_framework.views import APIView
 
 
 
+# class OrderWithUserView(APIView):
+#     def get(self, request):
+#         orders = Orders.objects.filter(user=request.user)
+#         serializer = OrderWithUserSerializer(orders, many=True)
+#         return Response(serializer.data)
+
+
+
+# user sidebar teacher list
 class OrderWithUserView(APIView):
     def get(self, request):
         orders = Orders.objects.filter(user=request.user)
-        serializer = OrderWithUserSerializer(orders, many=True)
+        unique_usernames = set()
+        unique_orders = []
+        
+        # Iterate through orders and filter out duplicate usernames
+        for order in orders:
+            username = order.course.added_by.username
+            if username not in unique_usernames:
+                unique_usernames.add(username)
+                unique_orders.append(order)
+
+        # Serialize the unique orders
+        serializer = OrderWithUserSerializer(unique_orders, many=True)
         return Response(serializer.data)
-
-
 
 
 
@@ -30,7 +48,7 @@ class TeacherRecieverView(APIView):
         orders = Orders.objects.filter(pk=oid)  
         course_id = orders.values_list('course_id', flat=True).distinct()
         courses = Course.objects.filter(id__in=course_id)
-        added_user = [course.added_by for course in courses]
+        added_user = set(course.added_by for course in courses)
         # print('added_user', added_user)
 
         serializer = UserSerializer(added_user, many=True)
@@ -77,7 +95,9 @@ class OrderChatMessagesAPIView(APIView):
         
         # Fetch user profiles for sender and receiver
         sender_profile = UserProfile.objects.get(user=sender)
+        print(sender_profile)
         receiver_profile = UserProfile.objects.get(user=receiver)
+        print(receiver_profile)
         
         # Serialize chat messages along with sender and receiver profile pictures
         serialized_data = []

@@ -69,6 +69,11 @@ class UserProfile(models.Model):
     current_role=models.CharField(max_length=250,blank=True,null=True)
     def __str__(self):
         return f"profile of {self.user.username}" 
+    
+    def save(self, *args, **kwargs):
+        if not self.profile_pic:
+            self.profile_pic = '/profile_pic/default/userprofile.webp'
+        super().save(*args, **kwargs)
         
 
 class TeacherDetails(models.Model):

@@ -15,6 +15,14 @@ class Comment(models.Model):
     def __str__(self):
          return f" comment of '{self.user.username}' -  on - {self.video.video_name} - {self.course.course_name}"
 
+class Reply(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    reply_text = models.CharField(max_length=255)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Reply by '{self.user.username}' - {self.comment}"
 
 
 

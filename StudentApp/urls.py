@@ -16,9 +16,14 @@ urlpatterns=[
     path('add_comment/',CommentCreateView.as_view(),name='add_comment'),
     path('video_comments/<int:video_id>/', VideoCommentsView.as_view(), name='video_comments'),
 
+    path('comments/<int:comment_id>/add_reply/',AddReplyAPIView.as_view(),name='add_reply'),
+    path('comments/<int:comment_id>/replies/',GetRepliesAPIView.as_view(),name='get_reply'),
+
+
+
+
 
     path('pay/', start_payment, name="payment"),
-    # path('payment/success/', handle_payment_success, name="payment_success")
 
 
 ]

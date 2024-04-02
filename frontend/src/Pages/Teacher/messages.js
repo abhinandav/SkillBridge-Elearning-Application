@@ -5,6 +5,7 @@ import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import { Link, useParams } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import msgimg from '../../Images/msg1.jpg'
+import userimg from '../../Images/userprofile.webp'
 
 function Messages() {
     const baseURL = "http://127.0.0.1:8000";
@@ -99,6 +100,8 @@ useEffect(() => {
         fetchExistingMessages();
     }
 }, [orderId]);
+
+
 
 
 const fetchExistingMessages = async () => {
@@ -257,7 +260,7 @@ console.log('chat messages',chatMessages);
         {/*----------------------sidebar end--------------------*/}
 
         { !(orderId === 'undefined' ) ? (
-                        <>
+            <>
             <div className="flex flex-col flex-auto h-full p-6 bg-orange-00">
                 <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-50 h-40 p-4 " >
                     <div className="flex flex-col flex-auto h-full px-3 bg-orange- ">
@@ -306,8 +309,8 @@ console.log('chat messages',chatMessages);
                                                         </div>
                                                     </div>
                                                     )}
-                                                </div>
-                                            ))}
+                                            </div>
+                                        ))}
                                 </div>
                             </div>                        
                         </div>
@@ -347,8 +350,6 @@ console.log('chat messages',chatMessages);
                                 </div>
                             </div>
                         </form>   
-                    
-                    
 
                     </div>
                 </div>

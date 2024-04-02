@@ -11,6 +11,7 @@ import useRazorpay from 'react-razorpay'
 function CourseView() {
     const baseURL = "http://127.0.0.1:8000";
     const token = localStorage.getItem('access');
+    const user_id=localStorage.getItem('userid')
     const navigate=useNavigate()
 
 
@@ -33,6 +34,7 @@ function CourseView() {
         is_accepted:false
 
     });
+
     const { id } = useParams();
 
     console.log('ss',course)
@@ -81,6 +83,7 @@ function CourseView() {
             console.log('sssssssss',response.data);
             setAlreadyPurchased(response.data.purchased);
             
+            
         } catch (error) {
             console.error("Error checking course purchase:", error);
         }
@@ -94,6 +97,7 @@ function CourseView() {
 
     const handleStartLesson = (id, firstVideoId) => {
         navigate(`/videoplayer/${id}/${firstVideoId}`);
+        // navigate(`/videoplayer/${id}/${firstVideoId}`, { state: { orderId: orderId } });
     };
 
 
@@ -116,6 +120,7 @@ function CourseView() {
 
         bodyData.append("amount", course.offer_price);
         bodyData.append("course", course.course_id);
+        bodyData.append("user_id", user_id);
     
         const data = await axios({
           url: `${baseURL}/student/pay/`,

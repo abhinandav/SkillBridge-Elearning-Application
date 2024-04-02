@@ -47,6 +47,7 @@ class UserRegisterView(APIView):
             try:
                 
                 user = serializer.save(is_active=False)  
+       
                 send_otp_via_mail(user.email, user.otp)
                 response_data = {
                     'message': 'OTP sent successfully.',
@@ -168,6 +169,7 @@ class LoginView(APIView):
          
         else:
             if not user.is_staff:
+                UserProfile.objects.get_or_create(user=user)
                 refresh = RefreshToken.for_user(user)
                 refresh['username'] = str(user.username)
 
