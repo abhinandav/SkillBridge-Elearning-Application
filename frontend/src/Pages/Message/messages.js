@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import { Link, useParams } from 'react-router-dom';
+import msgimg from '../../Images/msg1.jpg'
 
 function Messages() {
     const baseURL = "http://127.0.0.1:8000";
@@ -19,9 +20,9 @@ function Messages() {
     // console.log('auth',authentication_user);
     const userid=parseInt(authentication_user.id)
     console.log('auth',userid);
-
-
     console.log('orderid',orderId);
+
+
 
     useEffect(() => {
         if (orderId) {
@@ -33,6 +34,8 @@ function Messages() {
             };
         }
     }, [orderId]);
+
+
 
     const handleMessageChange = (e) => {
         setMessage(e.target.value);
@@ -91,6 +94,7 @@ useEffect(() => {
             } else {
                 setChatMessages((prevMessages) => [...prevMessages, data]);
             }
+            fetchExistingMessages()
         };
 
     };
@@ -117,7 +121,9 @@ useEffect(() => {
             message: item.message,
             sender: item.sender,
             receiver:item.receiver,
-            timestamp:item.timestamp
+            timestamp:item.timestamp,
+            receiver_profile_pic:item.receiver_profile_pic,
+            sender_profile_pic:item.sender_profile_pic
           }));
   
           setChatMessages(messagesTextArray);
@@ -165,6 +171,7 @@ useEffect(() => {
                     }
                 });
                 setTeachers(response.data);
+                console.log('data recieved.......',response.data);
             } catch (error) {
                 console.error('Error fetching teachers:', error);
             }
@@ -187,19 +194,24 @@ useEffect(() => {
     };
 
 
-
-
     console.log("Chat messages:", chatMessages);
+
+    const formatTime = (timestamp) => {
+        const date = new Date(timestamp);
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        return `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+    };
 
 
     return (
-        <div style={{height:640}} className="flex h-  antialiased text-gray-800">
+        <div style={{height:570}} className="flex  antialiased text-gray-800">
             <div className="flex flex-row h-full w-full overflow-x-hidden">
 
         {/*-------------------- sidebar start --------------------*/}
 
                 
-            <div style={{height:200}} className="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
+            <div style={{width:220}} className="flex flex-col py-8 px-10 pl-2 mt-3 pr-5 w-64 bg-white flex-shrink-0 border-r border-gray-50">
                 <div className="flex flex-row items-center justify-center h-12 w-full">
                     <div className="flex items-center justify-center rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10" >
                         <svg className="w-6 h-6"  fill="none"  stroke="currentColor"  viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" >
@@ -217,10 +229,10 @@ useEffect(() => {
                 <div className="flex flex-row mt-8 ml-5">
                     <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 ">
                         {teachers.map((order) => (
-                            <span key={order.id} className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2 px-10">
+                            <span key={order.id} className={`flex flex-row items-center hover:bg-gray-150 ${parseInt(orderId) === parseInt(order.id) ? 'bg-gray-300' : ''} rounded-lg p-1 px-10`}>
                                 <Link to={`/inbox/${order.id}/`} className="flex items-center">
                                     <div className="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center">
-                                        H
+                                        <img src={`${baseURL}/media/${order.user_profile.profile_pic}`} alt='profile'  className="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center"/>
                                     </div>
                                     <div className="ml-5  font- text-md">{order.user.username}</div>
                                 </Link>
@@ -232,36 +244,58 @@ useEffect(() => {
 
         {/*----------------------sidebar end--------------------*/}
 
-
+        { !(orderId === 'undefined' ) ? (
+            <>
             <div className="flex flex-col flex-auto h-full p-6">
-                <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-40 p-4" >
-                    <div className="flex flex-col flex-auto h-full p-6">
-                        <div className="flex flex-col flex-auto flex-shrink-0 overflow-hidden rounded-2xl bg-gray-100 h-full p-4">
+                <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-50 h-40 p-4" >
+                    <div className="flex flex-col flex-auto h-full px-3">
+
+                        <div className="flex flex-col flex-auto flex-shrink-0 overflow-hidden rounded-2xl bg-gray-50 h-full ">
                             <div ref={chatContainerRef} className="flex flex-col h-full overflow-y-auto  mb-4" style={{ WebkitOverflowScrolling: 'touch', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
                                 <div className="flex flex-col h-full">
 
                                     {chatMessages.map((message, index) => (
                                         <div key={index}>
-                                            {parseInt(message.sender) === parseInt(authentication_user.userid) ? (
-                                                <div className="col-start-8 col-end-12 p-3 rounded-lg mb-2 mr-auto">
-                                                <div className="flex items-center justify-start flex-row-reverse">
-                                                    <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                                                        R
+                                            {!(parseInt(message.sender) === parseInt(authentication_user.userid) ) ? (
+                                                <div className="col-start-1 col-end-5 p-3 rounded-lg mb-2 ml-auto">
+                                                <div className="flex flex-row items-center">
+                                                    <div className="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500 flex-shrink-0">
+                                                        <img src={`${baseURL}${message.sender_profile_pic}`} alt='profile'  className="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center"/>
                                                     </div>
-                                                    <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
+
+                                                    {/* <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
                                                         <div>{message.message}</div>
+                                                    </div> */}
+                                                    <div className="flex flex-col relative ml-3 bg-white py-1 px-4 shadow rounded-xl">
+                                                        <div style={{ maxWidth: 500 }} className='text-sm mr-5 '>{message.message}</div>
+                                                        <div className="flex justify-end">
+                                                            <div style={{ fontSize: '10px' }} className='text-sm text-gray-500 ml-5 -mt-1'>
+                                                                {formatTime(message.timestamp)}
+                                                            </div>
+                                                        </div>
                                                     </div>
+
                                                 </div>
                                             </div>
                                             ) : (
-                                            <div className="col-start-1 col-end-8 p-3 rounded-lg mb-2 ml-auto">
-                                            <div className="flex flex-row items-center">
-                                                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                                                    A
+                                            <div className="col-start-8 col-end-12 p-3 rounded-lg mb-2 mr-auto">
+                                            <div className="flex items-center justify-start flex-row-reverse">
+                                                <div className=" ml-2 flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500 flex-shrink-0">
+                                                    <img src={`${baseURL}${message.receiver_profile_pic}`} alt='profile'  className="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center"/>
                                                 </div>
-                                                <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
+
+                                                {/* <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
                                                     <div>{message.message}</div>
-                                                </div>
+                                                </div> */}
+                                                <div className="flex flex-col relative ml-3 bg-white py-1 px-4 shadow rounded-xl">
+                                                    <div style={{ maxWidth: 500 }} className='text-sm mr-5 '>{message.message}</div>
+                                                        <div className="flex justify-end">
+                                                            <div style={{ fontSize: '10px' }} className='text-sm text-gray-500 ml-5 -mt-1'>
+                                                                {formatTime(message.timestamp)}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
                                             </div>
                                         </div>
                                     )}
@@ -277,7 +311,7 @@ useEffect(() => {
 
                         
                     
-                        <form onSubmit={sendMessage} className='flex '>
+                        <form onSubmit={sendMessage} className='flex -mt-10 '>
                             <div className="flex flex-row items-center h-16 rounded-xl bg-gray w-full px-4">
                                 <div className="flex-grow ml-4">
                                     <div className="relative w-full">
@@ -313,9 +347,21 @@ useEffect(() => {
                                 </div>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>
+
+            </>
+            ):(
+                <div >
+                    <div className='flex flex-col justify-center'>
+                        <img src={msgimg} className='mt-4 pl-10 mx-80 ' style={{height:450 , width:520}} alt=''/>
+                        <h1 className='px-40 mx-80 text-lg font-semibold'>Select a User To start Conversation</h1>
+                    </div>
+                    
+                </div>
+            )}
 
 
 

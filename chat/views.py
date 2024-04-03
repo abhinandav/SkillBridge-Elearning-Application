@@ -15,33 +15,34 @@ from rest_framework.views import APIView
 
 
 
-# class OrderWithUserView(APIView):
-#     def get(self, request):
-#         orders = Orders.objects.filter(user=request.user)
-#         serializer = OrderWithUserSerializer(orders, many=True)
-#         return Response(serializer.data)
-
-
 
 # user sidebar teacher list
+
+
 class OrderWithUserView(APIView):
     def get(self, request):
         orders = Orders.objects.filter(user=request.user)
-        unique_usernames = set()
-        unique_orders = []
+        unique_user_ids = set(order.course.added_by_id for order in orders)
         
-        # Iterate through orders and filter out duplicate usernames
+        # Fetch user profiles
+        user_profiles = UserProfile.objects.filter(user_id__in=unique_user_ids)
+        user_profiles_dict = {profile.user_id: profile for profile in user_profiles}
+
+        unique_orders = []
         for order in orders:
-            username = order.course.added_by.username
-            if username not in unique_usernames:
-                unique_usernames.add(username)
-                unique_orders.append(order)
+            user_profile = user_profiles_dict.get(order.course.added_by_id)
+            if user_profile:
+                # Serialize the order
+                serializer = OrderWithUserSerializer(order)
+                serialized_order = serializer.data
+                # Add user profile information
+                serialized_order['user_profile'] = {
+                    'profile_pic': str(user_profile.profile_pic),
+                    # Add other profile fields as needed
+                }
+                unique_orders.append(serialized_order)
 
-        # Serialize the unique orders
-        serializer = OrderWithUserSerializer(unique_orders, many=True)
-        return Response(serializer.data)
-
-
+        return Response(unique_orders)
 
 class TeacherRecieverView(APIView):
     def get(self, request,oid):
@@ -68,17 +69,7 @@ class UserRecieverView(APIView):
     
 
 
-# class OrderChatMessagesAPIView(APIView):
-#     def get(self, request, oid, *args, **kwargs):
-#         try:
-#             order = Orders.objects.get(pk=oid)
-#         except Orders.DoesNotExist:
-#             return Response({'error': 'order not found'}, status=status.HTTP_404_NOT_FOUND)
 
-#         chat_messages = order.chat_messages.all()
-#         serializer = ChatMessageSerializer(chat_messages, many=True)
-
-#         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class OrderChatMessagesAPIView(APIView):
@@ -116,6 +107,7 @@ class OrderChatMessagesAPIView(APIView):
 
 
 
+
 class UsersMessagedTeacher(APIView):
     def get(self, request):
         current_user = request.user
@@ -137,3 +129,35 @@ class UsersMessagedTeacher(APIView):
                 serialized_data.append(serialized_order)
 
         return Response(serialized_data, status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# class OrderWithUserView(APIView):
+#     def get(self, request):
+#         orders = Orders.objects.filter(user=request.user)
+#         unique_usernames = set()
+#         unique_orders = []
+        
+#         for order in orders:
+#             username = order.course.added_by.username
+#             if username not in unique_usernames:
+#                 unique_usernames.add(username)
+#                 unique_orders.append(order)
+
+#         # Serialize the unique orders
+#         serializer = OrderWithUserSerializer(unique_orders, many=True)
+#         return Response(serializer.data)
+    

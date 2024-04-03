@@ -8,7 +8,7 @@ const UserHeader = () => {
 
   const dispatch=useDispatch()
   const navigate=useNavigate()
-  const orderId=13
+
   const authentication_user=useSelector(state=>state.authentication_user)
 
   const logout=()=>{
@@ -55,7 +55,7 @@ const UserHeader = () => {
                 <span className="text-gray-800 text-sm font-semibold hover:text-orange-500 mr-4">Courses</span>
               </Link>
 
-              <Link className="nav-link" to={`inbox/${orderId}/`}>
+              <Link className="nav-link" to={`inbox/undefined/`}>
                 <span className="text-gray-800 text-sm font-semibold hover:text-orange-500 mr-4">Inbox</span>
               </Link>
                 <span className="text-gray-800 text-sm font-semibold hover:text-orange-500 mr-4">About Us</span>

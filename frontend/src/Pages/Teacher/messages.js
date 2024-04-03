@@ -3,9 +3,8 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import { Link, useParams } from 'react-router-dom';
-import { formatDistanceToNow } from 'date-fns';
 import msgimg from '../../Images/msg1.jpg'
-import userimg from '../../Images/userprofile.webp'
+
 
 function Messages() {
     const baseURL = "http://127.0.0.1:8000";
@@ -20,7 +19,6 @@ function Messages() {
     const chatContainerRef = useRef(null);
     const [client, setClient] = useState('');
     const [receiverId, setRecieverId] = useState([]);
-    const [teachers, setTeachers] = useState([]);
     const [chatMessages, setChatMessages] = useState([]);
     const [message, setMessage] = useState([]);
     const [senders, setSenders] = useState([]);
@@ -137,7 +135,7 @@ const fetchExistingMessages = async () => {
     }
 };
 
-console.log('type...',typeof parsedOrderId);
+
 
 
 
@@ -202,7 +200,7 @@ const scrollToBottom = () => {
 
 
 // time 
-// Define the formatTime function
+
 const formatTime = (timestamp) => {
     const date = new Date(timestamp);
     const hours = date.getHours();
@@ -261,15 +259,16 @@ console.log('chat messages',chatMessages);
 
         { !(orderId === 'undefined' ) ? (
             <>
-            <div className="flex flex-col flex-auto h-full p-6 bg-orange-00">
+            <div className="flex flex-col flex-auto h-full p-6 ">
                 <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-50 h-40 p-4 " >
-                    <div className="flex flex-col flex-auto h-full px-3 bg-orange- ">
+                    <div className="flex flex-col flex-auto h-full px-3  ">
 
 
                     
                         <div  className="flex flex-col flex-auto flex-shrink-0 overflow-hidden rounded-xl bg-gray-50 h-full ">
                             <div ref={chatContainerRef} className="flex flex-col h-full overflow-y-auto bg-orange-00  mb-4" style={{ WebkitOverflowScrolling: 'touch', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
                                 <div className="flex flex-col h-full">
+
                                             {chatMessages.map((message, index) => (
                                                 <div key={index} >
                                                     {!(parseInt(message.sender) === parseInt(userid) )? (
@@ -294,7 +293,7 @@ console.log('chat messages',chatMessages);
                                                         <div className="col-start-8 col-end-12 p-3 rounded-lg mb-2 mr-auto">
                                                         <div className="flex items-center justify-start flex-row-reverse">
                                                             <div className=" ml-2 flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500 flex-shrink-0">
-                                                            <img src={`${baseURL}${message.receiver_profile_pic}`} alt='profile'  className="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center"/>
+                                                                <img src={`${baseURL}${message.receiver_profile_pic}`} alt='profile'  className="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center"/>
                                                             </div>
 
                                                             <div className="flex flex-col relative ml-3 bg-white py-1 px-4 shadow rounded-xl">
