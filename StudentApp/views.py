@@ -10,6 +10,8 @@ from User.models import *
 from .serializers import *
 from .models import *
 from TeacherApp . models import *
+from rest_framework.generics import RetrieveAPIView
+
 
 
 

@@ -1,11 +1,13 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import viewsets, status
-from User.models import User
+from User.models import *
+from StudentApp.models import *
 from TeacherApp.models import *
 from User.api.serializers import *
 from .serializers import *
 from TeacherApp.serializers import *
+# from StudentApp.serializers import *
 from rest_framework.generics import ListCreateAPIView
 
 from rest_framework.exceptions import AuthenticationFailed,ParseError
@@ -165,3 +167,12 @@ class TeacherDocumentStatusChangeView(APIView):
 
         serializer = TeacherDocumentSerializer(document)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+
+
+class AdminOrderList(ListCreateAPIView):
+    queryset = Orders.objects.all().order_by('-date_purchased')  
+    serializer_class = OrderListSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['course_name']

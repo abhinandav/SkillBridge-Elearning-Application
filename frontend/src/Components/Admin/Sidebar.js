@@ -1,9 +1,10 @@
 import React from 'react';
 import { RiHome2Line, RiArrowRightSLine } from 'react-icons/ri';
-import { BsFillPersonFill, BsListUl, BsArchive, BsBell, BsEnvelope } from 'react-icons/bs';
+import { BsFillPersonFill,BsBagCheckFill } from 'react-icons/bs';
+import { GiTeacher } from "react-icons/gi";
 import { IoIosSchool } from 'react-icons/io';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 
 
 const Sidebar = () => {
@@ -54,8 +55,18 @@ const Sidebar = () => {
         <Link to='/admin/course_list'>
         <li className="mb-1 group">
           <span className="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-          <IoIosSchool  className='mr-3 text-lg' />
+          <GiTeacher   className='mr-3 text-lg' />
             <span className="text-sm">Courses</span>
+            <RiArrowRightSLine className="ml-auto group-[.selected]:rotate-90" />
+          </span>
+        </li>
+        </Link>
+
+        <Link to='/admin/order_list'>
+        <li className="mb-1 group">
+          <span className="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
+          <BsBagCheckFill    className='mr-3 text-lg' />
+            <span className="text-sm">Orders</span>
             <RiArrowRightSLine className="ml-auto group-[.selected]:rotate-90" />
           </span>
         </li>

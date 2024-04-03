@@ -29,56 +29,7 @@ class AddCourseView(APIView):
 
 import cv2 
 import datetime 
-# class AddVideoView(APIView):
-#     def post(self, request, *args, **kwargs):
-#         print('videoooo',request.data)
 
-
-        # video_file = request.data['video']
-        # with open('temp_video.mp4', 'wb') as temp_file:
-        #     for chunk in video_file.chunks():
-        #         temp_file.write(chunk)
-        # video_capture = cv2.VideoCapture('temp_video.mp4')
-        # frames = video_capture.get(cv2.CAP_PROP_FRAME_COUNT)
-        # fps = video_capture.get(cv2.CAP_PROP_FPS)
-        # duration_seconds = round(frames / fps)
-        # video_duration = datetime.timedelta(seconds=duration_seconds)
-        # video_capture.release()
-
-
-
-        # serializer = VideosSerializer(data=request.data)
-        # if serializer.is_valid():
-        #     serializer.save(duration=video_duration)
-        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         print(serializer.errors)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-
-# class AddVideoView(APIView):
-#     def post(self, request, *args, **kwargs):
-
-#         video_file = request.data['video']
-#         with open('temp_video.mp4', 'wb') as temp_file:
-#             for chunk in video_file.chunks():
-#                 temp_file.write(chunk)
-#         video_capture = cv2.VideoCapture('temp_video.mp4')
-#         frames = video_capture.get(cv2.CAP_PROP_FRAME_COUNT)
-#         fps = video_capture.get(cv2.CAP_PROP_FPS)
-#         duration_seconds = round(frames / fps)
-#         video_duration = datetime.timedelta(seconds=duration_seconds)
-#         print(video_duration)
-#         video_capture.release()
-
-
-#         serializer = VideosSerializer(data=request.data)
-#         print(serializer.data)
-#         if serializer.is_valid():
-#             serializer.save(duration=video_duration)
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         print(serializer.errors)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-       
 class AddVideoView(APIView):
     def post(self, request, *args, **kwargs):
         try:

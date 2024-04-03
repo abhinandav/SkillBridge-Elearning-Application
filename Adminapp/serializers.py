@@ -2,17 +2,28 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer,Token
 from rest_framework import serializers
 from User.models import User,TeacherDetails
 from TeacherApp.models import *
+from StudentApp.models import *
+from TeacherApp.serializers import *
+from StudentApp.serializers import *
 
 
 
 
-class VideosSerializer(serializers.ModelSerializer):
+# class VideosSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Videos
+#         fields= '__all__'
+
+
+
+class OrderListSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source='user.username')
+    course_name = serializers.ReadOnlyField(source='course.course_name')
+    author = serializers.ReadOnlyField(source='course.added_by.username')
+
     class Meta:
-        model = Videos
-        fields= '__all__'
-
-
-
+        model = Orders
+        fields = ['username','author', 'course_name', 'price', 'date_purchased']
 
 
 
