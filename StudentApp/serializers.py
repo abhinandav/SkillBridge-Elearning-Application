@@ -85,11 +85,12 @@ class OrderMycourseSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source='user.username')
+    is_teacher=serializers.ReadOnlyField(source='user.is_staff')
     user_profile = serializers.SerializerMethodField() 
 
     class Meta:
         model = Comment
-        fields = ['id', 'user','username', 'user_profile', 'course', 'video', 'comment', 'date_added']
+        fields = ['id', 'user','username','is_teacher', 'user_profile', 'course', 'video', 'comment', 'date_added']
 
     def get_user_profile(self, obj):
         user_profile = obj.user.User_Profile.first() 
@@ -102,9 +103,10 @@ class CommentSerializer(serializers.ModelSerializer):
 class ReplySerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source='user.username')
     user_profile = serializers.SerializerMethodField() 
+    is_teacher=serializers.ReadOnlyField(source='user.is_staff')
     class Meta:
         model = Reply
-        fields = ['id', 'comment','username','user_profile', 'user', 'reply_text', 'date_added']
+        fields = ['id', 'comment','username','is_teacher','user_profile', 'user', 'reply_text', 'date_added']
 
     def get_user_profile(self, obj):
         user_profile = obj.user.User_Profile.first() 

@@ -16,7 +16,9 @@ const EnrolledCourses = () => {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                setCourses(response.data);
+                const filterCourse=response.data.filter((course)=>!course.course.is_blocked)
+                console.log(filterCourse);
+                setCourses(filterCourse);
             } catch (error) {
                 console.error('Error fetching purchased courses:', error);
             }
@@ -48,7 +50,7 @@ const EnrolledCourses = () => {
                                                             <h5 className="text-2xl font-bold text-slate-900">
                                                                 {purchase.course.course_name}
                                                             </h5>
-                                                            <p className="mt-1 text-xl font-medium text-slate-600">By  {purchase.user} </p>
+                                                            <p className="mt-1 text-xl font-medium text-slate-600">By  {purchase.course.user} </p>
                                                         </div>
                                                         <div className="flex-shrink-0 hidden ml-3 sm:block">
                                                             <img
@@ -78,9 +80,7 @@ const EnrolledCourses = () => {
                                                                 <dd className="text-xl text-green-500 ">Rs {purchase.course.offer_price}</dd>
                                                             </div>
                                                         </div>
-                                                        <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '55px', height: '55px', borderRadius: '50%', backgroundColor: purchase.course.is_blocked ? 'red' : 'green', color: 'white', fontWeight: 'bold' }}>
-                                                            {purchase.course.is_blocked ? "Blocked" : "Active"}
-                                                        </div>
+                                                        
                                                     </dl>
                                                 </span>
                                             </Link>

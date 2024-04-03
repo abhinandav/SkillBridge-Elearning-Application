@@ -4,9 +4,11 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaEdit  } from 'react-icons/fa'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaPlus } from "react-icons/fa";
 
 function TeacherCourseView() {
     const baseURL = "http://127.0.0.1:8000";
+    const navigate=useNavigate()
     const [course, setCourse] = useState({
         course_name:'',
         user:'',
@@ -90,9 +92,12 @@ function TeacherCourseView() {
             });
         }
       };
-
-
-      console.log(course.demo_video);
+      console.log(course.demo_video)
+      
+      
+      const handleStartLesson = (id, firstVideoId) => {
+        navigate(`/teacher/tvideoplayer/${id}/${firstVideoId}`);
+    };
   return (
 
 <div>
@@ -170,11 +175,15 @@ function TeacherCourseView() {
           <div className="lg:col-span-3">
             <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
               <div className="md:col-span-6  mx-10">
-                <h1 className='text-indigo-800'
-                style={{ width: '100%', display: 'block', fontSize: '2.5rem', lineHeight: 1 }}>
-                    {course.course_name}
-                </h1>
+
+               <Link to={`/teacher/tvideoplayer/${id}/${course.videos[0]?.id}`}>
+                    <h1 className='text-indigo-800'   style={{ width: '100%', display: 'block', fontSize: '2.5rem', lineHeight: 1 }}>
+                        {course.course_name}
+                    </h1>
+                </Link>
+
               </div>
+           
 
 
               <div className="md:col-span-6 mt-3  mx-10 flex">
@@ -301,7 +310,7 @@ function TeacherCourseView() {
 
 
 
-        <div className="grid gap-5 gap-y-2 text-sm grid-cols-1 lg:grid-cols-5">
+        <div className="grid gap-5 gap-y-2 text-sm grid-cols-1 lg:grid-cols-5 bg-orange-00">
             <div className="lg:col-span-3" >
                 <h1 className="mb-5 text-2xl font-bold text-indigo-900 ">Course Content</h1>
                 <div className="mt-20">
@@ -321,6 +330,15 @@ function TeacherCourseView() {
                     </div>
                 ))}
                 </div>
+
+                <div className='flex justify-between'>
+                    <div></div>
+                    <Link to={`/teacher/add_video/${id}`} className='mr-5'>
+                        <span   span aria-describedby="tier-startup" className=" flex mt-6 w-40 mr-5 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-green-600 text-white shadow-sm hover:bg-green-800 focus-visible:outline-red-600">Add new Video <span className='ml-3 mt-2 font-semibold'><FaPlus /></span> </span>
+                    </Link>
+                </div>
+
+                
             </div>
 
         </div>

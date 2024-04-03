@@ -4,6 +4,7 @@ import { useParams, Lin, Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
 import { formatDistanceToNow } from 'date-fns';
+import { FaCrown } from "react-icons/fa";
 
 
 
@@ -25,11 +26,6 @@ function VideoPlayer() {
     const [replyFields, setReplyFields] = useState({});
     const [newReply, setNewReply] = useState(null);
     const [course, setCourse] = useState({ videos: []});
-    // const formattedDate = formatDistanceToNow(new Date(comment.date_added), { addSuffix: true });
-    
-
-
-
 
     const fetchCourse = async () => {
         try {
@@ -360,7 +356,7 @@ console.log('replies',replies);
                                             </div>
                                             <div>
                                                 <div className='flex'>
-                                                    <div className="text-md font-bold w-30">{comment.username}</div>
+                                                <div className="text-md font-bold w-30">{comment.is_teacher ? ( <span className='flex '><span>{comment.username} </span><span className='text-yellow-500'><FaCrown /></span></span> ):( <span>{comment.username} </span>)}</div>
                                             
                                                     <span onClick={() => handleReplyClick(comment.id)} className='ml-5 cursor-pointer text-blue-500'>Reply</span>
                                                 </div>
@@ -383,7 +379,7 @@ console.log('replies',replies);
                                                                 </div>
                                                                 <div>
                                                                     <div className='flex'>
-                                                                        <div className="text-md font-bold w-30">{reply.username}</div>
+                                                                    <div className="text-md font-bold w-30">{reply.is_teacher ? ( <span className='flex '><span>{reply.username} </span><span className='text-yellow-500'><FaCrown /></span></span> ):( <span>{reply.username} </span>)}</div>
                                                                     </div>
                                                                     <div className="text-xs"> •  
                                                                     {formatDistanceToNow(new Date(reply.date_added), { addSuffix: false , addPrefix: false })}

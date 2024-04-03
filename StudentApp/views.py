@@ -11,6 +11,7 @@ from .serializers import *
 from .models import *
 from TeacherApp . models import *
 from rest_framework.generics import RetrieveAPIView
+from django.shortcuts import get_object_or_404
 
 
 
@@ -185,11 +186,13 @@ class VideoCommentsView(generics.ListAPIView):
 class AddReplyAPIView(APIView):
     print('working')
     def post(self, request, comment_id):
+        print(request.data)
         comment = get_object_or_404(Comment, pk=comment_id)
         serializer = ReplySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(comment=comment, user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GetRepliesAPIView(APIView):
@@ -225,7 +228,7 @@ import razorpay
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import eg
+
 from .serializers import OrderSerializer
 
 env = environ.Env()
