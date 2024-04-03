@@ -4,10 +4,13 @@ import { useParams, useNavigate, Link, Form } from 'react-router-dom';
 import { FaLock } from 'react-icons/fa'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useSelector } from 'react-redux';
-import useRazorpay from 'react-razorpay'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock } from '@fortawesome/free-solid-svg-icons';
+
+
+import Lottie from 'react-lottie';
+import animationData from '../../Images/payemntdon-animation.json';
+
 
 
 
@@ -20,6 +23,8 @@ function CourseView() {
 
     
     const [alreadyPurchased, setAlreadyPurchased] = useState(false);
+    const [paymentSuccess, setPaymentSuccess] = useState(false);
+
     const [course, setCourse] = useState({
         course_id:'',
         course_name:'',
@@ -100,7 +105,6 @@ function CourseView() {
 
     const handleStartLesson = (id, firstVideoId) => {
         navigate(`/videoplayer/${id}/${firstVideoId}`);
-        // navigate(`/videoplayer/${id}/${firstVideoId}`, { state: { orderId: orderId } });
     };
 
 
@@ -112,15 +116,13 @@ function CourseView() {
         script.src = "https://checkout.razorpay.com/v1/checkout.js";
         document.body.appendChild(script);
       };
-    
+
+
 
       const showRazorpay = async () => {
         const res = await loadScript();
         console.log(res);
-    
         let bodyData = new FormData();
-    
-
         bodyData.append("amount", course.offer_price);
         bodyData.append("course", course.course_id);
         bodyData.append("user_id", user_id);
@@ -140,7 +142,7 @@ function CourseView() {
 
     
         var options = {
-          key_id: process.env.REACT_APP_PUBLIC_KEY, // in react your environment variable must start with REACT_APP_
+          key_id: process.env.REACT_APP_PUBLIC_KEY, 
           key_secret: process.env.REACT_APP_SECRET_KEY,
           amount: data.data.payment.amount,
           currency: "INR",
@@ -150,7 +152,8 @@ function CourseView() {
           order_id: data.data.payment.id,
           handler: function (response) {
             checkCoursePurchase()
-            alert('payment successfull')
+            // alert('payment successfull')
+            setPaymentSuccess(true); 
     
           },
           prefill: {
@@ -170,6 +173,25 @@ function CourseView() {
         rzp1.open();
       };
 
+  // ------Animation----- 
+  const defaultOptions = {
+    loop: false,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice'
+    }
+  };
+
+
+useEffect(() => {
+    if (paymentSuccess) {
+      const timer = setTimeout(() => {
+        setPaymentSuccess(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [paymentSuccess]);
 
 
   return (
@@ -321,6 +343,24 @@ function CourseView() {
                  className="mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-orange-600 text-white shadow-sm hover:bg-orange-800 focus-visible:outline-red-600">
                 Buy now</button>
             )}
+
+
+{paymentSuccess && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%',
+            height: '100%', zIndex: 9999, backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex',
+            justifyContent: 'center', alignItems: 'center' }} >
+
+          <Lottie
+            options={defaultOptions}
+            height={400}
+            width={400}
+          />
+        </div>
+      )}
+
+
+
+
 
 
 
