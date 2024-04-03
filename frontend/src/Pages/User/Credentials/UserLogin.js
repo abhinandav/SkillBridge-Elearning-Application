@@ -7,6 +7,8 @@ import { jwtDecode } from 'jwt-decode';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { GoogleOAuthProvider,GoogleLogin  } from '@react-oauth/google';
+
 
 const UserLogin = () => {
   const {state}=useLocation()
@@ -125,28 +127,28 @@ const UserLogin = () => {
 
 
   return (
-    <div className=" flex mt-1">
+    <div className=" flex -mt-2 px-10 py-5">
       <div className="hidden lg:flex w-full lg:w-1/2 login_img_section justify-around items-center">
-        <div className="py-16 white">
+        <div className="py-8 white">
           <div className="container m-auto px-6 text-gray-600 md:px-12 xl:px-6">
             <h2 className="mb-12 text-center text-2xl text-gray-900 font-bold md:text-4xl">What's our customers say</h2>
             <div className="grid gap-8 md:grid-rows-2 lg:grid-cols-2">
               <div className="row-span-2 p-6 border border-gray-100 rounded-xl bg-gray-50 text-center sm:p-8">
                 <div className="h-full flex flex-col justify-center space-y-4">
-                  <img className="w-20 h-20 mx-auto rounded-full" src="https://tailus.io/sources/blocks/grid-cards/preview/images/avatars/second_user.webp" alt="user avatar" height="220" width="220" loading="lazy" />
-                  <p className="text-gray-600 md:text-xl"><span className="font-serif">"</span> Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat repellat perspiciatis excepturi est. Non ipsum iusto aliquam consequatur repellat provident. <span className="font-serif">"</span></p>
+                  <img className="w-20 h-20 mx-auto rounded-full" src="https://img.freepik.com/free-photo/close-up-portrait-young-bearded-man-white-shirt-jacket-posing-camera-with-broad-smile-isolated-gray_171337-629.jpg?size=626&ext=jpg&ga=GA1.1.2082370165.1711411200&semt=ais" alt="user avatar" height="220" width="220" loading="lazy" />
+                  <p className="text-gray-600 md:text-xl"><span className="font-serif">"</span>With skillbridge - e learning, we have finally accomplished things that have been waiting forever to get done. <span className="font-serif">"</span></p>
                   <div>
                     <h6 className="text-lg font-semibold leading-none">Jane Doe</h6>
-                    <span className="text-xs text-gray-500">Product Designer</span>
+                    <span className="text-xs text-gray-500">Robotic Engineer</span>
                   </div>
                 </div>
               </div>
               <div className="row-span-2 p-6 border border-gray-100 rounded-xl bg-gray-50 text-center sm:p-8">
                 <div className="h-full flex flex-col justify-center space-y-4">
-                  <img className="w-20 h-20 mx-auto rounded-full" src="https://tailus.io/sources/blocks/grid-cards/preview/images/avatars/second_user.webp" alt="user avatar" height="220" width="220" loading="lazy" />
-                  <p className="text-gray-600 md:text-xl"><span className="font-serif">"</span> Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat repellat perspiciatis excepturi est. Non ipsum iusto aliquam consequatur repellat provident. <span className="font-serif">"</span></p>
+                  <img className="w-20 h-20 mx-auto rounded-full" src="https://i.pinimg.com/236x/54/6b/2d/546b2d4e9bddbcb894fa8e416739339b.jpg" alt="user avatar" height="220" width="220" loading="lazy" />
+                  <p className="text-gray-600 md:text-xl"><span className="font-serif">"</span> I have tried a few software of this kind and skillbridge - e learning is the best by far! <span className="font-serif">"</span></p>
                   <div>
-                    <h6 className="text-lg font-semibold leading-none">Jane Doe</h6>
+                    <h6 className="text-lg font-semibold leading-none">Teresa Martin</h6>
                     <span className="text-xs text-gray-500">Product Designer</span>
                   </div>
                 </div>
@@ -198,6 +200,19 @@ const UserLogin = () => {
               <Link className='nav-link' to='/signup'>
               <span className="text-sm ml-2 hover:text-blue-500 cursor-pointer hover:-translate-y-1 duration-500 transition-all">Don't have an account yet?</span>
               </Link>
+            </div>
+            <div className='mt-5'>
+            {/* <GoogleOAuthProvider clientId="985183011822-pdkvo8vc1hs1is7nin2hk3ai2gh59uk7.apps.googleusercontent.com">
+            <GoogleLogin
+                onSuccess={credentialResponse => {
+                  var decoded=jwtDecode(credentialResponse.credential)
+                  console.log(decoded);
+                }}
+                onError={() => {
+                  console.log('Login Failed');
+                }}
+              />
+              </GoogleOAuthProvider> */}
             </div>
           </form>
         </div>
