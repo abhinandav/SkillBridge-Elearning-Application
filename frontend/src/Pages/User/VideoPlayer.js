@@ -173,7 +173,7 @@ function VideoPlayer() {
         }
     };
         
-    
+
     useEffect(() => {
         fetchVideoComments();
         checkCoursePurchase()

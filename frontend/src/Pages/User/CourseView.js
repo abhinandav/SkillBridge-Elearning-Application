@@ -6,6 +6,9 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
 import useRazorpay from 'react-razorpay'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClock } from '@fortawesome/free-solid-svg-icons';
+
 
 
 function CourseView() {
@@ -216,12 +219,13 @@ function CourseView() {
                 </li>
             </ol>
 
+            {alreadyPurchased && (
             <Link to={`/videoplayer/${id}/${course.videos[0]?.id}`}>
             <span className="text-blue-800 text-md font-semibold bg-blue-50 border border-blue-700 px-4 py-2 rounded-lg hover:text-orange-500 hover:border-orange-500 hover:bg-orange-50 cursor-pointer ml-5"
                 onClick={() => handleStartLesson(course.id, course.videos[0].id)}>
                 Start Lesson
             </span>
-            </Link>
+            </Link>)}
 
         </nav>
 
@@ -392,18 +396,21 @@ function CourseView() {
                 {course.videos.map((video) => (
 
                     <div  key={video.id} className="px-4 sm:px-8  m-auto">
-                        <ul className="border border-gray-200 rounded overflow-hidden flex">
-                            <div className="flex-1">
-                                <li className="text-lg px-4 py-2 bg-white hover:bg-sky-100 hover:text-sky-900 border-b last:border-none border-gray-100 transition-all duration-300 ease-in-out">{video.video_name}</li>
+                        <ul className="border border-gray-200 ">
+                            <div className="flex justify-between bg-white hover:bg-sky-100 hover:text-sky-900 border-b last:border-none border-gray-100 transition-all duration-300 ease-in-out cursor-pointer">
+                                <li className="text-lg px-4 py-2 ">{video.video_name}</li>
+                                
+                                <div className='flex'>
+                                <FontAwesomeIcon icon={faClock}  className='mt-5 mr-3'/>
+                                <li className='mt-4 text-md font-semibold mr-5'>{video.duration}</li>
+                                </div>
                             </div>
-                            {/* {alreadyPurchased ? 
-                            <div className="flex-none">
-                                <FaLock className='mt-2 mx-10' />
-                            </div>} */}
+                          
                         </ul>
                     </div>
                 ))}
                 </div>
+
             </div>
 
         </div>
