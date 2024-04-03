@@ -12,7 +12,6 @@ function VideoPlayer() {
     const baseURL = "http://127.0.0.1:8000";
     const token = localStorage.getItem('access');
     const authentication_user=useSelector(state=>(state.authentication_user))
-    console.log('aaaa',authentication_user.userid);
 
     const { id, vid } = useParams();
 
@@ -157,9 +156,12 @@ function VideoPlayer() {
         }
     };
     
-    const checkCoursePurchase = async () => {
+
+
+
+      const checkCoursePurchase = async () => {
         try {
-            const response = await axios.get(`${baseURL}/student/purchased/${vid}/`,
+            const response = await axios.get(`${baseURL}/student/purchased/${id}/`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -168,11 +170,14 @@ function VideoPlayer() {
             console.log('sssssssss',response.data);
             setOrderId(response.data.order_id)
             
+            
         } catch (error) {
             console.error("Error checking course purchase:", error);
         }
     };
-        
+    
+
+
 
     useEffect(() => {
         fetchVideoComments();

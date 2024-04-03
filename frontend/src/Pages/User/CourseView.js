@@ -40,7 +40,7 @@ function CourseView() {
 
     const { id } = useParams();
 
-    console.log('ss',course)
+
 
 
     useEffect(() => {
@@ -172,10 +172,6 @@ function CourseView() {
 
 
 
-
-
-    
-      console.log('course',course);
   return (
 
 <div>

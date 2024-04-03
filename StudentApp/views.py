@@ -141,8 +141,7 @@ class CheckCoursePurchaseAPIView(APIView):
         if not request.user:
             return Response({"message": "Authentication credentials were not provided"}, status=status.HTTP_401_UNAUTHORIZED)
         
-        order = Orders.objects.filter(user=request.user, course_id=course_id).first()
- 
+        order = Orders.objects.filter(user=request.user, course_id=course_id).first()    
         
         if order:
             return Response({"purchased": True, 'order_id': order.id}, status=status.HTTP_200_OK)
