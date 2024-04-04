@@ -20,14 +20,14 @@ function ProfileSidebar() {
               <h1 className="text-xl font-bold">{ profileDetails.username}</h1>
               <p className="text-gray-700">{profileDetails.email}</p>
 
-                <div className="mt-6 flex flex-wrap gap-4 justify-center">
+                {/* <div className="mt-6 flex flex-wrap gap-4 justify-center">
                   <Link to='/profile_edit'>
                   <span className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Settings</span>
                   </Link>
                   <Link to='/profile'>
                   <span className="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded">Dashboard</span>
                   </Link>
-                </div>
+                </div> */}
               </div>
 
               

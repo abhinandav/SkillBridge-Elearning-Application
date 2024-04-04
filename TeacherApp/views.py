@@ -108,6 +108,7 @@ class VideoDetailView(APIView):
         except Videos.DoesNotExist:
             return Response({"message": "Video not found"}, status=status.HTTP_404_NOT_FOUND)
         
+        # request.data["is_accepted"] = False
         serializer = VideosSerializer(video, data=request.data)
         print(serializer)
         

@@ -212,6 +212,7 @@ const formatTime = (timestamp) => {
 
 
 console.log('chat messages',chatMessages);
+// console.log('length',senders.length);
 
    
     return (
@@ -237,6 +238,7 @@ console.log('chat messages',chatMessages);
                     <div className="ml-2 font-bold text-2xl">Chat</div>
                 </div>
                 
+                {/* {!senders.length === 0 ?( */}
                 <div className="flex flex-row mt-8 ml-5">
                     <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 ">
                         {senders.map((order) => (
@@ -253,6 +255,10 @@ console.log('chat messages',chatMessages);
                         ))}
                     </div>
                 </div>
+                
+              {/* ):(
+                   <p className='my-20 mx-7 text-indigo-500'> No Messages Yet..!!</p>
+              )} */}
             </div>
 
         {/*----------------------sidebar end--------------------*/}
@@ -356,9 +362,13 @@ console.log('chat messages',chatMessages);
 
             </>
             ):(
-                <h1 className='flex justify-center'>
-                <img src={msgimg} className='mt-4 mx-80 ' style={{height:450 , width:520}} alt=''/>
-                </h1>
+                <div >
+                    <div className='flex flex-col justify-center'>
+                        <img src={msgimg} className='mt-4 pl-10 mx-80 ' style={{height:450 , width:520}} alt=''/>
+                        <h1 className='px-40 mx-80 text-lg font-semibold text-indigo-500'>Select a User To start Conversation</h1>
+                    </div>
+                    
+                </div>
             )}
             </div>
         </div>

@@ -432,6 +432,7 @@ useEffect(() => {
                 {course.videos.map((video) => (
 
                     <div  key={video.id} className="px-4 sm:px-8  m-auto">
+                      {video.is_accepted &&
                         <ul className="border border-gray-200 ">
                             <div className="flex justify-between bg-white hover:bg-sky-100 hover:text-sky-900 border-b last:border-none border-gray-100 transition-all duration-300 ease-in-out cursor-pointer">
                                 <li className="text-lg px-4 py-2 ">{video.video_name}</li>
@@ -443,6 +444,7 @@ useEffect(() => {
                             </div>
                           
                         </ul>
+                      }
                     </div>
                 ))}
                 </div>

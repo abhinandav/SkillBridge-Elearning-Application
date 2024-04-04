@@ -321,8 +321,21 @@ function TeacherCourseView() {
                             <div className="flex-1">
                                 <li className="text-lg px-4 py-2 bg-white hover:bg-sky-100 hover:text-sky-900 border-b last:border-none border-gray-100 transition-all duration-300 ease-in-out">{video.video_name}</li>
                             </div>
+
+
                             <Link to={`/teacher/edit_video/${video.id}`}>
-                            <div className="flex-none">
+                            <div className="flex">
+                                <div className='-mt-2'>
+                                {video.is_accepted ? (
+                                            <button disabled className="bg-green-600 px-1 py-1 rounded-md mt-4 ml-3 text-white font-semibold tracking-wide cursor-pointer">
+                                            Accepted
+                                            </button>
+                                        ) : (
+                                            <button  className="bg-blue-600 px-1 py-1 rounded-md mt-4 ml-3 text-white font-semibold tracking-wide cursor-pointer">
+                                                Not Accepted
+                                            </button>
+                                )}
+                                </div>
                                 <FaEdit  className='mt-2 mx-10' />
                             </div>
                             </Link>
