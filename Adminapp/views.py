@@ -32,6 +32,7 @@ from django.shortcuts import get_object_or_404
 
 
 from rest_framework import status, permissions
+from django.utils import timezone
 
 
 
@@ -284,3 +285,168 @@ class OrdersByWeekView(View):
 
         return JsonResponse(orders_by_week)
 
+
+
+
+# sales report
+
+class TodaysSalesReportView(APIView):
+    def get(self, request):
+        today = timezone.now().date()
+        orders_today = Orders.objects.filter(date_purchased=today)
+        orders_today_count = Orders.objects.filter(date_purchased=today).count()
+        order_list = Orders.objects.filter(date_purchased=today).order_by('-date_purchased') 
+        serializer = OrderListSerializer(order_list, many=True)
+
+        total_courses_ordered = orders_today.values('course').distinct().count()
+
+        unique_user_ids = set(order.user.id for order in order_list)
+        unique_users_count = len(unique_user_ids)
+
+        total_earnings = sum(int(order.price) for order in orders_today if int(order.price))
+
+        data = {
+            'orders_today_count': orders_today_count,
+            'users_count': unique_users_count,
+            'course_count':total_courses_ordered,
+            'order_list': serializer.data,
+            'total_earnings': total_earnings,
+        }
+        return Response(data, status=status.HTTP_200_OK)
+
+
+
+
+class MonthlySalesReportView(APIView):
+    def get(self, request):
+        today = timezone.now().date()
+        first_day_of_month = today.replace(day=1)
+        last_day_of_month = today.replace(day=1, month=today.month+1) - timedelta(days=1)
+
+        orders_this_month = Orders.objects.filter(date_purchased__range=(first_day_of_month, last_day_of_month))
+
+
+        orders_this_month_count = orders_this_month.count()
+        total_courses_ordered = orders_this_month.values('course').distinct().count()
+
+        unique_user_ids = set(order.user.id for order in orders_this_month)
+        unique_users_count = len(unique_user_ids)
+
+        total_earnings = sum(int(order.price) for order in orders_this_month if order.price.isdigit())
+
+        serializer = OrderListSerializer(orders_this_month.order_by('-date_purchased'), many=True)
+
+      
+        data = {
+            'orders_this_month_count': orders_this_month_count,
+            'users_count': unique_users_count,
+            'course_count': total_courses_ordered,
+            'order_list': serializer.data,
+            'total_earnings': total_earnings,
+        }
+        return Response(data, status=status.HTTP_200_OK)
+    
+
+class YearlySalesReportView(APIView):
+    def get(self, request):
+        today = timezone.now().date()
+        first_day_of_year = today.replace(month=1, day=1)
+        last_day_of_year = today.replace(month=12, day=31)
+
+
+        orders_this_year = Orders.objects.filter(date_purchased__range=(first_day_of_year, last_day_of_year))
+
+        orders_this_year_count = orders_this_year.count()
+        total_courses_ordered = orders_this_year.values('course').distinct().count()
+
+        unique_user_ids = set(order.user.id for order in orders_this_year)
+        unique_users_count = len(unique_user_ids)
+
+        total_earnings = sum(int(order.price) for order in orders_this_year if order.price.isdigit())
+
+
+        serializer = OrderListSerializer(orders_this_year.order_by('-date_purchased'), many=True)
+
+        data = {
+            'orders_this_year_count': orders_this_year_count,
+            'users_count': unique_users_count,
+            'course_count': total_courses_ordered,
+            'order_list': serializer.data,
+            'total_earnings': total_earnings,
+        }
+        return Response(data, status=status.HTTP_200_OK)
+    
+
+class WeeklySalesReportView(APIView):
+    def get(self, request):
+        today = timezone.now().date()
+        start_of_week = today - timedelta(days=today.weekday())
+        end_of_week = start_of_week + timedelta(days=6)
+
+        orders_this_week = Orders.objects.filter(date_purchased__range=(start_of_week, end_of_week))
+
+        orders_this_week_count = orders_this_week.count()
+        total_courses_ordered = orders_this_week.values('course').distinct().count()
+
+        unique_user_ids = set(order.user.id for order in orders_this_week)
+        unique_users_count = len(unique_user_ids)
+
+        total_earnings = sum(int(order.price) for order in orders_this_week if order.price.isdigit())
+
+        serializer = OrderListSerializer(orders_this_week.order_by('-date_purchased'), many=True)
+
+        data = {
+            'orders_this_week_count': orders_this_week_count,
+            'users_count': unique_users_count,
+            'course_count': total_courses_ordered,
+            'order_list': serializer.data,
+            'total_earnings': total_earnings,
+        }
+        return Response(data, status=status.HTTP_200_OK)
+    
+
+
+
+class CustomGenerateReport(APIView):
+    def post(self, request, *args, **kwargs):
+        start_date_str = request.data.get('start_date')
+        end_date_str = request.data.get('end_date')
+        
+        # Convert string dates to datetime objects
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+        
+        # Query orders based on date range
+        orders = Orders.objects.filter(date_purchased__range=(start_date, end_date))
+        
+        # Calculate statistics
+        num_orders = orders.count()
+        unique_users = orders.values('user').distinct().count()
+        unique_courses = orders.values('course').distinct().count()
+        total_price = sum(int(order.price) for order in orders if order.price.isdigit())
+  
+
+        # Serialize order data
+        order_data = [
+            {
+                'id': order.id,
+                'user': order.user.username,
+                'course': order.course.course_name,
+                'author':order.course.added_by.username,
+                'price': order.price,
+                'date_purchased': order.date_purchased,
+            }
+            for order in orders
+        ]
+
+        report_data = {
+            'start_date': start_date_str,
+            'end_date': end_date_str,
+            'num_orders': num_orders,
+            'unique_users': unique_users,
+            'unique_courses': unique_courses,
+            'total_price': total_price,
+            'order_data': order_data,
+        }
+        
+        return Response(report_data)

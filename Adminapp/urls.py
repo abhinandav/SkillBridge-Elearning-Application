@@ -24,5 +24,13 @@ urlpatterns = [
     path('order_graph/', views.OrdersGraphView.as_view()),
     path('order_graph_year/', views.OrderGraphYearView.as_view()),
     path('order_graph_week/', views.OrdersByWeekView.as_view()),
+
+    #sales report
+    path('todays_report/',views.TodaysSalesReportView.as_view()),
+    path('monthly_report/',views.MonthlySalesReportView.as_view()),
+    path('monthly_report/',views.MonthlySalesReportView.as_view()),
+    path('weekly_report/',views.WeeklySalesReportView.as_view()),
+    path('yearly_report/',views.YearlySalesReportView.as_view()),
+    path('custom_report/',views.CustomGenerateReport.as_view()),
 ]
 
