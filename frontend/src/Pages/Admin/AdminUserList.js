@@ -10,6 +10,7 @@ const AdminUserList = () => {
 
   const baseURL = "http://127.0.0.1:8000";
   const [users, setUsers] = useState([]);
+  const [search, setSearch] = useState('');
 
   const fetchUsers = (url) => {
     axios.get(url)
@@ -27,6 +28,19 @@ const AdminUserList = () => {
         console.error("Error fetching users:", error);
       });
   };
+
+
+
+  const handleInputChange = event => {
+    setSearch(event.target.value);
+  };
+
+  const filteredUsers = users.filter(user =>
+    (user.username?.toLowerCase().includes(search.toLowerCase()) ||
+    user.email?.toLowerCase().includes(search.toLowerCase())) ?? false
+);
+
+
 
   const blockUser = (userId) => {
     const confirmBlock = window.confirm('Are you sure you want to block this user?');
@@ -72,15 +86,27 @@ const AdminUserList = () => {
         <div className='p-6'>
           <div className="bg-white p-8 rounded-md w-full">
             <div className="flex items-center justify-between pb-6">
+
               <div>
                 <h2 className="text-gray-600 font-semibold">Students List</h2>
                 <span className="text-xs">Manage all student</span>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="lg:ml-40 ml-10 space-x-8">
-                
+
+              <div className='flex items-center justify-center  '>
+                <div className="flex items-center border border-gray-500  bg-white rounded-lg">
+                  <form onSubmit={e => e.preventDefault()} className="w-full flex items-center">
+                    <input 
+                      type="search" 
+                      value={search} 
+                      onChange={handleInputChange} 
+                      className="w-full px-4 py-1   text-gray-800 rounded-full focus:outline-none"
+                      placeholder="Search" 
+                    />
+                  </form>
                 </div>
               </div>
+
+             
             </div>
             <div>
               <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
@@ -106,9 +132,11 @@ const AdminUserList = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {users.length === 0 && <tr><td>No Users Found</td></tr>}
+       
+                      {filteredUsers.length === 0 && <tr><td colSpan="6">No Courses Found</td></tr>}
 
-                      {users.map((user) => (
+
+                      {filteredUsers.map((user) => (
                         <tr key={user.id}>
                           <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                             <div className="flex items-center">

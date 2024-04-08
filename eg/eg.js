@@ -1,252 +1,240 @@
+// import React from 'react';
+
+// function YourComponent() {
+//     return (
+//         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+//             <div className="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md lg:col-span-2">
+//                 <div className="flex justify-between mb-4 items-start">
+//                     <div className="font-medium">Order Statistics</div>
+//                      <div className="dropdown">
+//                         <button type="button" className="dropdown-toggle text-gray-400 hover:text-gray-600"><i className="ri-more-fill"></i></button>
+//                         <ul className="dropdown-menu shadow-md shadow-black/5 z-30 hidden py-1.5 rounded-md bg-white border border-gray-100 w-full max-w-[140px]">
+//                             <li>
+//                                 <a href="#" className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">Profile</a>
+//                             </li>
+//                             <li>
+//                                 <a href="#" className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">Settings</a>
+//                             </li>
+//                             <li>
+//                                 <a href="#" className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">Logout</a>
+//                             </li>
+//                         </ul>
+//                     </div> 
+//                 </div>
+//                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+//                     <div className="rounded-md border border-dashed border-gray-200 p-4">
+//                         <div className="flex items-center mb-0.5">
+//                             <div className="text-xl font-semibold">10</div>
+//                             <span className="p-1 rounded text-[12px] font-semibold bg-blue-500/10 text-blue-500 leading-none ml-1">$80</span>
+//                         </div>
+//                         <span className="text-gray-400 text-sm">Active</span>
+//                     </div>
+//                     <div className="rounded-md border border-dashed border-gray-200 p-4">
+//                         <div className="flex items-center mb-0.5">
+//                             <div className="text-xl font-semibold">50</div>
+//                             <span className="p-1 rounded text-[12px] font-semibold bg-emerald-500/10 text-emerald-500 leading-none ml-1">+$469</span>
+//                         </div>
+//                         <span className="text-gray-400 text-sm">Completed</span>
+//                     </div>
+//                     <div className="rounded-md border border-dashed border-gray-200 p-4">
+//                         <div className="flex items-center mb-0.5">
+//                             <div className="text-xl font-semibold">4</div>
+//                             <span className="p-1 rounded text-[12px] font-semibold bg-rose-500/10 text-rose-500 leading-none ml-1">-$130</span>
+//                         </div>
+//                         <span className="text-gray-400 text-sm">Canceled</span>
+//                     </div>
+//                 </div>
+//                 <div>
+//                     <canvas id="order-chart"></canvas>
+//                 </div>
+//             </div>
+//             <div className="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md">
+//                 <div className="flex justify-between mb-4 items-start">
+//                     <div className="font-medium">Earnings</div>
+//                     <div className="dropdown">
+//                         <button type="button" className="dropdown-toggle text-gray-400 hover:text-gray-600"><i className="ri-more-fill"></i></button>
+//                         <ul className="dropdown-menu shadow-md shadow-black/5 z-30 hidden py-1.5 rounded-md bg-white border border-gray-100 w-full max-w-[140px]">
+//                             <li>
+//                                 <a href="#" className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">Profile</a>
+//                             </li>
+//                             <li>
+//                                 <a href="#" className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">Settings</a>
+//                             </li>
+//                             <li>
+//                                 <a href="#" className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">Logout</a>
+//                             </li>
+//                         </ul>
+//                     </div>
+//                 </div>
+//                 <div className="overflow-x-auto">
+//                     <table className="w-full min-w-[460px]">
+//                         <thead>
+//                             <tr>
+//                                 <th className="text-[12px] uppercase tracking-wide font-medium text-gray-400 py-2 px-4 bg-gray-50 text-left rounded-tl-md rounded-bl-md">Service</th>
+//                                 <th className="text-[12px] uppercase tracking-wide font-medium text-gray-400 py-2 px-4 bg-gray-50 text-left">Earning</th>
+//                                 <th className="text-[12px] uppercase tracking-wide font-medium text-gray-400 py-2 px-4 bg-gray-50 text-left rounded-tr-md rounded-br-md">Status</th>
+//                             </tr>
+//                         </thead>
+//                         <tbody>
+//                             <tr>
+//                                 <td className="py-2 px-4 border-b border-b-gray-50">
+//                                     <div className="flex items-center">
+//                                         <img src="https://placehold.co/32x32" alt="" className="w-8 h-8 rounded object-cover block" />
+//                                         <a href="#" className="text-gray-600 text-sm font-medium hover:text-blue-500 ml-2 truncate">Create landing page</a>
+//                                     </div>
+//                                 </td>
+//                                 <td className="py-2 px-4 border-b border-b-gray-50">
+//                                     <span className="text-[13px] font-medium text-emerald-500">+$235</span>
+//                                 </td>
+//                                 <td className="py-2 px-4 border-b border-b-gray-50">
+//                                     <span className="inline-block p-1 rounded bg-emerald-500/10 text-emerald-500 font-medium text-[12px] leading-none">Pending</span>
+//                                 </td>
+//                             </tr>
+//                             {/* Add more table rows here */}
+//                         </tbody>
+//                     </table>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// }
+
+// export default YourComponent;
 import React, { useEffect, useRef, useState } from 'react';
+import Chart from 'chart.js/auto';
 import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
 
-function Messages() {
-    const messagesRef = useRef(null);
-    const chatSocketRef = useRef(null);
+function AdminChart() {
+    const chartRef = useRef(null);
     const baseURL = "http://127.0.0.1:8000";
-    const token=localStorage.getItem('access')
-    const [users, setUsers] = useState([]);
-    const [messages, setMessages] = useState([]);
-    const [teachers, setTeachers] = useState([]);
-
-    const authentication_user=useSelector(state=>state.authentication_user)
-    console.log('authentication user',authentication_user);
-
+    const [chartData, setChartData] = useState({
+        labels: [],
+        datasets: [{
+            label: 'Orders per Month',
+            data: [],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        }]
+    });
 
     useEffect(() => {
-        const url = 'ws://127.0.0.1:8000/ws/socket-server/';
-        console.log(url);
-
-        chatSocketRef.current = new WebSocket(url);
-
-        chatSocketRef.current.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            console.log('Data:', data);
-            if (data.type === 'chat') {
-                setMessages(prevMessages => [...prevMessages, data.message]);
-                messagesRef.current.insertAdjacentHTML('beforeend', `<div><p>${data.message}</p></div>`);
-            }
-        };
-
-        return () => {
-            chatSocketRef.current.close();
-        };
+        fetchData(`${baseURL}/adminapp/order_graph/`);
     }, []);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const message = e.target.elements.message.value;
-        const senderId = authentication_user.userid; // Assuming authentication_user contains sender ID
-        const receiverId = 4; // Assuming receiver ID is 4
-        setMessages(prevMessages => [...prevMessages, message]);
-        chatSocketRef.current.send(JSON.stringify({ 'message': message, 'sender_id': senderId, 'receiver_id': receiverId }));
-        e.target.reset();
+    const fetchData = (url) => {
+        axios.get(url)
+            .then(response => {
+                const orders = response.data;
+                console.log(orders);
+            
+                const monthlyOrders = groupOrdersByMonth(orders);
+                const { labels, data } = constructChartData(monthlyOrders);
+                setChartData({
+                    labels,
+                    datasets: [{
+                        label: 'Orders per Month',
+                        data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching order data:', error);
+            });
+    };
+
+    const groupOrdersByMonth = (orders) => {
+        const monthlyOrders = {};
+        orders.forEach(order => {
+            const [year, month] = order.year_month.split('-');
+            const key = `${year}-${month}`;
+            monthlyOrders[key] = (monthlyOrders[key] || 0) + order.total_orders;
+        });
+        return monthlyOrders;
+    };
+
+    const constructChartData = (monthlyOrders) => {
+        const labels = [];
+        const data = [];
+        
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth() + 1; // Months are zero-based, so we add 1
+
+        for (let i = 5; i >= 0; i--) {
+            let year = currentYear;
+            let month = currentMonth - i;
+            if (month <= 0) {
+                year--;
+                month += 12;
+            }
+    
+            // Add the month/year label to the labels array
+            labels.push(`${getMonthName(month)}/${String(year).slice(2)}`);
+    
+            // Construct the key in the format 'YYYY-MM'
+            const key = `${year}-${String(month).padStart(2, '0')}`;
+    
+            data.push(monthlyOrders[key] || 0);
+        }
+    
+        return { labels, data };
     };
     
+    const getMonthName = (month) => {
+        const monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        return monthNames[month - 1]; // Months are zero-based, so we subtract 1
+    };
 
-    // sidebar
-    const fetchUsers = (url) => {
-        axios.get(url)
-          .then((response) => {
-            if (response.data && Array.isArray(response.data)) {
-                const filteredUsers = response.data.filter(user => user.id !== authentication_user.userid);
-                setUsers(filteredUsers); 
-                console.log('filteredUsers',filteredUsers);
-            } else {
-              console.error("Error fetching users: Data is not an array or undefined", response);
-            }
-          })
-          .catch((error) => {
-            console.error("Error fetching users:", error);
-          });
-      };
-
-
-      useEffect(() => {
-        fetchUsers(baseURL + "/adminapp/users/");
-      }, []);
-
-      console.log(messages);
-
-
-
-    //   fetch teachers
+    const updateChartDataByYear = () => {
+        fetchData(`${baseURL}/adminapp/order_graph_year/`);
+    };
 
     useEffect(() => {
-        const fetchTeachers = async () => {
-            try {
-                const response = await axios.get(baseURL+'/chat/ordercourse_teachers/', {
-                    headers: {
-                        Authorization: `Bearer ${token}`
+        if (chartRef.current && chartData.labels.length > 0) {
+            const ctx = chartRef.current.getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: chartData.datasets
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
                     }
-                });
-                setTeachers(response.data);
-            } catch (error) {
-                console.error('Error fetching teachers:', error);
-            }
-        };
-
-        fetchTeachers();
-    }, []);
-
-    console.log(teachers);
-
-    // websocket connection
-
-    const connectToWebSocket = (appointmentId) => {
-        if (!appointmentId) return;
-    
-        const newClient = new W3CWebSocket(
-          `wss://primecare.cloud/ws/chat/${appointmentId}/`
-        );
-        setClient(newClient);
-    
-        newClient.onopen = () => {
-          console.log("WebSocket Client Connected");
-        };
-    
-        newClient.onmessage = (message) => {
-          const data = JSON.parse(message.data);
-          setChatMessages((prevMessages) => [...prevMessages, data]);
-        };
-    }
-
-
-
+                }
+            });
+            return () => {
+                myChart.destroy();
+            };
+        }
+    }, [chartData]);
 
     return (
-        <div className="flex h-screen antialiased text-gray-800">
-            <div className="flex flex-row h-full w-full overflow-x-hidden">
-
-        {/*-------------------- sidebar start --------------------*/}
-
-                <div className="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
-                    <div className="flex flex-row items-center justify-center h-12 w-full">
-                    <div
-                        className="flex items-center justify-center rounded-2xl text-indigo-700 bg-indigo-100 h-10 w-10"
-                    >
-                        <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                        >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-                        ></path>
-                        </svg>
-                    </div>
-                    <div className="ml-2 font-bold text-2xl">Chat</div>
-                    </div>
-
-                    <div className="flex flex-col mt-8">
-
-                    <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 ">
-
-                    {teachers.map((order) => (
-                        <button key={order.id} className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
-                            <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
-                                H
-                            </div>
-                            <div className="ml-2 text-sm font-semibold">{order.user.username}</div>
-                        </button>
-                    ))}
-
-                        </div>
-                    </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div className="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md lg:col-span-2">
+                <div className="flex justify-between mb-4 items-start">
+                    <div className="font-medium">Order Statistics</div>
+                    <button onClick={updateChartDataByYear} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-4 rounded-md">
+                        View by Year
+                    </button>
                 </div>
-        {/*----------------------sidebar end--------------------*/}
-
-
-
-
-
-
-            <div className="flex flex-col flex-auto h-full p-6">
-                <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4" >
-                
-                <div className="flex flex-col flex-auto h-full p-6">
-                    <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4">
-                        <div className="flex flex-col h-full overflow-x-auto mb-4">
-                            <div className="flex flex-col h-full">
-                                <div className="grid grid-cols-12 gap-y-2">
-                                    {messages.map((message, index) => (
-                                        <div key={index} className={`col-start-${message.sender === 'A' ? '6' : '1'} col-end-${message.sender === 'A' ? '13' : '8'} p-3 rounded-lg`}>
-                                            <div className={`flex flex-row items-center ${message.sender === 'A' ? 'justify-start flex-row-reverse' : ''}`}>
-                                                <div className={`flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0`}>
-                                                    A
-                                                </div>
-                                                <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
-                                                    <div>{message}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-
-                <form onSubmit={handleSubmit} className='flex'>
-                    <div className="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
-                        <div className="flex-grow ml-4">
-                            <div className="relative w-full">
-                            <input
-                                type="text"
-                                name="message"
-                                className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
-                            />
-                            </div>
-                        </div>
-                        <div className="ml-4">
-                            <button className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
-                                <span>Send</span>
-                                <span className="ml-2">
-                                <svg
-                                    className="w-4 h-4 transform rotate-45 -mt-px"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                                    ></path>
-                                </svg>
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-                <div id="messages" ref={messagesRef}></div>
-
-
-                    </div>
-                </div>
+                <div className="font-medium">Orders per Month</div>
+                <canvas ref={chartRef}></canvas>
             </div>
         </div>
-      );
-    }
-    
-export default Messages;
+    );
+}
+
+export default AdminChart;
 
 
-
-                        // value={inputValue}
-                        // onChange={handleInputChange}
-
-
-                        // import MessageInput from './MessageInput';

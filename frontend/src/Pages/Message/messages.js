@@ -52,6 +52,8 @@ const fetchReciever = async (orderId) => {
             }
         });
         setRecieverId(response.data[0].id)
+        console.log('rrr',response.data);
+
         return response.data;
     } catch (error) {
         console.error('Error fetching added user:', error);
@@ -140,6 +142,10 @@ useEffect(() => {
         if (!client || client.readyState !== client.OPEN) {
           console.error("WebSocket is not open");
           return;
+        }
+
+        if (message.length===0){
+            return
         }
     
         const senderId = authentication_user.userid;

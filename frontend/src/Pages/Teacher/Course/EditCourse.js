@@ -218,12 +218,52 @@ if (!course.offer_price.trim()) {
 
                   
 
-                  <div className="md:col-span-2">
-                    <label htmlFor="age">Course Level</label>
-                    <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                      <input type='text' name="level" value={course.level} onChange={handleChange} placeholder="course level " className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"  />
+
+
+                    <div className="md:col-span-2">
+                  <label htmlFor="age">Course Level</label>
+                  <div className="mt-2 flex items-center">
+                    <div className="mr-4">
+                      <input
+                        type="radio"
+                        id="Beginner"
+                        name="level"
+                        value="Beginner"
+                        checked={course.level === 'Beginner'}
+                        onChange={handleChange}
+                        className="mr-2"
+                      />
+                      <label htmlFor="Beginner">Beginner</label>
+                    </div>
+                    <div className="mr-4">
+                      <input
+                        type="radio"
+                        id="Intermediate"
+                        name="level"
+                        value="Intermediate"
+                        checked={course.level === 'Intermediate'}
+                        onChange={handleChange}
+                        className="mr-2"
+                      />
+                      <label htmlFor="Intermediate">Intermediate</label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        id="Advanced"
+                        name="level"
+                        value="Advanced"
+                        checked={course.level === 'Advanced'}
+                        onChange={handleChange}
+                        className="mr-2"
+                      />
+                      <label htmlFor="Advanced">Advanced</label>
                     </div>
                   </div>
+                  {levelError && <span className="text-md text-red-800 mt-1 mb-5">{levelError}</span>}
+                  </div>
+
+
 
              
                   <div className="md:col-span-6 mt-3">

@@ -145,6 +145,10 @@ const sendMessage = (e) => {
       console.error("WebSocket is not open");
       return;
     }
+
+    if (message.length===0){
+        return
+    }
     const messageData = { 
         'message': message, 
         'order_id': orderId, 

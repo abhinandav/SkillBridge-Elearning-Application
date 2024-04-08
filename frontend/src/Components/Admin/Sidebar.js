@@ -2,7 +2,7 @@ import React from 'react';
 import { RiHome2Line, RiArrowRightSLine } from 'react-icons/ri';
 import { BsFillPersonFill,BsBagCheckFill } from 'react-icons/bs';
 import { GiTeacher } from "react-icons/gi";
-import { IoIosSchool } from 'react-icons/io';
+import { IoIosSchool,IoMdDocument   } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 // import { useSelector } from 'react-redux';
 
@@ -74,6 +74,17 @@ const Sidebar = () => {
           </span>
         </li>
         </Link>
+
+        <Link to='/admin/sales_report'>
+        <li className="mb-1 group">
+          <span className="flex font-semibold items-center py-2 px-4 text-gray-900 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
+          <IoMdDocument      className='mr-3 text-lg' />
+            <span className="text-sm">Sales Report</span>
+            <RiArrowRightSLine className="ml-auto group-[.selected]:rotate-90" />
+          </span>
+        </li>
+        </Link>
+
 
 
 

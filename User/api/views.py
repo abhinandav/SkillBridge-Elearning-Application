@@ -290,6 +290,7 @@ class TeacherLoginView(APIView):
             return Response({'error': 'Blocked'}, status=status.HTTP_403_FORBIDDEN)
 
         if user is not None and user.is_staff and not user.is_superuser and user.is_active and user.is_email_verified :
+            UserProfile.objects.get_or_create(user=user)
             refresh = RefreshToken.for_user(user)
             refresh['username'] = str(user.username)
 

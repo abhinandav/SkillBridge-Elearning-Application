@@ -26,6 +26,12 @@ function TeacherCourseView() {
     });
     const { id } = useParams();
 
+    const [isOpen, setIsOpen] = useState(false);
+    
+    const toggleDropdown = () => {
+        setIsOpen(!isOpen);
+    }
+
 
 
     const fetchCourse = async () => {
@@ -95,14 +101,14 @@ function TeacherCourseView() {
       console.log(course.demo_video)
       
       
-      const handleStartLesson = (id, firstVideoId) => {
-        navigate(`/teacher/tvideoplayer/${id}/${firstVideoId}`);
+    const handleStartLesson = (id, firstVideoId) => {
+    navigate(`/teacher/tvideoplayer/${id}/${firstVideoId}`);
     };
   return (
 
 <div>
-  <div className=" p-5 bg-gray-100 flex items-center justify-center">
-    <div className="container max-w-screen-x mx-auto my-10">
+  <div className="  px-10 bg-gray-100 flex items-center justify-center">
+    <div className="container max-w-screen-x mx-auto my-5">
       <div className=" mt-5 bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
 
     
@@ -139,12 +145,67 @@ function TeacherCourseView() {
         </ol>
         <div className='flex'>
 
-        <Link to={`/teacher/edit_course/${id}`}>
-        <span aria-describedby="tier-startup" className="mt-6 mr-5 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-orange-600 text-white shadow-sm hover:bg-orange-800 focus-visible:outline-red-600">Edit Course</span>
-        </Link>
+            <div className="relative mx-10">
+            <button
+                id="dropdownDelayButton"
+                data-dropdown-toggle="dropdownDelay"
+                data-dropdown-delay="500"
+                data-dropdown-trigger="hover"
+                className=" font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center "
+                type="button"
+                onClick={toggleDropdown}
+            >
+                Options
+                <svg
+                className="w-2.5 h-2.5 ms-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 10 6"
+                >
+                <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m1 1 4 4 4-4"
+                />
+                </svg>
+            </button>
 
 
-        {course.is_blocked ? (
+        {isOpen && (
+            <div
+            id="dropdownDelay"
+            className="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+            >
+            <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDelayButton">
+                <li>
+                    <Link to={`/teacher/edit_course/${id}`}>
+                        <span aria-describedby="tier-startup" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit Course</span>
+                    </Link>
+                </li>
+                <li>
+                    {course.is_blocked ? (
+                        <button onClick={() => unblockCourse(id)} aria-describedby="tier-startup"  className="block px-4 py-2  text-green-500  dark:hover:text-green-500">
+                            Unblock
+                        </button>
+                        ) : (
+                        <button onClick={() => blockCourse(id)} className="block px-4 py-2 text-red-500   dark:hover:text-red-500">
+                            Block
+                        </button>
+                    )}
+                </li>
+                
+            </ul>
+            </div>
+        )}
+            </div>
+
+
+
+
+        {/* {course.is_blocked ? (
             <button onClick={() => unblockCourse(id)} className="mt-6 mr-5 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-green-600 text-white shadow-sm hover:bg-green-700 focus-visible:outline-red-600">
                 Unblock
             </button>
@@ -152,11 +213,10 @@ function TeacherCourseView() {
             <button onClick={() => blockCourse(id)} className="mt-6 mr-5 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-red-600 text-white shadow-sm hover:bg-red-700 focus-visible:outline-red-600">
                 Block
             </button>
-        )}
+        )} */}
 
 
         
-        {/* <span aria-describedby="tier-startup" className="mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-green-600 text-white shadow-sm hover:bg-green-800 focus-visible:outline-red-600">Buy plan</span> */}
         </div>
         </nav>
 

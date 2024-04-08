@@ -30,20 +30,25 @@ function AddCourse() {
 
       });
     
+
+
       const handleChange = (e) => {
         if (e.target.name === 'demo') {
           setFormData({
             ...formData,
             demo_video: e.target.files[0] 
           });
-        } 
-        else if (e.target.name === 'thumbnail') {
+        } else if (e.target.name === 'thumbnail') {
           setFormData({
             ...formData,
             thumbnail: e.target.files[0] 
           });
-        } 
-        else {
+        } else if (e.target.name === 'level') {  // Handle level radio button change
+          setFormData({
+            ...formData,
+            level: e.target.value
+          });
+        } else {
           setFormData({
             ...formData,
             [e.target.name]: e.target.value
@@ -51,8 +56,9 @@ function AddCourse() {
         }
       };
       
+      
 
-      console.log(formData);
+      console.log('formdata',formData);
 
 
       const handleSubmit = async (e) => {
@@ -158,13 +164,53 @@ function AddCourse() {
 
 
                   
-                  <div className="md:col-span-2">
-                    <label htmlFor="age">Course Level</label>
-                    <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                      <input type='text' name="level" value={formData.level} onChange={handleChange} placeholder="course level " className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"  />
+
+
+
+
+                <div className="md:col-span-2">
+                  <label htmlFor="age">Course Level</label>
+                  <div className="mt-2 flex items-center">
+                    <div className="mr-4">
+                      <input
+                        type="radio"
+                        id="Beginner"
+                        name="level"
+                        value="Beginner"
+                        checked={formData.level === 'Beginner'}
+                        onChange={handleChange}
+                        className="mr-2"
+                      />
+                      <label htmlFor="Beginner">Beginner</label>
                     </div>
-                    {levelError && <span className="text-md text-red-800 mt-1 mb-5">{levelError}</span>}
+                    <div className="mr-4">
+                      <input
+                        type="radio"
+                        id="Intermediate"
+                        name="level"
+                        value="Intermediate"
+                        checked={formData.level === 'Intermediate'}
+                        onChange={handleChange}
+                        className="mr-2"
+                      />
+                      <label htmlFor="Intermediate">Intermediate</label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        id="Advanced"
+                        name="level"
+                        value="Advanced"
+                        checked={formData.level === 'Advanced'}
+                        onChange={handleChange}
+                        className="mr-2"
+                      />
+                      <label htmlFor="Advanced">Advanced</label>
+                    </div>
                   </div>
+                  {levelError && <span className="text-md text-red-800 mt-1 mb-5">{levelError}</span>}
+                </div>
+
 
              
                   <div className="md:col-span-6 mt-3">

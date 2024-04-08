@@ -17,5 +17,12 @@ urlpatterns = [
     path('video_status/<int:id>/', views.VideoStatusChangeView.as_view(), name='video_status'),
 
     path('orders/', views.AdminOrderList.as_view(), name='orders'),
+
+
+    # graph
+    path('admin_home/', views.AdminDashboardCount.as_view()),
+    path('order_graph/', views.OrdersGraphView.as_view()),
+    path('order_graph_year/', views.OrderGraphYearView.as_view()),
+    path('order_graph_week/', views.OrdersByWeekView.as_view()),
 ]
 

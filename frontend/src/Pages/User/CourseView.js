@@ -332,8 +332,8 @@ useEffect(() => {
             </ul>
 
 
-            
-            
+    {user_id ?(
+        <div>        
             {alreadyPurchased ? (
                 <span 
                  className="mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-green-600 text-white shadow-sm hover:bg-green-800 focus-visible:outline-red-600">
@@ -343,9 +343,21 @@ useEffect(() => {
                  className="mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-orange-600 text-white shadow-sm hover:bg-orange-800 focus-visible:outline-red-600">
                 Buy now</button>
             )}
+                 </div> ):
+                 (
+                  <Link to='/login'>
+                  <span   aria-describedby="tier-startup"
+                          className="mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-orange-600 text-white shadow-sm hover:bg-orange-800 focus-visible:outline-red-600">
+                          Login to buy
+                  </span>
+                  </Link>
+                 )}
 
 
-{paymentSuccess && (
+
+
+
+      {paymentSuccess && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%',
             height: '100%', zIndex: 9999, backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex',
             justifyContent: 'center', alignItems: 'center' }} >
@@ -357,6 +369,7 @@ useEffect(() => {
           />
         </div>
       )}
+
 
 
 

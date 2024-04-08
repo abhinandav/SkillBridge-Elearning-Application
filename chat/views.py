@@ -21,8 +21,13 @@ from rest_framework.views import APIView
 
 class OrderWithUserView(APIView):
     def get(self, request):
+        print('user:',request.user)
         orders = Orders.objects.filter(user=request.user)
+        print('orders',orders.values())
+
         unique_user_ids = set(order.course.added_by_id for order in orders)
+        print('unique_user_ids',unique_user_ids)
+
         
         # Fetch user profiles
         user_profiles = UserProfile.objects.filter(user_id__in=unique_user_ids)
@@ -41,8 +46,32 @@ class OrderWithUserView(APIView):
                     # Add other profile fields as needed
                 }
                 unique_orders.append(serialized_order)
+                print('unique_orders',unique_orders)
+
 
         return Response(unique_orders)
+
+
+
+# class OrderWithUserView(APIView):
+#     def get(self, request):
+#         orders = Orders.objects.filter(user=request.user)
+#         unique_usernames = set()
+#         unique_orders = []
+        
+#         for order in orders:
+#             username = order.course.added_by.username
+#             if username not in unique_usernames:
+#                 unique_usernames.add(username)
+#                 unique_orders.append(order)
+
+#         # Serialize the unique orders
+#         serializer = OrderWithUserSerializer(unique_orders, many=True)
+#         print(serializer.data)
+#         return Response(serializer.data)
+    
+
+
 
 class TeacherRecieverView(APIView):
     def get(self, request,oid):
@@ -81,10 +110,12 @@ class OrderChatMessagesAPIView(APIView):
 
         chat_messages = order.chat_messages.all()
 
+        if not chat_messages:
+            return Response({'message': 'No chat messages for this order'}, status=status.HTTP_200_OK)
+
         sender = chat_messages.first().sender
         receiver = chat_messages.first().receiver
         
-        # Fetch user profiles for sender and receiver
         sender_profile = UserProfile.objects.get(user=sender)
         print(sender_profile)
         receiver_profile = UserProfile.objects.get(user=receiver)
@@ -104,6 +135,46 @@ class OrderChatMessagesAPIView(APIView):
 
         return Response(serialized_data, status=status.HTTP_200_OK)
 
+
+
+
+
+
+
+# class OrderChatMessagesAPIView(APIView):
+#     def get(self, request, oid, *args, **kwargs):
+#         try:
+#             order = Orders.objects.get(pk=oid)
+#         except Orders.DoesNotExist:
+#             return Response({'error': 'order not found'}, status=status.HTTP_404_NOT_FOUND)
+
+#         chat_messages = order.chat_messages.all()
+
+#         if not chat_messages:
+#             return Response({'message': 'No chat messages for this order'}, status=status.HTTP_200_OK)
+
+#         sender = chat_messages.first().sender
+#         receiver = chat_messages.first().receiver
+        
+#         # Fetch user profiles for sender and receiver
+#         sender_profile = UserProfile.objects.get(user=sender)
+#         print(sender_profile)
+#         receiver_profile = UserProfile.objects.get(user=receiver)
+#         print(receiver_profile)
+        
+#         # Serialize chat messages along with sender and receiver profile pictures
+#         serialized_data = []
+#         for message in chat_messages:
+#             serializer = ChatMessageSerializer(message)
+#             sender_profile_pic = sender_profile.profile_pic.url if sender_profile.profile_pic else None
+#             receiver_profile_pic = receiver_profile.profile_pic.url if receiver_profile.profile_pic else None
+#             serialized_data.append({
+#                 **serializer.data,
+#                 'sender_profile_pic': sender_profile_pic,
+#                 'receiver_profile_pic': receiver_profile_pic
+#             })
+
+#         return Response(serialized_data, status=status.HTTP_200_OK)
 
 
 

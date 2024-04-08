@@ -17,6 +17,7 @@ import AdminCourseRequests from "../../Pages/Admin/AdminCourseRequests";
 import AdminCourseView from "../../Pages/Admin/AdminCourseView";
 import AdminAcceptedCourseVIew from "../../Pages/Admin/AdminAcceptedCourseVIew";
 import AdminOrderList from "../../Pages/Admin/AdminOrderList";
+import SalesReport from "../../Pages/Admin/SalesReport";
 
  
 function AdminWrapper() {
@@ -70,6 +71,7 @@ function AdminWrapper() {
       <Route path="/view_course/:id" element={<AdminPrivateRoute><AdminCourseView /></AdminPrivateRoute>} />
       <Route path="/course_view/:id" element={<AdminPrivateRoute><AdminAcceptedCourseVIew /></AdminPrivateRoute>} />
       <Route path="/order_list" element={<AdminPrivateRoute><AdminOrderList /></AdminPrivateRoute>} />
+      <Route path="/sales_report" element={<AdminPrivateRoute><SalesReport /></AdminPrivateRoute>} />
 
       </Routes>    
     

@@ -40,7 +40,7 @@ const CourseList = () => {
                 {courses.map((course) => (
                   <div key={course.id}>
                     <Link to={`/course_view/${course.id}`}>
-                      <span className="relative my-10 block p-8 overflow-hidden border bg-white border-slate-300 rounded-lg ml-6 mr-6">
+                      <span className="relative my-10 block p-8 overflow-hidden border border-red-600 bg-white border-slate-300 rounded-lg ml-6 mr-6">
                         <div className="justify-between sm:flex">
                           <div>
                             <h5 className="text-2xl font-bold text-slate-900">

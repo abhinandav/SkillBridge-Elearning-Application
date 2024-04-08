@@ -1,45 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import Sidebar from '../../Components/Admin/Sidebar';
-import AdminHeader from '../../Components/Admin/AdminHeader';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import Sidebar from '../../Components/Admin/Sidebar';
+import AdminHeader from '../../Components/Admin/AdminHeader';
 
 function AdminOrderList() {
   const authentication_user = useSelector(state => state.authentication_user);
-  console.log('authicate', authentication_user.isAuthenticated);
-
-  const baseURL = "http://127.0.0.1:8000";
   const [orders, setOrders] = useState([]);
+  const [search, setSearch] = useState('');
+  const baseURL = "http://127.0.0.1:8000";
 
-  
-
-  const fetchOrder = (url) => {
-    axios.get(url)
-      .then((response) => {
+  const fetchOrders = () => {
+    axios.get(`${baseURL}/adminapp/orders/`)
+      .then(response => {
         if (response.data && Array.isArray(response.data)) {     
-          console.log(response.data);
           setOrders(response.data);
         } else {
           console.error("Error fetching orders: Data is not an array or undefined", response);
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.error("Error fetching orders:", error);
       });
   };
 
-
-  console.log('orders',orders);
-
-  
-  
-
   useEffect(() => {
-    fetchOrder(baseURL + "/adminapp/orders/");
+    fetchOrders();
   }, []);
 
+  const handleInputChange = event => {
+    setSearch(event.target.value);
+  };
 
+  const filteredOrders = orders.filter(order =>
+    order.username.toLowerCase().includes(search.toLowerCase()) ||
+    order.course_name.toLowerCase().includes(search.toLowerCase()) ||
+    order.author.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div>
@@ -53,8 +50,19 @@ function AdminOrderList() {
                 <h2 className="text-gray-600 font-semibold">Order List</h2>
                 <span className="text-xs">Visit all Orders</span>
               </div>
-
-        
+              <div className='flex items-center justify-center  '>
+                <div className="flex items-center border border-gray-500  bg-white rounded-lg">
+                  <form onSubmit={e => e.preventDefault()} className="w-full flex items-center">
+                    <input 
+                      type="search" 
+                      value={search} 
+                      onChange={handleInputChange} 
+                      className="w-full px-4 py-1   text-gray-800 rounded-full focus:outline-none"
+                      placeholder="Search" 
+                    />
+                  </form>
+                </div>
+              </div>
             </div>
             <div>
               <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
@@ -75,17 +83,13 @@ function AdminOrderList() {
                           Price
                         </th>
                         <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          Date Buyed
+                          Date Bought
                         </th>
-                        
-
-        
                       </tr>
                     </thead>
                     <tbody>
-                      {orders.length === 0 && <tr><td className='m-5'>No Order Found</td></tr>}
-
-                      {orders.map((order) => (
+                      {filteredOrders.length === 0 && <tr><td className='m-5'>No Order Found</td></tr>}
+                      {filteredOrders.map(order => (
                         <tr key={order.id}>
                           <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                             <div className="flex items-center">
@@ -100,20 +104,12 @@ function AdminOrderList() {
                           <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                             <p className="text-gray-900 whitespace-no-wrap">{order.author}</p>
                           </td>
-
                           <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                             <p className="text-gray-900 whitespace-no-wrap">{order.price}</p>
                           </td>
-
                           <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                             <p className="text-gray-900 whitespace-no-wrap">{order.date_purchased}</p>
                           </td>
-
-
-                          
-
-
-                            
                         </tr>
                       ))}
                     </tbody>
@@ -125,7 +121,9 @@ function AdminOrderList() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default AdminOrderList;
+
+
