@@ -7,6 +7,7 @@ const CourseList = () => {
   const baseURL = "http://127.0.0.1:8000";
   const [courses, setCourses] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(true); 
 
   const fetchCourses = (url) => {
     axios.get(url)
@@ -14,6 +15,9 @@ const CourseList = () => {
         if (response.data && Array.isArray(response.data)) {
           const filteredCourses = response.data.filter(course => !course.is_blocked && course.is_accepted);
           setCourses(filteredCourses);
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 3000);
         } else {
           console.error("Error fetching courses: Data is not an array or undefined", response);
         }
@@ -36,8 +40,26 @@ const CourseList = () => {
             <div className="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
               <h1 className="text-4xl font-bold  m-5 text-gray-500">All Courses</h1>
               <div className="grid gap-2 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
-                {courses.length === 0 && <tr><td>No Courses Available now</td></tr>}
-                {courses.map((course) => (
+
+              {isLoading && Array.from({ length: 4 }).map((_, index) => (
+                  <div key={index}>
+                    <div className="relative my-10 block p-8 overflow-hidden border border-red-600 bg-white border-slate-300 rounded-lg ml-6 mr-6">
+                      <div className="animate-pulse flex space-x-4">
+                        <div className="flex-1 space-y-4 py-1">
+                          <div className="h-4 bg-gray-400 rounded w-3/4"></div>
+                          <div className="space-y-2">
+                            <div className="h-4 bg-gray-400 rounded"></div>
+                            <div className="h-4 bg-gray-400 rounded w-5/6"></div>
+                          </div>
+                        </div>
+                        <div className="rounded-full bg-gray-400 h-12 w-12"></div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {!isLoading && courses.length === 0 && <tr><td>No Courses Available now</td></tr>}
+                {!isLoading && courses.map((course) => (
                   <div key={course.id}>
                     <Link to={`/course_view/${course.id}`}>
                       <span className="relative my-10 block p-8 overflow-hidden border border-red-600 bg-white border-slate-300 rounded-lg ml-6 mr-6">

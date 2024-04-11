@@ -1,11 +1,11 @@
 import React from 'react'
-
+import teacherhome from '../../Images/teacher-home2.jpg'
 function TeacherHome() {
   return (
 
     <>
       {/* main view */}
-      <div className="container mx-auto px-6 py-16 pt-28 text-center">
+      {/* <div className="container mx-auto px-6 py-16 pt-28 text-center">
         <div className="mx-auto max-w-lg">
           <h1 className="text-3xl font-bold text-Orange-800  md:text-4xl">
             Teacher
@@ -91,10 +91,26 @@ function TeacherHome() {
 
           </div>
         </div>
+      </div> */}
+  <div class="container mx-auto px-8 py-8 lg:py-40 relative flex flex-col lg:flex-row items-center">
+    <div className="lg:w-1/2 flex flex-col items-center lg:items-start">
+      <h1 className="text-center lg:text-left text-3xl sm:text-5xl font-light text-blue-700 leading-tight mb-4">Our recruiting strategy <strong className="font-black text-orange-500 text-3xl sm:text-4xl block">hit your hiring plan</strong></h1>
+      <p className="text-center lg:text-left sm:text-lg text-gray-500 lg:pr-40 leading-relaxed">You must be able to convey information via phone, email, and in person. You want to make sure your tone is always professional but friendly.</p>
+      <span to="#" className="bg-orange-400 hover:bg-orange-500 mt-8 py-1 px-5 text-lg rounded-full font-bold uppercase text-white tracking-widest">SignUp Now</span>
+      <div className="mt-16 lg:mt-24 flex">
+        <span className="w-12 h-1 mx-1 bg-blue-400"></span>
+        <span className="w-12 h-1 mx-1 bg-blue-200"></span>
+        <span className="w-12 h-1 mx-1 bg-blue-200"></span>
       </div>
+    </div>
+
+    <div class="w-full sm:w-2/3 lg:absolute top-0 right-0 bottom-0  lg:mr-8">
+     <img className='ml-60 mt-10'  style={{height:600}} src={teacherhome} alt=''/>
+      </div>
+  </div>
 
       {/* testimonials */}
-      <section className="bg-white mb-10">
+      <section className="bg-white -mt-20 mb-10">
         <div className="container mx-auto px-6 pt-28">
           <div className="mt-6 md:flex md:items-center md:justify-between">
             <div>

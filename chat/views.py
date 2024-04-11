@@ -37,13 +37,10 @@ class OrderWithUserView(APIView):
         for order in orders:
             user_profile = user_profiles_dict.get(order.course.added_by_id)
             if user_profile:
-                # Serialize the order
                 serializer = OrderWithUserSerializer(order)
                 serialized_order = serializer.data
-                # Add user profile information
                 serialized_order['user_profile'] = {
                     'profile_pic': str(user_profile.profile_pic),
-                    # Add other profile fields as needed
                 }
                 unique_orders.append(serialized_order)
                 print('unique_orders',unique_orders)

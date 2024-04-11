@@ -266,7 +266,7 @@ useEffect(() => {
                                                 <div className="col-start-1 col-end-5 p-3 rounded-lg mb-2 ml-auto">
                                                 <div className="flex flex-row items-center">
                                                     <div className="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500 flex-shrink-0">
-                                                        <img src={`${baseURL}${message.sender_profile_pic}`} alt='profile'  className="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center"/>
+                                                    <img src={`${baseURL}${message.receiver_profile_pic}`} alt='profile'  className="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center"/>
                                                     </div>
 
                                                     {/* <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
@@ -287,7 +287,8 @@ useEffect(() => {
                                             <div className="col-start-8 col-end-12 p-3 rounded-lg mb-2 mr-auto">
                                             <div className="flex items-center justify-start flex-row-reverse">
                                                 <div className=" ml-2 flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500 flex-shrink-0">
-                                                    <img src={`${baseURL}${message.receiver_profile_pic}`} alt='profile'  className="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center"/>
+                                                    <img src={`${baseURL}${message.sender_profile_pic}`} alt='profile'  className="h-8 w-8 bg-indigo-200 rounded-full flex items-center justify-center"/>
+
                                                 </div>
 
                                                 {/* <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
@@ -381,65 +382,4 @@ export default Messages;
 
 
 
-                        // value={inputValue}
-                        // onChange={handleInputChange}
-
-
-                        // import MessageInput from './MessageInput';
-
-
-                         // useEffect(() => {
-    //     const url = 'ws://127.0.0.1:8000/ws/socket-server/';
-    //     console.log(url);
-    //     chatSocketRef.current = new WebSocket(url);
-    //     chatSocketRef.current.onmessage = function(event) {
-    //         const data = JSON.parse(event.data);
-    //         console.log('Data:', data);
-    //         if (data.type === 'chat') {
-    //             setMessages(prevMessages => [...prevMessages, data.message]);
-    //             messagesRef.current.insertAdjacentHTML('beforeend', `<div><p>${data.message}</p></div>`);
-    //         }
-    //     };
-
-    //     return () => {
-    //         chatSocketRef.current.close();
-    //     };
-    // }, []);
-
-
-
-
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     const message = e.target.elements.message.value;
-    //     const senderId = authentication_user.userid; 
-    //     const receiverId = 4; 
-    //     setMessages(prevMessages => [...prevMessages, message]);
-    //     chatSocketRef.current.send(JSON.stringify({ 'message': message,'order_id':13, 'sender_id': senderId, 'receiver_id': receiverId }));
-    //     e.target.reset();
-    // };
-
-
-
-
-
-    //  {/* {chatMessages.map((message, index) => (
-    //                                     <div key={index} className={`col-start-${message.sender === 'A' ? '6' : '1'} col-end-${message.sender === 'A' ? '13' : '8'} p-3 rounded-lg`}>
-                                        
-    //                                         <div className={`flex flex-row items-center ${message.sender === authentication_user.id ? 'justify-start flex-row-reverse' : ''}`}>
-    //                                             <div className={`flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0`}>
-    //                                                 S
-    //                                             </div>
-
-    //                                             <div className={`relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl ${message.sender === authentication_user.id  ? 'self-end' : 'self-start'}`}>
-    //                                                 <div>{message.message}</div>
-    //                                             </div>
-    //                                         </div>
-    //                                     </div>
-    //                                 ))} */}
-    
-
-// chat...................
-
-
+                 

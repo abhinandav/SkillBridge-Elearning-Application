@@ -47,9 +47,11 @@ function AdminChart() {
                     datasets: [{
                         label: viewMode,
                         data: chartData,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
+                        pointBackgroundColor: 'rgb(16, 185, 129)',
+                        borderColor: 'rgb(16, 185, 129)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                        borderWidth: 1,
+                        fill :true,
                     }]
                 });
             })

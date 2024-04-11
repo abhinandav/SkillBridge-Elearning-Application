@@ -223,6 +223,8 @@ class AdminDashboardCount(APIView):
         print(data)
         return Response(data,status=status.HTTP_200_OK)
 
+
+
 class OrdersGraphView(View):
     def get(self, request):
         # Get orders for the past 6 months
@@ -315,8 +317,6 @@ class TodaysSalesReportView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
-
-
 class MonthlySalesReportView(APIView):
     def get(self, request):
         today = timezone.now().date()
@@ -404,8 +404,6 @@ class WeeklySalesReportView(APIView):
         }
         return Response(data, status=status.HTTP_200_OK)
     
-
-
 
 class CustomGenerateReport(APIView):
     def post(self, request, *args, **kwargs):

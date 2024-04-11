@@ -93,54 +93,117 @@ const TeacherProfileEdit = () => {
 
 // -----------------------------------------
 
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     const form_data = new FormData();
+    //     form_data.append('username', formData.username);
+    //     form_data.append('phone', formData.phone);
+    //     form_data.append('social_link1', formData.linkedinurl);
+    //     form_data.append('social_link2', formData.fburl);
+    //     form_data.append('about', formData.about);
+        
+    //     if (formData.profilePic instanceof File) {
+    //         form_data.append('profile_pic', formData.profilePic);
+    //     }
+    //     try {
+    //         const res = await axios.post(baseUrl + '/student/profile_update/', form_data, {
+    //             headers: {
+    //                 'content-type': 'multipart/form-data',
+    //                 'authorization': `Bearer ${token}`,
+    //             },
+    //         })
+    //         if (res.status === 200) {
+
+    //             toast.success('Profile saved successfully!');
+
+
+    //             dispatch(
+    //                 set_authentication({
+    //                     name: formData.username,
+    //                     isAuthenticated: true,
+    //                     isAdmin: false,
+    //                     isTeacher: true
+    //                 })
+    //             );
+    //             dispatch(set_profile_details({
+    //                 username: formData.username,
+    //                 email:formData.email,
+    //                 phone: formData.phone,
+    //                 linkedinurl: formData.linkedinurl,
+    //                 fburl: formData.fburl,
+    //                 about: formData.about,
+    //                 profile_pic: formData.profilePic ? URL.createObjectURL(formData.profilePic) : null
+    //             }));
+
+              
+    //         }
+    //     } catch (error) {
+    //         console.error('Error updating user details:', error);
+    //     }
+    // };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
+        // Create FormData object
         const form_data = new FormData();
-        form_data.append('username', formData.username);
-        form_data.append('phone', formData.phone);
-        form_data.append('social_link1', formData.linkedinurl);
-        form_data.append('social_link2', formData.fburl);
-        form_data.append('about', formData.about);
+    
+        // Add non-empty fields to FormData
+        if (formData.username && formData.username.trim()) {
+            form_data.append('username', formData.username.trim());
+        }
+        if (formData.phone && formData.phone.trim()) {
+            form_data.append('phone', formData.phone.trim());
+        }
+        if (formData.linkedinurl && formData.linkedinurl.trim()) {
+            form_data.append('social_link1', formData.linkedinurl.trim());
+        }
+        if (formData.fburl && formData.fburl.trim()) {
+            form_data.append('social_link2', formData.fburl.trim());
+        }
+        if (formData.about && formData.about.trim()) {
+            form_data.append('about', formData.about.trim());
+        }
         
+        // Add profile picture if it exists
         if (formData.profilePic instanceof File) {
             form_data.append('profile_pic', formData.profilePic);
         }
+    
         try {
             const res = await axios.post(baseUrl + '/student/profile_update/', form_data, {
                 headers: {
                     'content-type': 'multipart/form-data',
                     'authorization': `Bearer ${token}`,
                 },
-            })
+            });
             if (res.status === 200) {
-
                 toast.success('Profile saved successfully!');
-
-
+                // Update Redux state and navigate if needed
                 dispatch(
                     set_authentication({
                         name: formData.username,
                         isAuthenticated: true,
                         isAdmin: false,
-                        isTeacher: true
+                        isTeacher: false
                     })
                 );
                 dispatch(set_profile_details({
                     username: formData.username,
-                    email:formData.email,
+                    email: formData.email,
                     phone: formData.phone,
                     linkedinurl: formData.linkedinurl,
                     fburl: formData.fburl,
                     about: formData.about,
                     profile_pic: formData.profilePic ? URL.createObjectURL(formData.profilePic) : null
                 }));
-
-              
+                navigate('/teacher/profile_edit'); // Navigate to profile page after successful save
             }
         } catch (error) {
             console.error('Error updating user details:', error);
         }
     };
+    
 
     console.log('editpage',profileDetails);
 

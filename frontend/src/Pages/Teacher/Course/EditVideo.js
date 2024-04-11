@@ -10,6 +10,7 @@ function EditVideo() {
   const baseURL='http://127.0.0.1:8000';
   const { id } = useParams();
   const navigate = useNavigate();
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const [videoData, setVideoData] = useState({
     video_name: '',
@@ -81,6 +82,10 @@ function EditVideo() {
       const response = await axios.put(`${baseURL}/teacher/edit_video/${id}/`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: progressEvent => {
+          const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+          setUploadProgress(progress);
         }
       });
       if (response.status===201){
@@ -156,13 +161,36 @@ console.log(videoData);
                         )}
 
                       </div>
+
+                      <div className="md:col-span-6 mt-3">
+                        {uploadProgress > 0 && (
+                          <div className="relative pt-1">
+                            <div className="flex mb-2 items-center justify-between">
+                              <div>
+                                <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-green-600 bg-green-200">
+                                  {uploadProgress}%
+                                </span>
+                              </div>
+                            </div>
+                            <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-green-200">
+                              <div
+                                style={{
+                                  width: `${uploadProgress}%`,
+                                  transition: 'width 1s ease', // Adjusted duration to 1 second
+                                }}
+                                className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500"
+                              ></div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
                       <div className="md:col-span-5 text-right">
                         <div className="inline-flex items-end">
+                        <div className="flex justify-between">
+                          <button  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Save</button>
+                        </div>
 
-
-              <div className="flex justify-between">
-                <button  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Save</button>
-              </div>
                         </div>
                       </div>
                     </div>

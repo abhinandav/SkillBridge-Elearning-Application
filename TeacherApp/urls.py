@@ -9,4 +9,11 @@ urlpatterns = [
    path('edit_course/<int:id>/', EditCourseView.as_view(), name='my_courses'),
    path('edit_video/<int:id>/', VideoDetailView.as_view(), name='edit_video'),
    path('course_status/<int:id>/', CourseStatusChangeView.as_view(), name='course_status'),
+
+   path('tprofile_orderdata/',TeacherDashboardData.as_view()),
+
+   # graph
+   path('teacher_graph_month/',TeacherOrdersGraphView.as_view()),
+
+
 ]

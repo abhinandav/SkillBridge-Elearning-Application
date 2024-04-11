@@ -11,7 +11,8 @@ const AdminUserList = () => {
   const baseURL = "http://127.0.0.1:8000";
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const [showUModal, setShowUModal] = useState(false);
+  const [showBModal, setShowBModal] = useState(false);
 
   const fetchUsers = (url) => {
     axios.get(url)
@@ -48,7 +49,7 @@ const AdminUserList = () => {
         .then((response) => {
           console.log('User blocked successfully', response);
           fetchUsers(`${baseURL}/adminapp/users/`);
-          setShowModal(false)
+          setShowBModal(false)
         })
         .catch((error) => {
           console.error('Error blocking user:', error);
@@ -61,7 +62,7 @@ const AdminUserList = () => {
         .then((response) => {
           console.log('User unblocked successfully', response);
           fetchUsers(`${baseURL}/adminapp/users/`);
-          setShowModal(false)
+          setShowUModal(false)
         })
         .catch((error) => {
           console.error('Error unblocking user:', error);
@@ -171,8 +172,8 @@ const AdminUserList = () => {
                               {user.is_active ? (
                               <>
 
-                              <span onClick={() => setShowModal(true)}  className="bg-red-600 px-2 py-2 rounded-md  ml-3 text-white font-semibold tracking-wide cursor-pointer">Block</span>
-                              {showModal && (
+                              <span onClick={() => setShowBModal(true)}  className="bg-red-600 px-2 py-2 rounded-md  ml-3 text-white font-semibold tracking-wide cursor-pointer">Block</span>
+                              {showBModal && (
                                 <>
                                   
                                   <div style={{zIndex:99999}}
@@ -197,11 +198,11 @@ const AdminUserList = () => {
                                             </div>
                                             <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                                               <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
-                                                Delete Item
+                                               Block User
                                               </h3>
                                               <div className="mt-2">
                                                 <p className="text-sm text-gray-500">
-                                                  Are you sure you want to delete <span className="font-bold">Sample Item</span>? This action cannot be undone.
+                                                  Are you sure you want to block <span className="font-bold">{user.username}</span>? 
                                                 </p>
                                               </div>
                                             </div>
@@ -216,7 +217,7 @@ const AdminUserList = () => {
                                             Confirm
                                           </button>
                                           <button
-                                            onClick={() => setShowModal(false)}
+                                            onClick={() => setShowBModal(false)}
                                             type="button"
                                             className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                                           >
@@ -230,13 +231,10 @@ const AdminUserList = () => {
                               )}
                               </>
                               
-                              
-                              
-                            
                               ) : (<>
-                               <span onClick={() => setShowModal(true)}  className="bg-green-600 px-2 py-2 rounded-md  ml-3 text-white font-semibold tracking-wide cursor-pointer">Unblock</span>
+                               <span onClick={() => setShowUModal(true)}  className="bg-green-600 px-2 py-2 rounded-md  ml-3 text-white font-semibold tracking-wide cursor-pointer">Unblock</span>
 
-                               {showModal && (
+                               {showUModal && (
                                 <>    
                                   <div style={{zIndex:99999}}
                                     className="fixed z-9999 inset-0 overflow-y-auto"
@@ -256,7 +254,7 @@ const AdminUserList = () => {
                                               </h3>
                                               <div className="mt-2">
                                                 <p className="text-sm text-gray-500">
-                                                  Are you sure you want to umblock ? 
+                                                  Are you sure you want to unblock ? {user.username}?
                                                 </p>
                                               </div>
                                             </div>
@@ -271,7 +269,7 @@ const AdminUserList = () => {
                                             Confirm
                                           </button>
                                           <button
-                                            onClick={() => setShowModal(false)}
+                                            onClick={() => setShowUModal(false)}
                                             type="button"
                                             className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                                           >

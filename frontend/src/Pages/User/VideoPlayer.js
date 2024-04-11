@@ -27,6 +27,9 @@ function VideoPlayer() {
     const [newReply, setNewReply] = useState(null);
     const [course, setCourse] = useState({ videos: []});
 
+    const [editedComment, setEditedComment] = useState('');
+    const [editingCommentId, setEditingCommentId] = useState(null);
+
     const fetchCourse = async () => {
         try {
         const response = await axios.get(`${baseURL}/student/course_view/${id}/`);
@@ -71,6 +74,9 @@ function VideoPlayer() {
         }
     };
 
+
+
+
     const handleVideoLinkClick = (newVideoId) => {
         setVideoUrl(''); 
         setLoading(true); // Set loading state to true when fetching video details
@@ -114,7 +120,6 @@ function VideoPlayer() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
         try {
             if (!authentication_user.isAuthenticated) {
                 console.error('User is not authenticated.');
@@ -256,6 +261,58 @@ console.log('replies',replies);
 
 
 
+const handleEditComment = async (e, commentId) => {
+    e.preventDefault(); 
+    try {
+        const response = await axios.put(`${baseURL}/student/edit_comment/${commentId}/`, {
+            comment: editedComment
+        }, {
+            headers: {
+                'authorization': `Bearer ${token}`,
+            }
+        });
+
+        console.log('Comment edited successfully:', response.data);
+        
+    } catch (error) {
+        console.error('Error editing comment:', error);
+    }
+};
+
+
+
+
+const renderComment = (comment) => {
+    if (editingCommentId === comment.id) {
+        return (
+            <form onSubmit={(e) => handleEditComment(comment.id)} className='flex'>
+
+                    <input
+                        type='text'
+                        value={editedComment}
+                        onChange={(e) => setEditedComment(e.target.value)}
+                        placeholder="Edit your comment"
+                        className="w-full h-15 resize-none p-2"
+                        style={{ border: 'none', borderRadius: '0.375rem', padding: '0.75rem', fontSize: '1rem', lineHeight: '1.5', outline: 'none' }}
+                    />
+
+
+                <button type="submit" style={{height:30}} className="mt- ml-3 px-4  bg-blue-500 text-white rounded-md">Edit</button>
+            </form>
+        );
+    } else {
+        return (
+            <p className="mt-2 mx-20 text-lg text-gray-600 w-30">{comment.comment}</p>
+        );
+    }
+};
+
+
+const handleEditButtonClick = (e,commentId, commentText) => {
+    setEditingCommentId(commentId);
+    setEditedComment(commentText);
+};
+
 
   return (
 
@@ -357,8 +414,11 @@ console.log('replies',replies);
                                             <div>
                                                 <div className='flex'>
                                                 <div className="text-md font-bold w-30">{comment.is_teacher ? ( <span className='flex '><span>{comment.username} </span><span className='text-yellow-500'><FaCrown /></span></span> ):( <span>{comment.username} </span>)}</div>
-                                            
                                                     <span onClick={() => handleReplyClick(comment.id)} className='ml-5 cursor-pointer text-blue-500'>Reply</span>
+                                                    
+                                                    {parseInt(comment.user) === parseInt(authentication_user.userid) &&
+                                                    <span onClick={(e) => handleEditButtonClick(e,comment.id, comment.comment)} className='ml-5 cursor-pointer text-blue-500'>Edit</span>
+                                                    }
                                                 </div>
                                                 <div className="text-xs"> • 
                                                 {formatDistanceToNow(new Date(comment.date_added), { addSuffix: false , addPrefix: false })}
@@ -366,7 +426,8 @@ console.log('replies',replies);
                                             </div>
                                         </div>
                                     </div>
-                                    <p className="mt-2 mx-20 text-lg  text-gray-600 w-30">{comment.comment}</p>
+                                    {/* <p className="mt-2 mx-20 text-lg  text-gray-600 w-30">{comment.comment}</p> */}
+                                    {renderComment(comment)}
 
                                     {replies[comment.id] && replies[comment.id].map(reply => (
                                                     <div key={reply.id}>
@@ -405,7 +466,7 @@ console.log('replies',replies);
                                         </form>
                                     )}
                                 </div>
-                            ))}
+                                ))}
 
 
 

@@ -7,6 +7,20 @@ from .models import Course
 from .serializers import *
 from rest_framework.permissions import IsAuthenticated 
 from rest_framework import generics
+from Adminapp.serializers import *
+import cv2 
+import datetime
+from django.http import JsonResponse
+from django.views.generic import View
+from StudentApp.models import Orders
+from django.db.models import Count
+from django.utils.timezone import now
+from django.db.models.functions import TruncMonth,TruncYear
+from django.db.models import Sum,FloatField
+from datetime import datetime, timedelta
+from django.db.models import Sum, FloatField, Value
+from django.db.models.functions import Cast
+
 
 
 
@@ -27,8 +41,7 @@ class AddCourseView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-import cv2 
-import datetime 
+ 
 
 class AddVideoView(APIView):
     def post(self, request, *args, **kwargs):
@@ -78,7 +91,6 @@ class MyCoursesListView(generics.ListAPIView):
 
 
 class EditCourseView(APIView):
-
     def post(self, request, id):
         course = Course.objects.get(pk=id)
         mutable_data = request.data.copy()
@@ -130,3 +142,67 @@ class CourseStatusChangeView(APIView):
 
         serializer = CourseSerializer(course)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+
+
+class TeacherDashboardData(APIView):
+    def get(self,request):
+        teacher=request.user.id
+        orders=Orders.objects.filter(course__added_by=teacher)
+        total_orders=orders.count()
+
+        total_students=orders.values('user').distinct().count()
+
+        total_course=Course.objects.filter(added_by=teacher).count()
+
+        total_amount = orders.annotate(price_float=Cast('price', FloatField())).aggregate(
+            total_price=Sum('price_float')
+        )['total_price']
+
+        serializer=OrderListSerializer(orders,many=True)
+
+        data={
+            'total_course':total_course,
+            'total_order':total_orders,
+            'total_students':total_students,
+            'total_amount':total_amount,
+            'orders':serializer.data
+        }
+
+        # print(data)
+        return Response(data,status=status.HTTP_200_OK)
+    
+
+
+
+
+
+class TeacherOrdersGraphView(APIView):
+    def get(self, request):
+        six_months_ago = now() - timedelta(days=30*6)
+        print('user',request.user)
+        
+       
+        user_courses = Course.objects.filter(added_by=request.user.id)
+        print('user_courses',user_courses)
+        orders = Orders.objects.filter(course__in=user_courses, date_purchased__gte=six_months_ago)
+
+        print('orders',orders)
+
+        monthly_orders = orders.annotate(
+            year_month=TruncMonth('date_purchased')
+        ).values('year_month').annotate(
+            total_orders=Count('id')
+        ).order_by('year_month')
+        orders_data = [
+            {
+                'year_month': order['year_month'].strftime('%Y-%m'),
+                'total_orders': order['total_orders']
+            }
+            for order in monthly_orders
+        ]
+
+        print(orders_data)
+
+        return JsonResponse(orders_data, safe=False)
