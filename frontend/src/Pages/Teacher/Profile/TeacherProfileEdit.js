@@ -179,7 +179,6 @@ const TeacherProfileEdit = () => {
             });
             if (res.status === 200) {
                 toast.success('Profile saved successfully!');
-                // Update Redux state and navigate if needed
                 dispatch(
                     set_authentication({
                         name: formData.username,
@@ -197,7 +196,7 @@ const TeacherProfileEdit = () => {
                     about: formData.about,
                     profile_pic: formData.profilePic ? URL.createObjectURL(formData.profilePic) : null
                 }));
-                navigate('/teacher/profile_edit'); // Navigate to profile page after successful save
+                // navigate('/teacher/teacher_profile_edit'); 
             }
         } catch (error) {
             console.error('Error updating user details:', error);

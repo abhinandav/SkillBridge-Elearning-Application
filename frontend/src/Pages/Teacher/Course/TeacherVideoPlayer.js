@@ -5,9 +5,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
 import { formatDistanceToNow } from 'date-fns';
 import { FaCrown } from "react-icons/fa";
+import { CiEdit } from "react-icons/ci";
+import { FaReply } from "react-icons/fa";
+import placeholderprofile from '../../../Images/default/placeholderprofile.webp'
 
 
-
+// /Images/default/placeholderprofile.webp
 
 function TeacherVideoPlayer() {
     const baseURL = "http://127.0.0.1:8000";
@@ -15,6 +18,10 @@ function TeacherVideoPlayer() {
     const userid = localStorage.getItem('userid');
     const authentication_user=useSelector(state=>(state.authentication_user))
     // console.log('authentication_user',authentication_user);
+    const [editedComment, setEditedComment] = useState('');
+    const [editingCommentId, setEditingCommentId] = useState(null);
+    const [editedReply, setEditedReply] = useState('');
+    const [editingReplyId, setEditingReplyId] = useState(null);
 
     const { id, vid } = useParams();
 
@@ -259,6 +266,69 @@ console.log('replies',replies);
 
 
 
+
+const handleEditButtonClick = (event, commentId, commentContent) => {
+    event.preventDefault();
+    setEditingCommentId(commentId);
+    setEditedComment(commentContent);
+};
+
+const handleReplyEditButtonClick = (event, replyId, replyContent) => {
+    event.preventDefault();
+    setEditingReplyId(replyId);
+    setEditedReply(replyContent);
+};
+
+
+const handleEditCommentSubmit = async (event, commentId) => {
+    event.preventDefault();
+    try {
+        const response = await axios.put(
+            `${baseURL}/student/edit_comment/${commentId}/`,
+            {
+                comment_text: editedComment,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('access')}`,
+                },
+            }
+        );
+        console.log('Comment edited successfully:', response.data);
+        setEditingCommentId(null);
+        setEditedComment('');
+        fetchVideoComments(); 
+    } catch (error) {
+        console.error('Error editing comment:', error);
+    }
+};
+
+
+const handleEditReplySubmit = async (event, replyId) => {
+    console.log('replyId',replyId);
+    event.preventDefault();
+    try {
+        const response = await axios.put(
+            `${baseURL}/student/edit_reply/${replyId}/`,
+            {
+                reply_text: editedReply,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('access')}`,
+                },
+            }
+        );
+        console.log('Reply edited successfully:', response.data);
+        setEditingReplyId(null);
+        setEditedReply('');
+        fetchVideoComments(); 
+    } catch (error) {
+        console.error('Error editing comment:', error);
+    }
+};
+
+
   return (
 
         <div className=''>
@@ -354,13 +424,18 @@ console.log('replies',replies);
                                     <div className="flex justify-between items-center">
                                         <div className="flex items-center space-x-4">
                                             <div className="">
-                                                <img className="w-10 h-10 rounded-full" src={baseURL+comment.user_profile.profile_pic} alt="" />
+                                            <img className="w-10 h-10 rounded-full" src={baseURL + (comment.user_profile?.profile_pic || placeholderprofile)} alt="" />
+
+                                                {/* <img className="w-10 h-10 rounded-full" src={baseURL+comment.user_profile.profile_pic} alt="" /> */}
                                             </div>
                                             <div>
                                                 <div className='flex'>
                                                     <div className="text-md font-bold w-30">{comment.is_teacher ? ( <span className='flex '><span>{comment.username} </span><span className='text-yellow-500'><FaCrown /></span></span> ):( <span>{comment.username} </span>)}</div>
                                             
-                                                    <span onClick={() => handleReplyClick(comment.id)} className='ml-5 cursor-pointer text-blue-500'>Reply</span>
+                                                    <span onClick={() => handleReplyClick(comment.id)} className='ml-5  cursor-pointer text-blue-500'><FaReply className='mt-1'/></span>
+                                                    {parseInt(comment.user) === parseInt(userid) &&
+                                                    <span onClick={(e) => handleEditButtonClick(e,comment.id, comment.comment)} className='ml-5 mt-1 cursor-pointer text-blue-500'><CiEdit /></span>
+                                                    }
                                                 </div>
                                                 <div className="text-xs"> • 
                                                 {formatDistanceToNow(new Date(comment.date_added), { addSuffix: false , addPrefix: false })}
@@ -368,7 +443,22 @@ console.log('replies',replies);
                                             </div>
                                         </div>
                                     </div>
-                                    <p className="mt-2 mx-20 text-lg  text-gray-600 w-30">{comment.comment}</p>
+                                    {editingCommentId === comment.id ? (
+                                                    <form onSubmit={(e) => handleEditCommentSubmit(e, comment.id)}>
+                                                        <input
+                                                            type="text"
+                                                            value={editedComment}
+                                                            onChange={(e) => setEditedComment(e.target.value)}
+                                                            className="mt-2 mx-20 text-lg  text-gray-600 w-30"
+                                                        />
+                                                        <button type="submit">Save</button>
+                                                    </form>
+                                                ) : (
+                                                    <>
+                                                    <p className="mt-2 mx-20 text-lg  text-gray-600 w-30">{comment.comment}</p>
+                                                </>
+                                            )}
+                                    
 
                                     {replies[comment.id] && replies[comment.id].map(reply => (
                                                     <div key={reply.id}>
@@ -377,12 +467,19 @@ console.log('replies',replies);
                                                             <div className="flex items-center space-x-4">
                                                                 <div className="flex">
                                                         
-                                                                    <img className="w-8 h-8 rounded-full" src={baseURL+reply.user_profile.profile_pic} alt="" />
+                                                                    {/* <img className="w-8 h-8 rounded-full" src={baseURL+reply.user_profile.profile_pic} alt="" /> */}
+                                                                    <img className="w-10 h-10 rounded-full" src={baseURL + (reply.user_profile?.profile_pic || placeholderprofile)} alt="" />
+
                                                                 </div>
                                                                 <div>
                                                                     <div className='flex'>
-                                                                        {/* <div className="text-md font-bold w-30">{reply.username}</div> */}
+                                                             
                                                                         <div className="text-md font-bold w-30">{reply.is_teacher ? ( <span className='flex '><span>{reply.username} </span><span className='text-yellow-500'><FaCrown /></span></span> ):( <span>{reply.username} </span>)}</div>
+
+                                                                        {parseInt(reply.user) === parseInt(userid) &&
+                                                                            <span onClick={(e) => handleReplyEditButtonClick(e,reply.id, reply.reply_text)} className='ml-5 mt-1 cursor-pointer text-blue-500'><CiEdit /></span>
+                                                                        }
+
                                                                     </div>
                                                                     <div className="text-xs"> •  
                                                                     {formatDistanceToNow(new Date(reply.date_added), { addSuffix: false , addPrefix: false })}
@@ -391,9 +488,30 @@ console.log('replies',replies);
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <p className="mt-2 mx-20 text-md text-gray-600 w-30">{reply.reply_text}</p>
+
+                                                        {editingReplyId === reply.id ? (
+                                                            <form onSubmit={(e) => handleEditReplySubmit(e, reply.id)}>
+                                                                <input
+                                                                    type="text"
+                                                                    value={editedReply}
+                                                                    onChange={(e) => setEditedReply(e.target.value)}
+                                                                    className="mt-2 mx-20  text-gray-600 w-30"
+                                                                />
+                                                                
+                                                            </form>
+                                                        ) : (
+                                                            <>
+                                                            <p className="mt-2 mx-20 text-md text-gray-600 w-30">{reply.reply_text}</p>
+                                                        </>
+                                                        )}
+                                                        
+
+
                                                     </div>
                                                 ))}
+
+
+                                        
 
 
                                     {replyFields[comment.id] && (

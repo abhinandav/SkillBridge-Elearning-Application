@@ -179,8 +179,7 @@ const ProfileEdit = () => {
                 },
             });
             if (res.status === 200) {
-                toast.success('Profile saved successfully!');
-                // Update Redux state and navigate if needed
+                toast.success('Profile saved successfully!')
                 dispatch(
                     set_authentication({
                         name: formData.username,

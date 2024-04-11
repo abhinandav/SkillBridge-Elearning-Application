@@ -9,17 +9,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 from Adminapp.serializers import *
 import cv2 
-import datetime
+from datetime import datetime, timedelta
 from django.http import JsonResponse
 from django.views.generic import View
 from StudentApp.models import Orders
-from django.db.models import Count
+from django.db.models import Count, Sum, FloatField, Value
 from django.utils.timezone import now
-from django.db.models.functions import TruncMonth,TruncYear
-from django.db.models import Sum,FloatField
-from datetime import datetime, timedelta
-from django.db.models import Sum, FloatField, Value
-from django.db.models.functions import Cast
+from django.db.models.functions import TruncMonth, TruncYear, Cast
 
 
 
@@ -41,8 +37,6 @@ class AddCourseView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
- 
-
 class AddVideoView(APIView):
     def post(self, request, *args, **kwargs):
         try:
@@ -57,7 +51,7 @@ class AddVideoView(APIView):
             frames = video_capture.get(cv2.CAP_PROP_FRAME_COUNT)
             fps = video_capture.get(cv2.CAP_PROP_FPS)
             duration_seconds = round(frames / fps)
-            video_duration = datetime.timedelta(seconds=duration_seconds)
+            video_duration = timedelta(seconds=duration_seconds)  # Use timedelta from datetime module
             print(video_duration)
             video_capture.release()
 
@@ -74,6 +68,40 @@ class AddVideoView(APIView):
         except Exception as e:
             print(e)
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+ 
+
+# class AddVideoView(APIView):
+#     def post(self, request, *args, **kwargs):
+#         try:
+#             # Save the uploaded video to a temporary file
+#             video_file = request.data['video']
+#             with open('temp_video.mp4', 'wb') as temp_file:
+#                 for chunk in video_file.chunks():
+#                     temp_file.write(chunk)
+
+#             # Read the video file and extract duration
+#             video_capture = cv2.VideoCapture('temp_video.mp4')
+#             frames = video_capture.get(cv2.CAP_PROP_FRAME_COUNT)
+#             fps = video_capture.get(cv2.CAP_PROP_FPS)
+#             duration_seconds = round(frames / fps)
+#             video_duration = datetime.timedelta(seconds=duration_seconds)
+#             print(video_duration)
+#             video_capture.release()
+
+#             # Delete the temporary video file
+#             os.remove('temp_video.mp4')
+
+#             # Create serializer instance with duration information
+#             serializer = VideosSerializer(data=request.data)
+#             if serializer.is_valid():
+#                 serializer.save(duration=video_duration)
+#                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+#             else:
+#                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         except Exception as e:
+#             print(e)
+#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class MyCoursesListView(generics.ListAPIView):
     serializer_class = CourseSerializer
@@ -120,12 +148,16 @@ class VideoDetailView(APIView):
         except Videos.DoesNotExist:
             return Response({"message": "Video not found"}, status=status.HTTP_404_NOT_FOUND)
         
-        # request.data["is_accepted"] = False
         serializer = VideosSerializer(video, data=request.data)
-        print(serializer)
+       
         
         if serializer.is_valid():
             serializer.save()
+            course = video.course
+            course.is_accepted = False
+            course.save()
+
+
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

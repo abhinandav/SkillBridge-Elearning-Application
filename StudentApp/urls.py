@@ -18,7 +18,8 @@ urlpatterns=[
 
     path('comments/<int:comment_id>/add_reply/',AddReplyAPIView.as_view(),name='add_reply'),
     path('comments/<int:comment_id>/replies/',GetRepliesAPIView.as_view(),name='get_reply'),
-    path('edit_comment/<int:comment_id>/',CommentUpdateView.as_view(),name='get_reply'),
+    path('edit_comment/<int:pk>/',CommentUpdateView.as_view()),
+    path('edit_reply/<int:pk>/',ReplyUpdateView.as_view()),
 
 
 

@@ -68,9 +68,16 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='course.added_by.username')
+    username = serializers.ReadOnlyField(source='user.username')
+    course_name = serializers.ReadOnlyField(source='course.course_name')
+    original_price=serializers.ReadOnlyField(source='course.original_price')
+
     class Meta:
         model = Orders
-        fields = ['user', 'course', 'price', 'date_purchased'] 
+        fields = ['user','author', 'course','course_name', 'price', 'date_purchased','username','original_price'] 
+
+
 
 
 

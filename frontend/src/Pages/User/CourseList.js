@@ -94,7 +94,7 @@ const CourseList = () => {
                           </div>
                           <div className="flex flex-col-reverse ml-3 sm:ml-6 mx-20">
                             <dd className="text-md text-slate-500 text-slate-500"><strike>Rs {course.original_price}</strike></dd>
-                            <dd className="text-xl text-slate-500 text-green-500">Rs {course.offer_price}</dd>
+                            <dd className="text-xl text-green-500">Rs {course.offer_price}</dd>
                           </div>
                         </dl>
                       </span>

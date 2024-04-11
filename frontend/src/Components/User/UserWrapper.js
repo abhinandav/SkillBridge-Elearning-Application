@@ -16,6 +16,7 @@ import EnrolledCourses from "../../Pages/User/Profile/EnrolledCourses";
 import ForgotOtp from "../../Pages/User/Credentials/ForgotOtp";
 import VideoPlayer from "../../Pages/User/VideoPlayer";
 import Messages from "../../Pages/Message/messages";
+import Invoice from "../../Pages/User/Invoice";
 // import Chat from "../../Chat";
 
 
@@ -85,6 +86,7 @@ function UserWrapper() {
           <Route  path="profile_edit" element={<UserPrivateRoute><ProfileEdit/></UserPrivateRoute>}></Route>
           <Route  path="enrolled_courses" element={<UserPrivateRoute><EnrolledCourses/></UserPrivateRoute>}></Route>
           <Route  path="/inbox/:orderId" element={<UserPrivateRoute><Messages/></UserPrivateRoute>}></Route>
+          <Route  path="/invoice/:id/" element={<UserPrivateRoute><Invoice/></UserPrivateRoute>}></Route>
           {/* <Route  path="inbox" element={<UserPrivateRoute><Chat/></UserPrivateRoute>}></Route> */}
 
       </Routes>    

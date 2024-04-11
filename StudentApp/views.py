@@ -144,10 +144,11 @@ class CheckCoursePurchaseAPIView(APIView):
         if not request.user:
             return Response({"message": "Authentication credentials were not provided"}, status=status.HTTP_401_UNAUTHORIZED)
         
-        order = Orders.objects.filter(user=request.user, course_id=course_id).first()    
+        order = Orders.objects.filter(user=request.user, course_id=course_id).first()  
+        serializers=OrderSerializer(order)  
         
         if order:
-            return Response({"purchased": True, 'order_id': order.id}, status=status.HTTP_200_OK)
+            return Response({"purchased": True, 'order_id': order.id ,'order':serializers.data}, status=status.HTTP_200_OK)
         else:
             return Response({"purchased": False}, status=status.HTTP_200_OK)
         
@@ -170,7 +171,6 @@ class CommentCreateView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -179,34 +179,42 @@ class VideoCommentsView(generics.ListAPIView):
     def get_queryset(self):
         video_id = self.kwargs['video_id']
         comments=Comment.objects.filter(video=video_id).order_by('-id')
+        # print(comments)
         return comments 
     
 
 
-class CommentUpdateView(generics.UpdateAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+class CommentUpdateView(APIView):
+    def put(self, request, pk, *args, **kwargs):
+        try:
+            comment = Comment.objects.get(pk=pk)
 
-    def put(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
+            comment_text = request.data.get('comment_text')
+            print(comment_text)
+            if comment_text is not None:
+                comment.comment = comment_text
+                comment.save()
+
+                return Response({"message": "Comment updated successfully"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Comment text not provided"}, status=status.HTTP_400_BAD_REQUEST)
+        except Comment.DoesNotExist:
+            return Response({"error": "Comment not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
 class AddReplyAPIView(APIView):
     print('working')
     def post(self, request, comment_id):
-        print(request.data)
+        # print(request.data)
         comment = get_object_or_404(Comment, pk=comment_id)
         serializer = ReplySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(comment=comment, user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        print(serializer.errors)
+        # print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GetRepliesAPIView(APIView):
@@ -214,16 +222,32 @@ class GetRepliesAPIView(APIView):
         comment = get_object_or_404(Comment, pk=comment_id)
         replies = Reply.objects.filter(comment=comment)
         serializer = ReplySerializer(replies, many=True)
-        print(serializer.data)
+        # print(serializer.data)
         return Response(serializer.data)
 
 
 
 
 
+class ReplyUpdateView(APIView):
+    def put(self, request, pk, *args, **kwargs):
+        reply = Reply.objects.get(pk=pk)
+        try:
+            reply = Reply.objects.get(pk=pk)
 
+            reply_text = request.data.get('reply_text')
+            print(reply_text)
+            if reply_text is not None:
+                reply.reply_text = reply_text
+                reply.save()
 
-
+                return Response({"message": "reply updated successfully"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "reply text not provided"}, status=status.HTTP_400_BAD_REQUEST)
+        except Comment.DoesNotExist:
+            return Response({"error": "reply not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 

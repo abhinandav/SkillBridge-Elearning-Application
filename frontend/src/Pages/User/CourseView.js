@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link, Form } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaLock } from 'react-icons/fa'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,6 +10,8 @@ import { faClock } from '@fortawesome/free-solid-svg-icons';
 
 import Lottie from 'react-lottie';
 import animationData from '../../Images/payemntdon-animation.json';
+import { IoIosInformationCircleOutline } from "react-icons/io";
+
 
 
 
@@ -334,11 +336,18 @@ useEffect(() => {
 
     {user_id ?(
         <div>        
-            {alreadyPurchased ? (
-                <span 
-                 className="mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-green-600 text-white shadow-sm hover:bg-green-800 focus-visible:outline-red-600">
+            {alreadyPurchased ? (<>
+                <span  className="mt-6 mb-5 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-green-600 text-white shadow-sm hover:bg-green-800 focus-visible:outline-red-600">
                     Already Purchased</span>
-            ) : (
+
+                  <Link className='mt-5' to={`/invoice/${id}/`}>
+                    <div className='flex'>
+                    <IoIosInformationCircleOutline className='mt-1' />
+                    <span className=" ml-3 text-gray-500  text-md hover:underline">Get invoice</span>
+                    </div>
+                 </Link>
+
+                 </>) : (
                 <button  onClick={showRazorpay} aria-describedby="tier-startup"
                  className="mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-orange-600 text-white shadow-sm hover:bg-orange-800 focus-visible:outline-red-600">
                 Buy now</button>
@@ -352,6 +361,8 @@ useEffect(() => {
                   </span>
                   </Link>
                  )}
+
+                 
 
 
 
