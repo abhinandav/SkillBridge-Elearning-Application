@@ -8,8 +8,8 @@ class Course(models.Model):
     description=models.TextField()
     category=models.CharField(max_length=250,blank=True,null=True)
     level=models.CharField(max_length=250)
-    demo_video=models.FileField(upload_to='video/demo_video')
-    thumbnail=models.FileField(upload_to='video/thumbnail')
+    demo_video=models.FileField(upload_to='video/demo_video',null=True,blank=True)
+    thumbnail=models.FileField(upload_to='video/thumbnail',null=True,blank=True)
     benefit1=models.CharField(max_length=250,blank=True,null=True)
     benefit2=models.CharField(max_length=250,blank=True,null=True)
     benefit3=models.CharField(max_length=250,blank=True,null=True)
@@ -22,6 +22,7 @@ class Course(models.Model):
     is_accepted=models.BooleanField(default=False)
     is_blocked=models.BooleanField(default=False)
     is_rejected=models.BooleanField(default=False)
+    reject_reason=models.TextField(null=True,blank=True)
 
 
     def __str__(self) -> str:
@@ -36,6 +37,7 @@ class Videos(models.Model):
     is_accepted=models.BooleanField(default=False)
     is_blocked=models.BooleanField(default=False)
     is_rejected=models.BooleanField(default=False)
+    rejected_reason=models.TextField(null=True,blank=True)
     duration=models.CharField(blank=True, null=True)
 
 

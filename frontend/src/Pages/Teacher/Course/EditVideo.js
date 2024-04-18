@@ -17,6 +17,8 @@ function EditVideo() {
     description: '',
     video: null,
     course: id || '',
+    is_rejected:false,
+    rejected_reason:'',
   });
 
   const handleInputChange = (e) => {
@@ -51,6 +53,8 @@ function EditVideo() {
           description: Data.description,
           video: Video,
           course: Data.course,
+          is_rejected:Data.is_rejected,
+          rejected_reason:Data.rejected_reason
         });
         
         console.log('data',response.data);
@@ -104,7 +108,7 @@ function EditVideo() {
   
 
 
-console.log(videoData);
+console.log('videoData',videoData);
 
 
 
@@ -122,6 +126,13 @@ console.log(videoData);
                   </div>
                   <div className="lg:col-span-2">
                     <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
+
+                    <div className='flex flex-col md:col-span-6'>
+                      {videoData.is_rejected && (
+                        <span className='text-red-500'>Reason : {videoData.rejected_reason}</span>
+                      )}
+                    </div>
+
                       <div className="md:col-span-6">
                         <label htmlFor="username">Video name</label>
                         <input
@@ -189,6 +200,9 @@ console.log(videoData);
                         <div className="inline-flex items-end">
                         <div className="flex justify-between">
                           <button  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Save</button>
+                          <Link className='mt-2 ml-3' to={`/teacher/view_course/${parseInt(videoData.course)}`}>
+                            <span className="bg-white mt-4 hover:bg-gray-500 text-blue-500 font-bold py-2 px-4 rounded">cancel</span>
+                          </Link>
                         </div>
 
                         </div>

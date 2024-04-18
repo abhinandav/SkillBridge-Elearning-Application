@@ -1,6 +1,6 @@
 import React,{useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
+import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
 import { set_authentication } from '../../Redux/autehnticationSlice';
 
@@ -8,6 +8,9 @@ const UserHeader = () => {
 
   const dispatch=useDispatch()
   const navigate=useNavigate()
+  const basUrl='http://127.0.0.1:8000'
+  const refreshToken = localStorage.getItem('refresh');
+  
 
   const authentication_user=useSelector(state=>state.authentication_user)
 
@@ -24,7 +27,25 @@ const UserHeader = () => {
   }
 
 
-  // navbar toggle
+  // const logout = () => {
+  //   axios.post(basUrl + '/api/accounts/logout/', { 'refresh': refreshToken })
+  //     .then(response => {
+  //       dispatch(set_authentication({
+  //         name: null,
+  //         isAuthenticated: false, 
+  //         isAdmin: false,
+  //       }));
+  //       localStorage.removeItem('atoken');
+  //       localStorage.removeItem('rtoken');
+  //       navigate('/');
+  //     })
+  //     .catch(error => {
+  //       console.error('Error logging out:', error);
+  //     });
+  // }
+  
+
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);

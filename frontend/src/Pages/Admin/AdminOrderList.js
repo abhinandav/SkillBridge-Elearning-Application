@@ -8,15 +8,35 @@ function AdminOrderList() {
   const authentication_user = useSelector(state => state.authentication_user);
   const [orders, setOrders] = useState([]);
   const [search, setSearch] = useState('');
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    pageSize: 10 // You can adjust the page size as needed
+  });
   const baseURL = "http://127.0.0.1:8000";
 
-  const fetchOrders = () => {
-    axios.get(`${baseURL}/adminapp/orders/`)
+  const fetchOrders = (page = 1) => {
+    axios.get(`${baseURL}/adminapp/orders/`, {
+      params: {
+        page: page,
+        page_size: pagination.pageSize
+      },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access')}`,
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        }
+    })
       .then(response => {
-        if (response.data && Array.isArray(response.data)) {     
-          setOrders(response.data);
+        if (response.data) {
+          setOrders(response.data.results);
+          setPagination({
+            currentPage: page,
+            totalPages: Math.ceil(response.data.count / pagination.pageSize),
+            pageSize: pagination.pageSize
+          });
         } else {
-          console.error("Error fetching orders: Data is not an array or undefined", response);
+          console.error("Error fetching orders: Data is undefined", response);
         }
       })
       .catch(error => {
@@ -30,6 +50,10 @@ function AdminOrderList() {
 
   const handleInputChange = event => {
     setSearch(event.target.value);
+  };
+
+  const handlePageChange = (page) => {
+    fetchOrders(page);
   };
 
   const filteredOrders = orders.filter(order =>
@@ -67,7 +91,7 @@ function AdminOrderList() {
             <div>
               <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                 <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
-                  <table className="min-w-full leading-normal">
+                <table className="min-w-full leading-normal">
                     <thead>
                       <tr>
                         <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -117,6 +141,29 @@ function AdminOrderList() {
                 </div>
               </div>
             </div>
+            {/* Pagination */}
+            <div className="flex justify-end mt-4">
+              <nav className="relative z-0 inline-flex shadow-sm">
+                <button
+                  onClick={() => handlePageChange(pagination.currentPage - 1)}
+                  disabled={pagination.currentPage === 1}
+                  className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                  Previous
+                </button>
+                {/* Current page indicator */}
+                <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                  {pagination.currentPage}
+                </span>
+                <button
+                  onClick={() => handlePageChange(pagination.currentPage + 1)}
+                  disabled={pagination.currentPage === pagination.totalPages}
+                  className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                  Next
+                </button>
+              </nav>
+            </div>
           </div>
         </div>
       </div>
@@ -125,5 +172,3 @@ function AdminOrderList() {
 }
 
 export default AdminOrderList;
-
-

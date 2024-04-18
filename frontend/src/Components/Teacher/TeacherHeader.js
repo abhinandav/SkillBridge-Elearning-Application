@@ -8,7 +8,6 @@ const TeacherHeader = () => {
 
   const dispatch=useDispatch()
   const navigate=useNavigate()
-  const orderId=13
   const authentication_user=useSelector(state=>state.authentication_user)
   console.log('hhhhh',authentication_user.isTeacher);
 

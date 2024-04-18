@@ -9,13 +9,13 @@ from User.api.serializers import *
 from .serializers import *
 from TeacherApp.serializers import *
 # from StudentApp.serializers import *
-from rest_framework.generics import ListCreateAPIView
-
+from rest_framework.generics import ListCreateAPIView,ListAPIView
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import AuthenticationFailed,ParseError
 from django.contrib.auth import authenticate
 
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework import serializers
 from rest_framework.parsers import MultiPartParser, FormParser
 
@@ -34,27 +34,42 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status, permissions
 from django.utils import timezone
 
+from .permissions import *
+
+
+from django.http import JsonResponse
+from StudentApp.models import Orders
+from django.db.models import Count
+from django.utils.timezone import now
+from datetime import timedelta
+from django.db.models.functions import TruncMonth,TruncYear
+from django.db.models import Sum
+from datetime import datetime, timedelta
+from StudentApp.serializers import UserProfileSerializer
 
 
 
-#list users
+
+#User management 
 class AdminUserListCreateView(ListCreateAPIView):
+    permission_classes = [IsAdmin]
     queryset = User.objects.all().order_by('-date_joined')  
-   
     serializer_class = UserSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['username',  'email']
+    search_fields = ['username',  'email'] 
 
+ 
 
-
-
-#accept teachers and block / unblock
+#accept user and block / unblock
 class AcceptUserView(APIView):
+    permission_classes = [IsAdmin]
     def patch(self, request, pk, *args, **kwargs):
         user = get_object_or_404(User, pk=pk)
 
         if 'is_email_verified' in request.data:
             user.is_email_verified = True
+            UserProfile.objects.get_or_create(user=user)
+
         elif 'is_active' in request.data:
             user.is_active = request.data['is_active']
 
@@ -64,8 +79,10 @@ class AcceptUserView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
-# teacher details and document view
+
+# teacher management
 class AdminTeacherListView(RetrieveAPIView):
+    permission_classes = [IsAdmin]
     queryset = User.objects.all()
     serializer_class = UserSerializer  
 
@@ -74,16 +91,18 @@ class AdminTeacherListView(RetrieveAPIView):
         print(user_instance)
         teacher_details_instance = TeacherDetails.objects.get(user=user_instance)
         teacher_documents_instance = TeacherDocument.objects.get(user=user_instance)
+        teacher_profile_instance=UserProfile.objects.get(user=user_instance)
         
         user_serializer = self.get_serializer(user_instance)
         teacher_details_serializer = TeacherDetailsSerializer(teacher_details_instance)
+        teacher_profile=UserProfileSerializer(teacher_profile_instance)
         teacher_documents_serializer = TeacherDocumentSerializer(teacher_documents_instance)
 
         data = {
             'user': user_serializer.data,
             'teacher_details': teacher_details_serializer.data,
-            'teacher_documents': teacher_documents_serializer.data
-
+            'teacher_documents': teacher_documents_serializer.data,
+            'teacher_profile':teacher_profile.data
         }
 
         return Response(data, status=status.HTTP_200_OK)
@@ -94,6 +113,7 @@ class AdminTeacherListView(RetrieveAPIView):
 
 # update documents of teacher
 class UpdateTeacherDocuments(APIView):
+    permission_classes = [IsAdmin]
     def put(self, request, id, format=None):
         print(id)
         try:
@@ -110,44 +130,10 @@ class UpdateTeacherDocuments(APIView):
             return Response(serializer.data)
         print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-# course list
-    
-class AdminCourseListCreateView(ListCreateAPIView):
-    queryset = Course.objects.all().order_by('-date_added')  
-    serializer_class = CourseSerializer
-    filter_backends = [SearchFilter]
-    search_fields = ['course_name']
 
 
-class CourseStatusChangeView(APIView):
-    def patch(self, request, id, *args, **kwargs):
-        course = get_object_or_404(Course, id=id)
-
-        if 'is_accepted' in request.data:
-            course.is_accepted = True
-        elif 'is_blocked' in request.data:
-            course.is_blocked = request.data['is_blocked']
-
-        course.save()
-
-        serializer = CourseSerializer(course)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class VideoStatusChangeView(APIView):
-    def patch(self, request, id, *args, **kwargs):
-        video = get_object_or_404(Videos, id=id)
-
-        if 'is_accepted' in request.data:
-            video.is_accepted = True
-
-        video.save()
-
-        serializer = VideosSerializer(video)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
 class TeacherDocumentStatusChangeView(APIView):
+    permission_classes = [IsAdmin]
     def patch(self, request, id, *args, **kwargs):
         document = get_object_or_404(TeacherDocument, id=id)
 
@@ -171,35 +157,83 @@ class TeacherDocumentStatusChangeView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
-class AdminOrderList(ListCreateAPIView):
+
+
+# Course Management  
+class AdminCourseListCreateView(ListCreateAPIView):
+    permission_classes = [IsAdmin]
+    queryset = Course.objects.all().order_by('-date_added')  
+    serializer_class = CourseSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['course_name']
+
+
+class CourseStatusChangeView(APIView):
+    permission_classes = [IsAdmin]
+    def patch(self, request, id, *args, **kwargs):
+        course = get_object_or_404(Course, id=id)
+
+        if 'is_accepted' in request.data:
+            course.is_accepted = True
+        if 'is_blocked' in request.data:
+            course.is_blocked = request.data['is_blocked']
+
+
+
+        if 'is_rejected' in request.data:
+            print('true')
+            course.is_rejected =  True
+            course.reject_reason=request.data.get('reason')
+
+        course.save()
+
+        serializer = CourseSerializer(course)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class VideoStatusChangeView(APIView):
+    permission_classes = [IsAdmin]
+    def patch(self, request, id, *args, **kwargs):
+        video = get_object_or_404(Videos, id=id)
+
+        if 'is_accepted' in request.data:
+            video.is_accepted = True
+
+        if 'is_rejected' in request.data:
+            video.is_rejected=True
+            video.rejected_reason=request.data.get('reason') 
+
+        video.save()
+
+        serializer = VideosSerializer(video)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+# Order Manegement
+class CustomPagination(PageNumberPagination):
+    page_size = 10  
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+class AdminOrderList(ListAPIView):
+    permission_classes = [IsAdmin]
+    queryset = Orders.objects.all().order_by('-date_purchased')  
+    serializer_class = OrderListSerializer
+    pagination_class = CustomPagination
+
+
+
+
+# Dashboard
+class AdminOrderList2(ListCreateAPIView):
+    permission_classes = [IsAdmin]
     queryset = Orders.objects.all().order_by('-date_purchased')  
     serializer_class = OrderListSerializer
     filter_backends = [SearchFilter]
     search_fields = ['course_name']
 
-
-
-
-from django.http import JsonResponse
-from django.views.generic import View
-from StudentApp.models import Orders
-from django.db.models import Count
-from django.utils.timezone import now
-from datetime import timedelta
-from django.db.models.functions import TruncMonth,TruncYear
-from django.db.models import Sum
-from django.db.models import Sum
-from datetime import datetime, timedelta
-
-from django.db.models import Sum
-from django.http import JsonResponse
-from django.views import View
-from datetime import datetime, timedelta
-
-
-
-
 class AdminDashboardCount(APIView):
+    permission_classes = [IsAdmin]
     def get(self,request):
         user_count=User.objects.filter(is_staff=False,is_superuser=False).count()
         teacher_count=User.objects.filter(is_staff=True,is_superuser=False).count()
@@ -223,15 +257,12 @@ class AdminDashboardCount(APIView):
         print(data)
         return Response(data,status=status.HTTP_200_OK)
 
-
-
-class OrdersGraphView(View):
+class OrdersGraphView(APIView):
+    permission_classes = [IsAdmin]
     def get(self, request):
-        # Get orders for the past 6 months
         six_months_ago = now() - timedelta(days=30*6)
         orders = Orders.objects.filter(date_purchased__gte=six_months_ago)
 
-        # Group orders by month and count them
         monthly_orders = orders.annotate(
             year_month=TruncMonth('date_purchased')
         ).values('year_month').annotate(
@@ -250,9 +281,9 @@ class OrdersGraphView(View):
 
         return JsonResponse(orders_data, safe=False)
     
-class OrderGraphYearView(View):
+class OrderGraphYearView(APIView):
+    permission_classes = [IsAdmin]
     def get(self, request):
-        # Fetch yearly order data
         yearly_data = Orders.objects.annotate(
             year=TruncYear('date_purchased')
         ).values('year').annotate(
@@ -263,20 +294,17 @@ class OrderGraphYearView(View):
 
         return JsonResponse(formatted_yearly_data, safe=False)
     
-class OrdersByWeekView(View):
+class OrdersByWeekView(APIView):
+    permission_classes = [IsAdmin]
     def get(self, request, *args, **kwargs):
-        # Get the first and last day of the current month
         today = datetime.today()
         first_day_of_month = today.replace(day=1)
         last_day_of_month = today.replace(day=1, month=today.month+1) - timedelta(days=1)
 
-        # Fetch orders made within the current month
         orders = Orders.objects.filter(date_purchased__range=[first_day_of_month, last_day_of_month])
 
-        # Determine the number of weeks in the current month
         num_weeks = (last_day_of_month - first_day_of_month).days // 7 + 1
 
-        # Count orders by week
         orders_by_week = {}
         for week_number in range(num_weeks):
             start_of_week = first_day_of_month + timedelta(weeks=week_number)
@@ -291,8 +319,8 @@ class OrdersByWeekView(View):
 
 
 # sales report
-
 class TodaysSalesReportView(APIView):
+    permission_classes = [IsAdmin]
     def get(self, request):
         today = timezone.now().date()
         orders_today = Orders.objects.filter(date_purchased=today)
@@ -318,6 +346,7 @@ class TodaysSalesReportView(APIView):
 
 
 class MonthlySalesReportView(APIView):
+    permission_classes = [IsAdmin]
     def get(self, request):
         today = timezone.now().date()
         first_day_of_month = today.replace(day=1)
@@ -348,6 +377,7 @@ class MonthlySalesReportView(APIView):
     
 
 class YearlySalesReportView(APIView):
+    permission_classes = [IsAdmin]
     def get(self, request):
         today = timezone.now().date()
         first_day_of_year = today.replace(month=1, day=1)
@@ -378,6 +408,7 @@ class YearlySalesReportView(APIView):
     
 
 class WeeklySalesReportView(APIView):
+    permission_classes = [IsAdmin]
     def get(self, request):
         today = timezone.now().date()
         start_of_week = today - timedelta(days=today.weekday())
@@ -406,6 +437,7 @@ class WeeklySalesReportView(APIView):
     
 
 class CustomGenerateReport(APIView):
+    permission_classes = [IsAdmin]
     def post(self, request, *args, **kwargs):
         start_date_str = request.data.get('start_date')
         end_date_str = request.data.get('end_date')

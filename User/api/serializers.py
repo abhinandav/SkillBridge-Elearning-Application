@@ -2,8 +2,7 @@ from rest_framework import serializers
 from User.models import User,TeacherDetails
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer,TokenRefreshSerializer
 from User.models import *
-
-
+from rest_framework_simplejwt.tokens import RefreshToken,TokenError
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -18,6 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ('password',)
+
 
 
 class OTPVerificationSerializer(serializers.Serializer):
@@ -59,10 +59,11 @@ class TeacherRegisterSerializer(UserRegisterSerializer):
 
 
 class TeacherDetailsSerializer(serializers.ModelSerializer):
+    # user_profile = serializers.ReadOnlyField(source='user.username')
     class Meta:
         model = TeacherDetails
         fields='__all__'
-        # fields = ['number', 'age', 'experience', 'address']
+        
 
 
 class TeacherDocumentSerializer(serializers.ModelSerializer):

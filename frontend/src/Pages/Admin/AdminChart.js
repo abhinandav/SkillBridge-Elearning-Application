@@ -38,7 +38,13 @@ function AdminChart() {
             endpoint = '/adminapp/order_graph_week/';
         }
 
-        axios.get(baseURL + endpoint)
+        axios.get(baseURL + endpoint,{
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('access')}`,
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+              }
+        })
             .then(response => {
                 const data = response.data;
                 const { labels, data: chartData } = constructChartData(data);
@@ -153,7 +159,13 @@ function AdminChart() {
     
 
     const fetchOrders = () => {
-      axios.get(`${baseURL}/adminapp/orders/`)
+      axios.get(`${baseURL}/adminapp/orders2/`,{
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('access')}`,
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+          }
+      })
         .then(response => {
           if (response.data && Array.isArray(response.data)) {     
             setOrders(response.data);
@@ -212,7 +224,7 @@ function AdminChart() {
                         </thead>
                         <tbody>
                             {orders.length === 0 && <tr><td className='m-5'>No Order Found</td></tr>}
-                            {orders.slice(0, 10).map(order => (
+                            {orders.slice(0, 6).map(order => (
                                 <tr key={order.id}>
                                     <td className="py-2 px-4 border-b border-b-gray-50">
                                         <div className="flex items-center">

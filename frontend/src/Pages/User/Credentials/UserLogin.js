@@ -89,7 +89,8 @@ const UserLogin = () => {
                     isAuthenticated: true,
                     userid:res.data.userid,
                     isAdmin: false,
-                    isTeacher: false
+                    isTeacher: false,
+                    isActive:res.data.userid
                 })
             );
             navigate('/');

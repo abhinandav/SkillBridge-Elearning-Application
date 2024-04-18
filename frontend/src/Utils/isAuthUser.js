@@ -5,8 +5,6 @@ const baseURL = 'http://127.0.0.1:8000';
 const userid = localStorage.getItem('userid');
 const updateToken = async () => {
     const refreshToken = localStorage.getItem('refresh');
-    
-   
 
     try {
         const res = await axios.post(baseURL + '/api/accounts/token/refresh/', {

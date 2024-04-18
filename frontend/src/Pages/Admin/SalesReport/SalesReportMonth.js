@@ -4,6 +4,7 @@ import Sidebar from '../../../Components/Admin/Sidebar';
 import AdminHeader from '../../../Components/Admin/AdminHeader';
 import html2pdf from 'html2pdf.js';
 import { Link } from 'react-router-dom';
+import * as XLSX from 'xlsx';
 
 function SalesReportMonth() {
   const [ordersData, setOrdersData] = useState({ orders_this_month_count: 0,course_count:0,users_count:0,total_earnings:0, order_list: [] });
@@ -22,7 +23,13 @@ function SalesReportMonth() {
 
   const fetchOrders = () => {
     setProcessing(true)
-    axios.get(`${baseURL}/adminapp/monthly_report/`)
+    axios.get(`${baseURL}/adminapp/monthly_report/`,{
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('access')}`,
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+          }
+    })
       .then(response => {
         if (response.data &&  response.data.order_list) {     
             handleReportData( response.data);
@@ -55,6 +62,23 @@ const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 const currentMonthIndex = new Date().getMonth();
 const currentMonth = months[currentMonthIndex];
 
+const handleDownloadExcel = () => {
+    if (!ordersData.order_list || ordersData.order_list.length === 0) {
+      console.error("No data available to download.");
+      return;
+    }
+  
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(ordersData.order_list);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sales Report");
+    XLSX.writeFile(workbook, "sales_report.xlsx");
+  };
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+}
 
 
   return (
@@ -122,9 +146,59 @@ const currentMonth = months[currentMonthIndex];
 
 
                 <div className="flex items-center justify-between pb-6 ">
-                    <div>
-                    </div>
-                    <button onClick={handleDownload}>Download Sales Report </button>
+                    <div></div>
+                    {!processing && (
+                        <div className='flex'>
+                        <div className="relative mx-10">
+                        <button
+                            id="dropdownDelayButton"
+                            data-dropdown-toggle="dropdownDelay"
+                            data-dropdown-delay="500"
+                            data-dropdown-trigger="hover"
+                            className=" font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center "
+                            type="button"
+                            onClick={toggleDropdown}
+                        >
+                            Download Report
+                            <svg
+                            className="w-2.5 h-2.5 ms-3"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 10 6"
+                            >
+                            <path
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="m1 1 4 4 4-4"
+                            />
+                            </svg>
+                        </button>
+
+
+                        {isOpen && (
+                        <div
+                        id="dropdownDelay"
+                        className="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+                        >
+                        <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDelayButton">
+                            <li>
+                            <button onClick={handleDownload} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">As pdf</button>
+                            </li>
+
+                            <li>
+                            <button onClick={handleDownloadExcel} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">As excel Excell</button>
+                            </li>
+                            
+                            
+                        </ul>
+                        </div>
+                        )}
+                        </div>
+                        </div>
+                    )}
                 </div>
                 {processing && (
                 <div className='flex items-center justify-center h-96'>

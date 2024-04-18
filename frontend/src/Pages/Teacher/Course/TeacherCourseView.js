@@ -5,6 +5,8 @@ import { FaEdit  } from 'react-icons/fa'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaPlus } from "react-icons/fa";
+import { CiCircleInfo } from "react-icons/ci";
+
 
 function TeacherCourseView() {
     const baseURL = "http://127.0.0.1:8000";
@@ -21,6 +23,8 @@ function TeacherCourseView() {
         offer_price:'',
         demo_video:null,
         is_blocked:'',
+        is_rejected:'',
+        reject_reason:'',
         videos: []
 
     });
@@ -38,6 +42,7 @@ function TeacherCourseView() {
         try {
           const response = await axios.get(`${baseURL}/student/course_view/${id}/`);
           const data=response.data
+          console.log('data',data);
           setCourse({
               course_name:data.course.course_name,
               user:data.course.user,
@@ -52,6 +57,9 @@ function TeacherCourseView() {
               videos: data.videos,
               is_blocked:data.course.is_blocked,
               is_accepted:data.course.is_accepted,
+              is_rejected:data.course.is_rejected,
+              reject_reason:data.course.reject_reason
+
 
           });
           console.log(response.data);
@@ -98,12 +106,16 @@ function TeacherCourseView() {
             });
         }
       };
-      console.log(course.demo_video)
+
+
+      console.log('reject_reason',course.reject_reason)
       
       
     const handleStartLesson = (id, firstVideoId) => {
     navigate(`/teacher/tvideoplayer/${id}/${firstVideoId}`);
     };
+
+
   return (
 
 <div>
@@ -144,6 +156,11 @@ function TeacherCourseView() {
             </li>
         </ol>
         <div className='flex'>
+
+            {course.is_rejected &&(
+                <span className='text-red-500 font-semibold mt-2'>course rejected</span>
+            )}
+
 
             <div className="relative mx-10">
             <button
@@ -202,21 +219,6 @@ function TeacherCourseView() {
         )}
             </div>
 
-
-
-
-        {/* {course.is_blocked ? (
-            <button onClick={() => unblockCourse(id)} className="mt-6 mr-5 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-green-600 text-white shadow-sm hover:bg-green-700 focus-visible:outline-red-600">
-                Unblock
-            </button>
-            ) : (
-            <button onClick={() => blockCourse(id)} className="mt-6 mr-5 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-red-600 text-white shadow-sm hover:bg-red-700 focus-visible:outline-red-600">
-                Block
-            </button>
-        )} */}
-
-
-        
         </div>
         </nav>
 
@@ -235,6 +237,10 @@ function TeacherCourseView() {
           <div className="lg:col-span-3">
             <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
               <div className="md:col-span-6  mx-10">
+
+                {course.is_rejected &&(
+                    <span className='flex text-red-500 font-semibold text-md'><CiCircleInfo  className='mr-3 mt-1 font-semibold'/>{course.reject_reason}</span>
+                )}
 
                <Link to={`/teacher/tvideoplayer/${id}/${course.videos[0]?.id}`}>
                     <h1 className='text-indigo-800'   style={{ width: '100%', display: 'block', fontSize: '2.5rem', lineHeight: 1 }}>
@@ -386,17 +392,28 @@ function TeacherCourseView() {
                             <Link to={`/teacher/edit_video/${video.id}`}>
                             <div className="flex">
                                 <div className='-mt-2'>
-                                {video.is_accepted ? (
-                                            <button disabled className="bg-green-600 px-1 py-1 rounded-md mt-4 ml-3 text-white font-semibold tracking-wide cursor-pointer">
+
+                                {(video.is_accepted | video.is_rejected) ? ( 
+                                    video.is_accepted ? (
+                                        <button disabled className="bg-green-600 px-1 py-1 rounded-md mt-4 ml-3 text-white font-semibold tracking-wide cursor-pointer">
                                             Accepted
-                                            </button>
-                                        ) : (
-                                            <button  className="bg-blue-600 px-1 py-1 rounded-md mt-4 ml-3 text-white font-semibold tracking-wide cursor-pointer">
-                                                Not Accepted
-                                            </button>
+                                        </button>
+                                    ) : ( 
+                                        <button className="bg-red-600 px-1 py-1 rounded-md mt-4 ml-3 text-white font-semibold tracking-wide cursor-pointer">
+                                            Rejected
+                                        </button>
+                                    )
+                                ) : ( 
+                                   <di className='mt-2 flex text-center '> 
+                                     <span className='mt-3 text-blue-500 '>pending....</span>
+                                   </di>
                                 )}
+
+
+
+
                                 </div>
-                                <FaEdit  className='mt-2 mx-10' />
+                                <FaEdit  className='mt-3 mx-10' />
                             </div>
                             </Link>
                         </ul>

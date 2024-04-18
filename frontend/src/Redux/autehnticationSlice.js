@@ -7,7 +7,9 @@ export const authenticationSlice=createSlice({
         name:null,
         isAuthenticated:false,
         isAdmin:false,
-        isTeacher:false
+        isTeacher:false,
+        // isActive:false
+        
     },
     reducers:{
         set_authentication:(state,action)=>{
@@ -16,6 +18,8 @@ export const authenticationSlice=createSlice({
             state.isAuthenticated=action.payload.isAuthenticated
             state.isAdmin=action.payload.isAdmin
             state.isTeacher=action.payload.isTeacher
+            // state.isActive=action.payload.isActive
+
 
         }
     }

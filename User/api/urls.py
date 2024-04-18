@@ -3,6 +3,7 @@ from django.urls import path
 from .views import *
 from User.api.serializers import MyTokenObtainPairSerializer 
 
+
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -15,6 +16,7 @@ urlpatterns = [
     path("",getAccountsRoutes.as_view(), name="accounts-routes"),
     path('signup/', UserRegisterView.as_view(), name='signup'),
     path('login/',LoginView.as_view(),name='login'),
+    path('logout/',LogoutView.as_view(),name='login'),
     path('userotp/', OTPVerificationView.as_view(),name='userotp'),
     path('resendotp/', ResendOTPView.as_view(),name='resendotp'),
     path('deleteotp/', DeleteOTPView.as_view(),name='deleteotp'),

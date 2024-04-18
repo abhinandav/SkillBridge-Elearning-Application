@@ -17,4 +17,4 @@ class VideosSerializer(serializers.ModelSerializer):
     video = serializers.FileField(required=False)
     class Meta:
         model = Videos
-        exclude = ( 'is_blocked', 'is_rejected')
+        exclude = ( 'is_blocked',)

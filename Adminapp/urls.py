@@ -16,6 +16,7 @@ urlpatterns = [
     path('course_status/<int:id>/', views.CourseStatusChangeView.as_view(), name='course_status'),
     path('video_status/<int:id>/', views.VideoStatusChangeView.as_view(), name='video_status'),
 
+    path('orders2/', views.AdminOrderList2.as_view(), name='orders2'),
     path('orders/', views.AdminOrderList.as_view(), name='orders'),
 
 

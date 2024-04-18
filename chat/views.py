@@ -19,35 +19,54 @@ from rest_framework.views import APIView
 # user sidebar teacher list
 
 
+# class OrderWithUserView(APIView):
+#     def get(self, request):
+#         print('user:',request.user)
+#         orders = Orders.objects.filter(user=request.user)
+#         print('orders',orders.values())
+
+#         unique_user_ids = set(order.course.added_by_id for order in orders)
+#         print('unique_user_ids',unique_user_ids)
+
+#         user_profiles = UserProfile.objects.filter(user_id__in=unique_user_ids)
+#         user_profiles_dict = {profile.user_id: profile for profile in user_profiles}
+
+#         unique_orders = []
+#         for order in orders:
+#             user_profile = user_profiles_dict.get(order.course.added_by_id)
+#             if user_profile:
+#                 serializer = OrderWithUserSerializer(order)
+#                 serialized_order = serializer.data
+#                 serialized_order['user_profile'] = {
+#                     'profile_pic': str(user_profile.profile_pic),
+#                 }
+#                 unique_orders.append(serialized_order)
+#                 print('unique_orders',unique_orders)
+
+
+#         return Response(unique_orders)
+
 class OrderWithUserView(APIView):
     def get(self, request):
-        print('user:',request.user)
         orders = Orders.objects.filter(user=request.user)
-        print('orders',orders.values())
-
-        unique_user_ids = set(order.course.added_by_id for order in orders)
-        print('unique_user_ids',unique_user_ids)
-
+        unique_orders = {}
         
-        # Fetch user profiles
-        user_profiles = UserProfile.objects.filter(user_id__in=unique_user_ids)
-        user_profiles_dict = {profile.user_id: profile for profile in user_profiles}
-
-        unique_orders = []
         for order in orders:
-            user_profile = user_profiles_dict.get(order.course.added_by_id)
-            if user_profile:
-                serializer = OrderWithUserSerializer(order)
-                serialized_order = serializer.data
-                serialized_order['user_profile'] = {
-                    'profile_pic': str(user_profile.profile_pic),
-                }
-                unique_orders.append(serialized_order)
-                print('unique_orders',unique_orders)
+            course_id = order.course.added_by_id
+            if course_id not in unique_orders:
+                unique_orders[course_id] = order
+                
+        unique_order_list = []
+        for order in unique_orders.values():
+            user_profile = UserProfile.objects.get(user_id=order.course.added_by_id)
+            serializer = OrderWithUserSerializer(order)
+            serialized_order = serializer.data
+            serialized_order['user_profile'] = {
+                'profile_pic': str(user_profile.profile_pic),
+            }
+            unique_order_list.append(serialized_order)
 
-
-        return Response(unique_orders)
-
+        return Response(unique_order_list)
 
 
 # class OrderWithUserView(APIView):

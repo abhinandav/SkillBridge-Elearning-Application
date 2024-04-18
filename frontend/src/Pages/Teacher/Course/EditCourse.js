@@ -73,6 +73,26 @@ function EditCourse() {
     }
 };
 
+
+// const handleChange = (e) => {
+//   if (e.target.name === 'demo') {
+//       setCourse({
+//           ...course,
+//           demo_video: e.target.files[0]
+//       });
+//   } else if (e.target.name === 'thumbnail') {
+//       setCourse({
+//           ...course,
+//           thumbnail: e.target.files[0]
+//       });
+//   } else {
+//       setCourse({
+//           ...course,
+//           [e.target.name]: e.target.value
+//       });
+//   }
+// };
+
     
     
     console.log(course.demo_video);

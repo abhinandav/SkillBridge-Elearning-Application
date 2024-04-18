@@ -9,9 +9,6 @@ const AdminHeader = () => {
   const authentication_user =useSelector(state=>state.authentication_user)
   const dispatch=useDispatch()
   const navigate =useNavigate()
-  // console.log('authicate name',authentication_user.name);
-  // console.log('authicate header',authentication_user.isAuthenticated)
-
 
 
   const logout=()=>{

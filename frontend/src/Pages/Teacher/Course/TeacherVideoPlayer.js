@@ -3,14 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Lin, Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, longFormatters } from 'date-fns';
 import { FaCrown } from "react-icons/fa";
 import { CiEdit } from "react-icons/ci";
 import { FaReply } from "react-icons/fa";
 import placeholderprofile from '../../../Images/default/placeholderprofile.webp'
 
-
-// /Images/default/placeholderprofile.webp
 
 function TeacherVideoPlayer() {
     const baseURL = "http://127.0.0.1:8000";
@@ -35,6 +33,8 @@ function TeacherVideoPlayer() {
     const [replyFields, setReplyFields] = useState({});
     const [newReply, setNewReply] = useState(null);
     const [course, setCourse] = useState({ videos: []});
+
+    const [videoId, setVideoId] = useState();
 
     const fetchCourse = async () => {
         try {
@@ -65,7 +65,7 @@ function TeacherVideoPlayer() {
 
     const fetchVideoDetails = async () => {
         try {
-            const response = await axios.get(`${baseURL}/student/courses/${id}/videos/${vid}/`, {
+            const response = await axios.get(baseURL+`/teacher/tvideoplayer/${id}/${vid}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -105,13 +105,13 @@ function TeacherVideoPlayer() {
         };
 
         fetchData();
-    }, [id, vid, token]);
+    }, [id, vid, videoUrl]);
 
 
     
     useEffect(() => {
         fetchVideoDetails();
-    }, [id, vid, token]);
+    }, [id, vid, videoUrl]);
 
 
     useEffect(() => {
@@ -328,6 +328,8 @@ const handleEditReplySubmit = async (event, replyId) => {
     }
 };
 
+
+console.log('videoUrl',videoUrl)
 
   return (
 

@@ -13,7 +13,13 @@ function AdminTecaherRequest() {
   const [users, setUsers] = useState([]);
 
   const fetchUsers = (url) => {
-    axios.get(url)
+    axios.get(url,{
+      headers: {
+        'authorization': `Bearer ${localStorage.getItem('access')}`,
+        'Accept' : 'application/json',
+        'Content-Type': 'application/json'
+    }
+  })
       .then((response) => {
         console.log('API response:', response.data);
         if (response.data) {

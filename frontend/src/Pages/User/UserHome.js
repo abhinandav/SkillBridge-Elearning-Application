@@ -1,5 +1,5 @@
 import React from 'react'
-import { UseSelector, useSelector } from 'react-redux'
+import {useSelector } from 'react-redux'
 
 
 
@@ -7,6 +7,7 @@ import { UseSelector, useSelector } from 'react-redux'
 function UserHome() {
 
   const authentication_user=useSelector(state=>state.authentication_user)
+  console.log(authentication_user);
 
  
   return (
@@ -23,6 +24,8 @@ function UserHome() {
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Libero similique obcaecati illum mollitia.
           </p>
 
+
+        {! authentication_user.userid &&(
           <div className="mx-auto mt-6 w-full max-w-sm rounded-md border bg-transparent focus-within:border-blue-400 focus-within:ring focus-within:ring-blue-300 focus-within:ring-opacity-40 dark:border-gray-700 dark:focus-within:border-blue-300">
             <form className="flex flex-col md:flex-row">
               <input
@@ -38,7 +41,7 @@ function UserHome() {
                 Join Us
               </button>
             </form>
-          </div>
+          </div>)}
         </div>
 
         <div className="mx-auto mt-28 max-w-screen-xl">

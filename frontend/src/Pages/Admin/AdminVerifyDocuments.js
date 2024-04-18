@@ -8,15 +8,30 @@ import userimg from '../../Images/userprofile.webp'
 
 function AdminVerifyDocuments() {
     const navigate = useNavigate();
+    const token=localStorage.getItem('access')
     const baseURL = "http://127.0.0.1:8000";
     const { id } = useParams();
 
     const [userData, setUserData] = useState(null);
+    const [showModal1, setShowModal1] = useState(false);
+    const [showModal2, setShowModal2] = useState(false);
+    const [showModal3, setShowModal3] = useState(false);
+    const [showModal4, setShowModal4] = useState(false);
+    const [showModal5, setShowModal5] = useState(false);
+    const [showModal6, setShowModal6] = useState(false);
+    const [showModal0, setShowModal0] = useState(false);
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`${baseURL}/adminapp/teacher_detail/${id}/`);
+                const response = await axios.get(`${baseURL}/adminapp/teacher_detail/${id}/`,{
+                    headers: {
+                      'authorization': `Bearer ${localStorage.getItem('access')}`,
+                      'Accept' : 'application/json',
+                      'Content-Type': 'application/json'
+                  }
+                });
                 setUserData(response.data);
             } catch (error) {
                 console.error('Error fetching user details:', error);
@@ -39,12 +54,19 @@ function AdminVerifyDocuments() {
 
 
     const verifyDocuments = (id, fieldName) => {
-        const confirmVerify = window.confirm(`Are you sure you want to accept this ${fieldName}?`);
-        if (confirmVerify) {
+        // const confirmVerify = window.confirm(`Are you sure you want to accept this ${fieldName}?`);
+        // if (confirmVerify) {
+
           const payload = {};
           payload[fieldName] = true;
       
-          axios.patch(`${baseURL}/adminapp/document_status/${id}/`, payload)
+          axios.patch(`${baseURL}/adminapp/document_status/${id}/`, payload,{
+            headers: {
+              'authorization': `Bearer ${localStorage.getItem('access')}`,
+              'Accept' : 'application/json',
+              'Content-Type': 'application/json'
+          }
+        })
             .then((response) => {
               console.log(`${fieldName} verified successfully`, response);
               setUserData(prevUserData => ({
@@ -58,17 +80,22 @@ function AdminVerifyDocuments() {
             .catch((error) => {
               console.error(`Error verifying ${fieldName}:`, error);
             });
-        }
+        // }
       };
 
 
       const acceptUser = (userId) => {
-        const confirmAccept = window.confirm('Are you sure you want to accept this user?');
-      
-        if (confirmAccept) {
-          axios.patch(`${baseURL}/adminapp/teachers/accept/${userId}/`, { is_email_verified: true })
+
+          axios.patch(`${baseURL}/adminapp/teachers/accept/${userId}/`, { is_email_verified: true },{
+            headers: {
+              'authorization': `Bearer ${localStorage.getItem('access')}`,
+              'Accept' : 'application/json',
+              'Content-Type': 'application/json'
+          }
+        })
             .then((response) => {
               console.log('teacher accepted successfully', response);
+              setShowModal0(false)
               setUserData(prevUserData => ({
                 ...prevUserData,
                 user: {
@@ -80,8 +107,13 @@ function AdminVerifyDocuments() {
             .catch((error) => {
               console.error('Error accepting user:', error);
             });
-        }
       };
+
+
+    // modal
+
+
+
 
   return (
         <>
@@ -187,10 +219,54 @@ function AdminVerifyDocuments() {
                                         <span className='text-green-500'> Accepted</span>
                                     ) : (
                                     
-                                        <button onClick={() => acceptUser(id)} className="mt-3 bg-green-500 px-4 py-2 text-white rounded-md mt-4 font-semibold">
+                                        <button onClick={() => setShowModal0(true)} className="mt-3 bg-green-500 px-4 py-2 text-white rounded-md mt-4 font-semibold">
                                             Accept Teacher
                                         </button>
                                     )}
+
+                        {showModal0 && (
+                              <>    
+                                <div style={{zIndex:99999}} className="fixed z-9999 inset-0 overflow-y-auto" aria-modal="true" aria-labelledby="modal-headline" >
+                                  <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                    <div className="w-full inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                                      <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                        <div className="sm:flex sm:items-start">
+                                          <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                                            
+                                          </div>
+                                          <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                            <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
+                                              Accept Teacher
+                                            </h3>
+                                            <div className="mt-2">
+                                              <p className="text-sm text-gray-500">
+                                                Are you sure you want to Accept ?
+                                              </p>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                        <button
+                                          onClick={() => acceptUser(id)}
+                                          type="button"
+                                          className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-500 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                                        >
+                                          Confirm
+                                        </button>
+                                        <button
+                                          onClick={() => setShowModal0(false)}
+                                          type="button"
+                                          className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                                        >
+                                          Cancel
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </>
+                              )}
                                 </>
                             ) : (
                         ''
@@ -243,14 +319,38 @@ function AdminVerifyDocuments() {
 
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
 
-                                        {userData.teacher_documents.id_verify ? (
-                                            <span className="text-green-500 font-semibold px-3">Verified</span>
-                                            ) : (
-                                            <button onClick={() => verifyDocuments(userData.teacher_documents.id, 'id_verify')} className="bg-blue-600 px-3 py-2 rounded-md mt ml-3 text-white font-semibold tracking-wide cursor-pointer">
-                                                Accept
-                                            </button>
+                                    {userData.teacher_documents.id_verify ? (
+                                        <span className="text-green-500 font-semibold px-3">Verified</span>
+                                    ) : (
+                                        <button onClick={() => setShowModal1(true)} className="bg-blue-600 px-3 py-2 rounded-md mt ml-3 text-white font-semibold tracking-wide cursor-pointer">
+                                            Accept
+                                        </button>
+                                    )}
+
+
+                                    {showModal1 && (
+                                        <div style={{zIndex:99999999}} className="flex flex-col space-y-4 animated fadeIn faster fixed left-0 top-0 flex justify-center items-center inset-0 z-50 outline-none focus:outline-none ">
+                                            <div className="flex flex-col p-8 bg-white shadow-md hover:shadow-lg rounded-2xl">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            className="w-16 h-16 rounded-2xl p-3 border border-blue-100 text-blue-400 bg-blue-50" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                        </svg>
+                                                        <div className="flex flex-col ml-3">
+                                                            <div className="font-medium leading-none">Are you sure you want to accept this ?</div>
+                                                            <p className="text-sm text-gray-600 leading-none mt-1">By accepting you cant retake action</p>
+                                                        </div>
+                                                    </div>
+                                                    <button onClick={() => setShowModal1(false)} className="flex-no-shrink bg-white-500 border border-red-500 px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-500 text-red-500 rounded-full">Cancel</button>
+                                                    <button onClick={() => {verifyDocuments(userData.teacher_documents.id, 'id_verify'); setShowModal1(false);}} className="flex-no-shrink bg-red-500 px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-500 text-white rounded-full">Accept</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                         )}
-                                                   
+               
                                      </td>
                                 </tr>
 
@@ -277,10 +377,36 @@ function AdminVerifyDocuments() {
                                         {userData.teacher_documents.photo_verify ? (
                                                 <span className="text-green-500 font-semibold px-3">Verified</span>
                                                 ) : (
-                                                <button onClick={() => verifyDocuments(userData.teacher_documents.id, 'photo_verify')} className="bg-blue-600 px-3 py-2 rounded-md mt ml-3 text-white font-semibold tracking-wide cursor-pointer">
+
+                                                <button onClick={() => setShowModal2(true)} className="bg-blue-600 px-3 py-2 rounded-md mt ml-3 text-white font-semibold tracking-wide cursor-pointer">
                                                     Accept
                                                 </button>
                                         )}
+
+                                    {showModal2 && (
+                        
+                                        <div style={{zIndex:99999999}} className="flex flex-col space-y-4 animated fadeIn faster fixed left-0 top-0 flex justify-center items-center inset-0 z-50 outline-none focus:outline-non">
+                                            <div className="flex flex-col p-8 bg-white shadow-md hover:shadow-lg rounded-2xl">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            className="w-16 h-16 rounded-2xl p-3 border border-blue-100 text-blue-400 bg-blue-50" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                        </svg>
+                                                        <div className="flex flex-col ml-3">
+                                                            <div className="font-medium leading-none">Are you sure you want to accept this Photo?</div>
+                                                            <p className="text-sm text-gray-600 leading-none mt-1">By accepting you cant retake action</p>
+                                                        </div>
+                                                    </div>
+                                                    <button onClick={() => setShowModal2(false)} className="flex-no-shrink bg-white-500 border border-red-500 px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-500 text-red-500 rounded-full">Cancel</button>
+                                                    <button onClick={() => {verifyDocuments(userData.teacher_documents.id, 'photo_verify'); setShowModal2(false);}} className="flex-no-shrink bg-red-500 px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-500 text-white rounded-full">Accept</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    )}
                                     </td>
                                 </tr>
 
@@ -307,10 +433,35 @@ function AdminVerifyDocuments() {
                                     {userData.teacher_documents.tenth_verify ? (
                                             <span className="text-green-500 font-semibold px-3">Verified</span>
                                             ) : (
-                                            <button onClick={() => verifyDocuments(userData.teacher_documents.id, 'tenth_verify')} className="bg-blue-600 px-3 py-2 rounded-md mt ml-3 text-white font-semibold tracking-wide cursor-pointer">
+                                                <button onClick={() => setShowModal3(true)} className="bg-blue-600 px-3 py-2 rounded-md mt ml-3 text-white font-semibold tracking-wide cursor-pointer">
                                                 Accept
-                                            </button>
+                                                </button>
                                         )}
+
+                                            {showModal3 && (
+                                                
+                                                <div style={{zIndex:99999999}} className="flex flex-col space-y-4 animated fadeIn faster fixed left-0 top-0 flex justify-center items-center inset-0 z-50 outline-none focus:outline-none ">
+                                                    <div className="flex flex-col p-8 bg-white shadow-md hover:shadow-lg rounded-2xl">
+                                                        <div className="flex items-center justify-between">
+                                                            <div className="flex items-center">
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    className="w-16 h-16 rounded-2xl p-3 border border-blue-100 text-blue-400 bg-blue-50" fill="none"
+                                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                                </svg>
+                                                                <div className="flex flex-col ml-3">
+                                                                    <div className="font-medium leading-none">Are you sure you want to accept this ?</div>
+                                                                    <p className="text-sm text-gray-600 leading-none mt-1">By accepting you cant retake action</p>
+                                                                </div>
+                                                            </div>
+                                                            <button onClick={() => setShowModal3(false)} className="flex-no-shrink bg-white-500 border border-red-500 px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-500 text-red-500 rounded-full">Cancel</button>
+                                                            <button onClick={() => {verifyDocuments(userData.teacher_documents.id, 'tenth_verify'); setShowModal3(false);}} className="flex-no-shrink bg-red-500 px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-500 text-white rounded-full">Accept</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            )}
                                     </td>
                                 </tr>
 
@@ -339,10 +490,35 @@ function AdminVerifyDocuments() {
                                     {userData.teacher_documents.plustwo_verify ? (
                                             <span className="text-green-500 font-semibold px-3">Verified</span>
                                             ) : (
-                                            <button onClick={() => verifyDocuments(userData.teacher_documents.id, 'plustwo_verify')} className="bg-blue-600 px-3 py-2 rounded-md mt ml-3 text-white font-semibold tracking-wide cursor-pointer">
+                                                <button onClick={() => setShowModal4(true)} className="bg-blue-600 px-3 py-2 rounded-md mt ml-3 text-white font-semibold tracking-wide cursor-pointer">
                                                 Accept
-                                            </button>
+                                                </button>
                                         )}
+
+                                        {showModal4 && (
+ 
+                                                <div style={{zIndex:99999999}} className="flex flex-col space-y-4 animated fadeIn faster fixed left-0 top-0 flex justify-center items-center inset-0 z-50 outline-none focus:outline-none ">
+                                                    <div className="flex flex-col p-8 bg-white shadow-md hover:shadow-lg rounded-2xl">
+                                                        <div className="flex items-center justify-between">
+                                                            <div className="flex items-center">
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    className="w-16 h-16 rounded-2xl p-3 border border-blue-100 text-blue-400 bg-blue-50" fill="none"
+                                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                                </svg>
+                                                                <div className="flex flex-col ml-3">
+                                                                    <div className="font-medium leading-none">Are you sure you want to accept this ?</div>
+                                                                    <p className="text-sm text-gray-600 leading-none mt-1">By accepting you cant retake action</p>
+                                                                </div>
+                                                            </div>
+                                                            <button onClick={() => setShowModal4(false)} className="flex-no-shrink bg-white-500 border border-red-500 px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-500 text-red-500 rounded-full">Cancel</button>
+                                                            <button onClick={() => {verifyDocuments(userData.teacher_documents.id, 'plustwo_verify'); setShowModal4(false);}} className="flex-no-shrink bg-red-500 px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-500 text-white rounded-full">Accept</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            )}
                                     </td>
                                 </tr>
 
@@ -371,10 +547,35 @@ function AdminVerifyDocuments() {
                                         {userData.teacher_documents.graduation_verify ? (
                                             <span className="text-green-500 font-semibold px-3">Verified</span>
                                             ) : (
-                                            <button onClick={() => verifyDocuments(userData.teacher_documents.id, 'graduation_verify')} className="bg-blue-600 px-3 py-2 rounded-md mt ml-3 text-white font-semibold tracking-wide cursor-pointer">
+                                                <button onClick={() => setShowModal5(true)} className="bg-blue-600 px-3 py-2 rounded-md mt ml-3 text-white font-semibold tracking-wide cursor-pointer">
                                                 Accept
-                                            </button>
+                                                </button>
                                         )}
+
+                                            {showModal5 && (
+                                            
+                                            <div style={{zIndex:99999999}} className="flex flex-col space-y-4 animated fadeIn faster fixed left-0 top-0 flex justify-center items-center inset-0 z-50 outline-none focus:outline-none ">
+                                                <div className="flex flex-col p-8 bg-white shadow-md hover:shadow-lg rounded-2xl">
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="flex items-center">
+                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                                className="w-16 h-16 rounded-2xl p-3 border border-blue-100 text-blue-400 bg-blue-50" fill="none"
+                                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                            </svg>
+                                                            <div className="flex flex-col ml-3">
+                                                                <div className="font-medium leading-none">Are you sure you want to accept this ?</div>
+                                                                <p className="text-sm text-gray-600 leading-none mt-1">By accepting you cant retake action</p>
+                                                            </div>
+                                                        </div>
+                                                        <button onClick={() => setShowModal5(false)} className="flex-no-shrink bg-white-500 border border-red-500 px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-500 text-red-500 rounded-full">Cancel</button>
+                                                        <button onClick={() => {verifyDocuments(userData.teacher_documents.id, 'graduation_verify'); setShowModal5(false);}} className="flex-no-shrink bg-red-500 px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-500 text-white rounded-full">Accept</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            )}
                                     </td>
                                 </tr>
 
@@ -402,9 +603,31 @@ function AdminVerifyDocuments() {
                                         {userData.teacher_documents.experience_verify ? (
                                             <span className="text-green-500 font-semibold px-3">Verified</span>
                                             ) : (
-                                            <button onClick={() => verifyDocuments(userData.teacher_documents.id, 'experience_verify')} className="bg-blue-600 px-3 py-2 rounded-md mt ml-3 text-white font-semibold tracking-wide cursor-pointer">
+                                                <button onClick={() => setShowModal6(true)} className="bg-blue-600 px-3 py-2 rounded-md mt ml-3 text-white font-semibold tracking-wide cursor-pointer">
                                                 Accept
-                                            </button>
+                                                </button>
+                                        )}
+                                        {showModal6 && (
+                                        <div style={{zIndex:99999999}} className="flex flex-col space-y-4 animated fadeIn faster fixed left-0 top-0 flex justify-center items-center inset-0 z-50 outline-none focus:outline-none ">
+                                            <div className="flex flex-col p-8 bg-white shadow-md hover:shadow-lg rounded-2xl">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            className="w-16 h-16 rounded-2xl p-3 border border-blue-100 text-blue-400 bg-blue-50" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                        </svg>
+                                                        <div className="flex flex-col ml-3">
+                                                            <div className="font-medium leading-none">Are you sure you want to accept this ?</div>
+                                                            <p className="text-sm text-gray-600 leading-none mt-1">By accepting you cant retake action</p>
+                                                        </div>
+                                                    </div>
+                                                    <button onClick={() => setShowModal6(false)} className="flex-no-shrink bg-white-500 border border-red-500 px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-500 text-red-500 rounded-full">Cancel</button>
+                                                    <button onClick={() => {verifyDocuments(userData.teacher_documents.id, 'experience_verify'); setShowModal6(false);}} className="flex-no-shrink bg-red-500 px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-500 text-white rounded-full">Accept</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                         )}
                                     </td>
                                 </tr>

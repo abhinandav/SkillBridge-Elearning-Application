@@ -184,7 +184,7 @@ const TeacherProfileEdit = () => {
                         name: formData.username,
                         isAuthenticated: true,
                         isAdmin: false,
-                        isTeacher: false
+                        isTeacher: true
                     })
                 );
                 dispatch(set_profile_details({
@@ -196,7 +196,7 @@ const TeacherProfileEdit = () => {
                     about: formData.about,
                     profile_pic: formData.profilePic ? URL.createObjectURL(formData.profilePic) : null
                 }));
-                // navigate('/teacher/teacher_profile_edit'); 
+                navigate('/teacher/teacher_profile_edit'); 
             }
         } catch (error) {
             console.error('Error updating user details:', error);

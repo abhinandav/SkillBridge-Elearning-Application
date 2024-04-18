@@ -15,7 +15,13 @@ function AdminHomeCards() {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const res = await axios.get(baseURL + '/adminapp/admin_home/');
+            const res = await axios.get(baseURL + '/adminapp/admin_home/',{
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('access')}`,
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+              }
+            });
             if (res.status === 200) {
               console.log(res.data);
               setData(res.data);

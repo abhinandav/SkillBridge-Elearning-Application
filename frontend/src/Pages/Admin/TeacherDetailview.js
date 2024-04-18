@@ -8,16 +8,27 @@ import userimg from '../../Images/userprofile.webp'
 
 function TeacherDetailview() {
     const navigate = useNavigate();
+    const token=localStorage.getItem('access')
     const baseURL = "http://127.0.0.1:8000";
     const { id } = useParams();
 
     const [userData, setUserData] = useState(null);
 
+
+
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`${baseURL}/adminapp/teacher_detail/${id}/`);
+                const response = await axios.get(`${baseURL}/adminapp/teacher_detail/${id}/`,{
+                    headers: {
+                      'authorization': `Bearer ${token}`,
+                      'Accept' : 'application/json',
+                      'Content-Type': 'application/json'
+                  }
+                })
                 setUserData(response.data);
+                console.log('response.data',response.data);
             } catch (error) {
                 console.error('Error fetching user details:', error);
             }
@@ -34,6 +45,8 @@ function TeacherDetailview() {
         return <div>Loading...</div>;
     }
 
+
+    console.log('profil', baseURL+userData.teacher_profile.profile_pic);
 
 
 
@@ -87,6 +100,9 @@ function TeacherDetailview() {
         <>
             <Sidebar/>
             <AdminHeader/>
+
+
+
             <div className="w-full  md:w-[calc(100%-286px)] md:ml-64 bg-gray-200  transition-all main">
                 <div className='p-6'>
                 
@@ -94,7 +110,13 @@ function TeacherDetailview() {
                 <div className="md:grid grid-cols-4   bg-white gap-2 p-4 rounded-xl">
                     <div className="md:col-span-1 h-100 ">
                     <div className="flex w-full h-full relative">
-                        <img src={userimg} className="w-44 h-44 m-auto" alt="" />
+
+                    {userData && userData.teacher_profile && userData.teacher_profile.profile_pic ? (
+                    <img src={`${baseURL}${userData.teacher_profile.profile_pic}`} className="w-44 h-44 m-auto" alt="" />
+                    ) : (
+                    <img src={userimg} className="w-44 h-44 m-auto" alt="" />
+                    )}
+
                     </div>
                     </div>
                     <div className="md:col-span-3 h-48  space-y-2 p-3 my-20 mb-5">
@@ -160,8 +182,7 @@ function TeacherDetailview() {
                     </div>
                     </div>
                 </div>
-
-
+                
 
 
                 <div className="bg-white p-10 rounded-md w-full -my-5">
